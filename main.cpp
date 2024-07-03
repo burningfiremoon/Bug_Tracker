@@ -25,8 +25,9 @@
 		-In terms of the explanation paragraph, mention what is being hidden/abstracted, and why particular procedures and attributes are “placed” together in the same header/module; in other words, explain cohesion
 
 	- In terms of indentation, blocks of code will be “captured” and/or “boxed in” by a set of curly brackets (  {  )
-		-For example:
-				if() {
+		-Use "Visual Studio" style as C_Cpp: Clang_format_style, for example:
+				if () //next line
+                {
 					//some code [use 1 “tab” ]
 				}
 		-In terms of spacing for “=”, there must be one space to the left and to the right of the “=”; at the end of each line when the “ ; “  must be entered, there must be no space to the left of it
@@ -41,3 +42,23 @@
 		i) what the function does [as in, what it can do for programmers that call it]
 		ii) any possible exceptions
 */
+
+#include "database.h"
+#include "print.h"
+#include "control.h"
+#include "ui.h"
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    openDatabase();
+    bool exit;
+    do
+    {
+        exit = mainMenu();
+    } while (exit == false);
+    closeDatabase();
+    return 0;
+}
