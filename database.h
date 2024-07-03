@@ -1,23 +1,48 @@
-// database.h
+/*
+    Revision History:
+    1.0 - 03-07-2024 [Date] - Modified by Skyler
+
+    database.h:
+    This header file contains class definitions and function declarations for database operations.
+    It includes necessary headers and defines classes and functions to interact with the database.
+*/
+//-------------------------------------
 #ifndef DATABASE_H
 #define DATABASE_H
 
-openDatabase();
-closeDatabase();
+//-------------------------------------
+// List of #includes
+#include <string>
+using namespace std;
 
-//class for objects with member functions
-class ChangeRequest
-{
+//-------------------------------------
+// Function prototypes
+
+// -----
+// openDatabase
+// Opens the database connection
+void openDatabase();
+
+// -----
+// closeDatabase
+// Closes the database connection
+void closeDatabase();
+
+//-------------------------------------
+// Class definitions
+
+class ChangeRequest {
 public:
-    // constructor ***need to change attribute 1 and 2 to real attributes
-    ChangeRequest(int x, string y) : attribute1(x), attribute2(y) {}
-    // destructor
-    ~ChangeRequest()
-    {
-    }
-    // member functions
-    // add itself to database
+    // Constructor
+    ChangeRequest(int x, string y);
+
+    // Destructor
+    ~ChangeRequest();
+
+    // ----- add
+    // Adds ChangeRequest to the database
     void add();
+
     // set attribute1 ***need to change attribute 1 to real attribute
     void setAttribute1(int x);
     // get attribute1 ***need to change attribute 1 to real attribute
