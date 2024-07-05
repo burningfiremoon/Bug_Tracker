@@ -1,7 +1,13 @@
 /*
-    database.h
+    Revision History:
+    1.0 - 03-07-2024 [Date] - Modified by Skyler
+
+    database.h:
     This header file contains class definitions and function declarations for database operations.
     It includes necessary headers and defines classes and functions to interact with the database.
+    The purpose of this header file is to abstract the database interaction, ensuring that the main logic
+    of the application remains separate from the database-specific code. This design promotes cohesion by 
+    grouping all database-related functionality together.
 */
 //-------------------------------------
 #ifndef DATABASE_H
