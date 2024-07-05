@@ -67,22 +67,18 @@ private:
 
 class User {
 public:
-    // Add user-related methods and attributes
 };
 
 class ChangeItem {
 public:
-    // Add change item-related methods and attributes
 };
 
 class ProductRelease {
 public:
-    // Add product release-related methods and attributes
 };
 
 class Product {
 public:
-    // Add product-related methods and attributes
 };
 
 #endif // DATABASE_H
