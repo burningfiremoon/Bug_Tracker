@@ -53,12 +53,12 @@ using namespace std;
 
 int main()
 {
-    openDatabase();
+    //openDatabase();
     bool exit;
     do
     {
-        exit = mainMenu();
+        exit = TextUI();
     } while (exit == false);
-    closeDatabase();
+    // closeDatabase();
     return 0;
 }

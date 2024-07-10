@@ -13,6 +13,13 @@
 //-------------------------------------
 // List of #includes
 #include "control.h"
+#include <bits/stdc++.h>
+using namespace std;
+
+//-------------------------------------
+// Declairing functions
+int MainMenu();
+
 
 //-------------------------------------
 // Function prototypes
@@ -21,7 +28,28 @@
 // mainMenu
 // Displays the main menu and handles user input
 // returns: true if user chooses to exit, false otherwise (out)
-bool mainMenu();
+bool TextUI(){
+    MainMenu();
+
+    return true;
+};
+
+// -----
+// Main Menu
+// Prints Main Menu, waits for input, and returns
+// which menu is selected by User
+int MainMenu(){
+    cout << "=== Main Menu ===" << endl;
+    cout << "1) Create Customer Request" << endl;
+    cout << "2) Modify/Update Change/Feature Request" << endl;
+    cout << "3) Print Reports and Inquiries" << endl;
+    cout << "4) Backup Data" << endl;
+    cout << "0) Exit" << endl;
+
+    return 1;
+}
+
+
 
 // -----
 // showUserInfo
