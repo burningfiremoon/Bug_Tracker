@@ -30,10 +30,11 @@ void BackupData();
 
 // -----
 // mainMenu
-// Displays the main menu and handles user input
-// returns: true if user chooses to exit, false otherwise (out)
+// Handles user input
+// returns: Bool, true if user chooses to exit, false otherwise (out)
 bool TextUI(){
-    switch(MainMenu()){
+    switch(MainMenu())
+    {
         case 1:
             CreateCustomerRequest();
             break;
@@ -59,8 +60,9 @@ bool TextUI(){
 
 // -----
 // Main Menu
-// Prints Main Menu, waits for input, and 
+// Displays Main Menu, waits for User input, and 
 // returns which menu is selected by User
+// returns: int input (User Selection) (out)
 int MainMenu(){
     int input;
     cout << "=== Main Menu ===" << endl;
@@ -75,8 +77,8 @@ int MainMenu(){
 }
 
 // -----
-// CreateCustomerRequest
-//
+// Create Customer Request
+// Displays menu for Create Customer Request and waits for User input
 void CreateCustomerRequest(){
     int input;
     cout << "=== Customer Request ===" << endl;
@@ -89,7 +91,7 @@ void CreateCustomerRequest(){
 
 // -----
 // Modify Change/Feature Request
-//
+// Displays Modify Change/Feature Request menu and waits for User input
 void ModifyRequest(){
     int input;
     cout << "=== Modify Change/Feature Request ===" << endl;
@@ -103,8 +105,9 @@ void ModifyRequest(){
 
 // -----
 // PrintReportsAndInquiries
-// Prints Menu for print reports and inquiries and
+// Displays Menu for print reports and inquiries, waits for User input, and
 // Returns which action is selected by user
+// returns: int input (User Selection) (out)
 int PrintReportsAndInquiries(){
     int input;
     cout << "=== Print Reports and Inquiries ===" << endl;
@@ -118,7 +121,7 @@ int PrintReportsAndInquiries(){
 
 // -----
 // BackupData
-//
+// Displays Backup Data menu and waits for User input
 void BackupData(){
     int input;
     cout << "=== Backup Data ===" << endl;
