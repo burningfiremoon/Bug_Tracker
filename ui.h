@@ -1,6 +1,7 @@
 /*
     Revision History:
     1.0 - 03-05-2024 [Date] - Modified by Tanvir
+    1.0 - 10-07-2024 [Date] - Modified by Charles
 
     ui.h:
     This header file contains function declarations for the user interface.
