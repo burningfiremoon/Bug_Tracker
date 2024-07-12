@@ -34,16 +34,20 @@ void CheckChangeItemExists();
 void CheckProductExists();
 void OpenBugs();
 void CheckStatusReport();
+// -----
+// Show Change Items
+// Displays All Change items for ProductID
+void ShowChangeItems(string ProductID);
 void PrintChangeItem();
 void PrintOpenBugs();
 void PrintStatusReport();
-void Init_ProductRelease();
-void Init_ChangeItem();
-void Init_User();
-void Init_ChangeRequest();
-void Init_Product();
-void PrintChangeRequestReport();
-void PrintUserInfo();
+bool Init_ProductRelease();
+bool Init_ChangeItem();
+bool Init_User();
+bool Init_ChangeRequest(string ProductID);
+bool Init_Product();
+bool PrintChangeRequestReport();
+bool PrintUserInfo();
 void Add();
 
 #endif // CONTROL_H
