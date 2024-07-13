@@ -87,17 +87,36 @@ void CreateCustomerRequest(){
     cout << "0) Return to Main Menu" << endl;
     cout << "Input your selection (0-2) and hit Enter: ";
     cin >> input;
+    string ProductID;
     switch (input)
     {
     case 1:
         if (Init_User()){
-            string ProductID;
             cout << "Enter the ProductID which needs a change Request: ";
             cin >> ProductID;
             Init_ChangeRequest(ProductID);
+            // Show list of Change Items with matching Product ID
+            ShowChangeItems(ProductID);
+            // If There is a matching Change Item, connect change request to change item
+
+            // else create a new change item
+            Init_ChangeItem();
         }
         break;
-    
+    case 2:
+        cout << "Enter the ProductID which needs a change Request: ";
+        // Ask for ProductID to create a Change Request for product
+        cin >> ProductID;
+        Init_ChangeRequest(ProductID);
+        // Show list of Change Items with matching Product ID
+        ShowChangeItems(ProductID);
+        // If There is a matching Change Item, connect change request to change item
+
+        // else create a new change item
+        Init_ChangeItem();
+        break;
+    case 0:
+        return;
     default:
         break;
     }
