@@ -82,8 +82,7 @@ int MainMenu(){
 void CreateCustomerRequest(){
     // needed variables
     int input;
-    int decision;
-    string ProductID;
+
 
     // Print initial selection Menu
     cout << "=== Customer Request ===" << endl;
@@ -96,9 +95,14 @@ void CreateCustomerRequest(){
     {
     case 1:
         {
-        string Name;
-        string PhoneNumber;
-        string Email;
+        char Name[31];
+        char PhoneNumber[18];
+        char Email[25];
+        char ProductID[31];
+        char ReleaseID[9];
+        char Description[31];
+        int decision;
+        int Priority;
     
         cout << "Enter the Customer Name (Length: 30 characters max, Format: FirstName, LastName):" << endl;
         cin >> Name;
@@ -106,15 +110,22 @@ void CreateCustomerRequest(){
         cin >> PhoneNumber;
         cout << "Enter Email address:" << endl;
         cin >> Email;
-        if (Init_User()){
+        if (Init_User(Name, PhoneNumber, Email)){
             cout << "Enter the ProductID which needs a change Request: ";
             // Ask for ProductID to create a Change Request for product
             cin >> ProductID;
-            Init_ChangeRequest(ProductID);
+            cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
+            cin >> ReleaseID;
+            cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
+            cin >> Description;
+            cout << "Enter the Priority (Ranging: 1-5):" << endl;
+            cin >> Priority;
+
+            Init_ChangeRequest(ProductID, ReleaseID, Description, Priority);
             // Show list of Change Items with matching Product ID
             ShowChangeItems(ProductID);
             // If There is a matching Change Item, connect change request to change item
-            cout << "Is there a matching change item for the change request?" << endl << "0) No" << endl << "1) Yes" << endl << "Input your selection (0-1) and hit Enter: ";
+            cout << "Is there a matching change item for the change request (Y/N)?" << endl;
             cin >> decision;
             if (decision)
             {
@@ -131,20 +142,40 @@ void CreateCustomerRequest(){
         }
         break;
     case 2:
+        {
+        char ProductID[31];
+        char ReleaseID[9];
+        char Description[31];
+        int Priority;
+        char decision;
+        
         cout << "Enter the ProductID which needs a change Request: ";
         // Ask for ProductID to create a Change Request for product
         cin >> ProductID;
-        Init_ChangeRequest(ProductID);
+        cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
+        cin >> ReleaseID;
+        cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
+        cin >> Description;
+        cout << "Enter the Priority (Ranging: 1-5):" << endl;
+        cin >> Priority;
+        cout << "Do you confirm the Release ID, Description, and Priority (Y/N)?" << endl;
+
+        if (decision == 'Y')
+        {
+            Init_ChangeRequest(ProductID, ReleaseID, Description, Priority);
+
+        } else if (decision == 'N'){
+            cout << "Insert Event here" << endl;
+        }
         // Show list of Change Items with matching Product ID
         ShowChangeItems(ProductID);
         // If There is a matching Change Item, connect change request to change item
-        cout << "Is there a matching change item for the change request?" << endl << "0) No" << endl << "1) Yes" << endl << "Input your selection (0-1) and hit Enter: ";
-        cin >> decision;
-        if (decision)
+        cout << "Is there a matching change item for the change request (Y/N)?" << endl;
+        if (decision == 'Y')
         {
             // connect change request to change item
             connectChangeRequest();
-        } else if (!decision){
+        } else if (decision == 'N'){
             // else create a new change item
             Init_ChangeItem();
             Init_ProductRelease();
@@ -153,6 +184,7 @@ void CreateCustomerRequest(){
         }
 
         break;
+        }
     case 0:
         return;
     default:
