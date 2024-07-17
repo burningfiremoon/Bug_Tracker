@@ -217,8 +217,7 @@ void ModifyRequest(){
         
         break;
     case 0:
-        
-        break;
+        return;
     default:
         break;
     }
@@ -231,13 +230,36 @@ void ModifyRequest(){
 // returns: int input (User Selection) (out)
 int PrintReportsAndInquiries(){
     int input;
-    cout << "=== Print Reports and Inquiries ===" << endl;
+    cout << "=== Print/View Reports and Inquiries ===" << endl;
     cout << "1) Print Report for managers" << endl;
     cout << "2) Print Report for customer inquiries" << endl;
+    cout << "3) View status" << endl;
     cout << "0) Return to Main Menu" << endl;
     cout << "Input your selection (0-2) and hit Enter: ";
     cin >> input;
     return input;
+        switch (input)
+    {
+    case 1:
+
+        break;
+    case 2:
+        
+        break;
+    case 3:
+        {
+        int changeID;
+        cout << "Enter ChangeID to view status (6 digits):" << endl;
+        cin >> changeID;
+        ViewChangeItem(changeID);
+        break;
+        }
+    case 0:
+        return;
+    default:
+        break;
+    }
+    return 0;
 }
 
 // -----
@@ -251,6 +273,23 @@ void BackupData(){
     cout << "0) Return to Main Menu" << endl;
     cout << "Input your selection (0-2) and hit Enter: ";
     cin >> input;
+        switch (input)
+    {
+    case 1:
+
+        break;
+    case 2:
+        
+        break;
+    case 3:
+        
+        break;
+    case 0:
+        
+        break;
+    default:
+        break;
+    }
 }
 
 

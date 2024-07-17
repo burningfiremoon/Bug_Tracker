@@ -30,7 +30,7 @@ void UpdateUserInfo();
 void UpdateChangeRequest();
 void CheckChangeRequestExists();
 void CheckUserExists();
-void CheckChangeItemExists();
+void CheckChangeItemExists(int ChangeID);
 void CheckProductExists();
 void OpenBugs();
 void CheckStatusReport();
@@ -53,7 +53,10 @@ void ShowChangeItems(char ProductID[31]);
 // Connects matching change request to change item
 void connectChangeRequest();
 
-void PrintChangeItem();
+void ViewChangeItem(int changeID){
+    // Check existence
+    void CheckChangeItemExists(int ChangeID);
+}
 void PrintOpenBugs();
 void PrintStatusReport();
 bool Init_ProductRelease();
