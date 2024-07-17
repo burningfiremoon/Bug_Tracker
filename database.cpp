@@ -20,13 +20,90 @@
 using namespace std;
 
 // Static member initialization
-fstream ChangeRequest::dbFile;
-fstream User::dbFile;
-fstream ChangeItem::dbFile;
-fstream ProductRelease::dbFile;
+fstream DatabaseRecord::dbFile;
 
 //-------------------------------------
 // Function definitions
+
+// ----- DatabaseRecord methods -----
+void DatabaseRecord::openFile() {
+    dbFile.open("Database.dat", ios::in | ios::out | ios::binary);
+    if (!dbFile) {
+        dbFile.open("Database.dat", ios::out | ios::binary);
+        dbFile.close();
+        dbFile.open("Database.dat", ios::in | ios::out | ios::binary);
+    }
+    if (!dbFile.is_open()) {
+        cerr << "Error opening database file." << endl;
+        exit(1);
+    }
+}
+
+void DatabaseRecord::closeFile() {
+    if (dbFile.is_open()) {
+        dbFile.close();
+    }
+}
+
+bool DatabaseRecord::findRecord(int id, DatabaseRecord& record) {
+    seekToBeginning();
+    int tempID;
+    char buffer[record.getRecordSize() - sizeof(int)];
+    while (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
+        dbFile.read(buffer, record.getRecordSize() - sizeof(tempID));
+        if (tempID == id) {
+            record.setID(tempID);
+            record.readFromBuffer(buffer);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DatabaseRecord::deleteRecord(int id) {
+    seekToBeginning();
+    int tempID;
+    streampos posToDelete;
+    bool found = false;
+    char buffer[1024]; // Assuming max record size for simplicity
+
+    // Locate the record to delete
+    while (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
+        posToDelete = dbFile.tellg();
+        dbFile.read(buffer, 1024 - sizeof(tempID)); // Adjust buffer size as needed
+        if (tempID == id) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) return false;
+
+    // Move the last record to the position of the deleted record
+    dbFile.seekg(-static_cast<int>(sizeof(buffer)), ios::end);
+    streampos lastPos = dbFile.tellg();
+    dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID));
+    dbFile.read(buffer, 1024 - sizeof(tempID));
+
+    dbFile.seekp(posToDelete - sizeof(tempID) - (1024 - sizeof(tempID)), ios::beg);
+    dbFile.write(reinterpret_cast<const char*>(&tempID), sizeof(tempID));
+    dbFile.write(buffer, 1024 - sizeof(tempID));
+    dbFile.flush();
+
+    dbFile.close();
+    if (truncate("Database.dat", lastPos) != 0) {
+        cerr << "Error truncating database file." << endl;
+        return false;
+    }
+    openFile();
+
+    return true;
+}
+
+void DatabaseRecord::seekToBeginning() {
+    dbFile.clear();
+    dbFile.seekg(0, ios::beg);
+}
 
 // ----- ChangeRequest methods -----
 ChangeRequest::ChangeRequest() : id(0) {
@@ -55,100 +132,32 @@ const char* ChangeRequest::getDescription() const {
     return description;
 }
 
-void ChangeRequest::openFile() {
-    dbFile.open("ChangeRequest.dat", ios::in | ios::out | ios::binary);
-    if (!dbFile) {
-        dbFile.open("ChangeRequest.dat", ios::out | ios::binary);
-        dbFile.close();
-        dbFile.open("ChangeRequest.dat", ios::in | ios::out | ios::binary);
-    }
-    if (!dbFile.is_open()) {
-        cerr << "Error opening ChangeRequest file." << endl;
-        exit(1);
-    }
-}
-
-void ChangeRequest::closeFile() {
-    if (dbFile.is_open()) {
-        dbFile.close();
-    }
-}
-
-bool ChangeRequest::writeRecord(const ChangeRequest& changeRequest) {
+bool ChangeRequest::writeRecord() const {
     dbFile.seekp(0, ios::end);
-    dbFile.write(reinterpret_cast<const char*>(&changeRequest.id), sizeof(changeRequest.id));
-    dbFile.write(changeRequest.description, sizeof(changeRequest.description));
+    dbFile.write(reinterpret_cast<const char*>(&id), sizeof(id));
+    dbFile.write(description, sizeof(description));
     dbFile.flush();
     return true;
 }
 
-bool ChangeRequest::getNext(ChangeRequest& changeRequest) {
+bool ChangeRequest::readRecord() {
     int tempID;
     char tempDesc[30];
     if (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
         dbFile.read(tempDesc, sizeof(tempDesc));
-        changeRequest.setID(tempID);
-        changeRequest.setDescription(tempDesc);
+        setID(tempID);
+        setDescription(tempDesc);
         return true;
     }
     return false;
 }
 
-bool ChangeRequest::findRecord(int id, ChangeRequest& changeRequest) {
-    seekToBeginning();
-    int tempID;
-    char tempDesc[30];
-    while (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
-        dbFile.read(tempDesc, sizeof(tempDesc));
-        if (tempID == id) {
-            changeRequest.setID(tempID);
-            changeRequest.setDescription(tempDesc);
-            return true;
-        }
-    }
-    return false;
+int ChangeRequest::getRecordSize() const {
+    return sizeof(id) + sizeof(description);
 }
 
-bool ChangeRequest::deleteRecord(int id) {
-    seekToBeginning();
-    ChangeRequest temp;
-    streampos posToDelete;
-    bool found = false;
-
-    while (dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id))) {
-        posToDelete = dbFile.tellg();
-        dbFile.read(temp.description, sizeof(temp.description));
-        if (temp.id == id) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) return false;
-
-    dbFile.seekg(-recordSize, ios::end);
-    streampos lastPos = dbFile.tellg();
-    dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id));
-    dbFile.read(temp.description, sizeof(temp.description));
-
-    dbFile.seekp(posToDelete - sizeof(temp.id) - sizeof(temp.description), ios::beg);
-    dbFile.write(reinterpret_cast<const char*>(&temp.id), sizeof(temp.id));
-    dbFile.write(temp.description, sizeof(temp.description));
-    dbFile.flush();
-
-    dbFile.close();
-    if (truncate("ChangeRequest.dat", lastPos) != 0) {
-        cerr << "Error truncating ChangeRequest file." << endl;
-        return false;
-    }
-    openFile();
-
-    return true;
-}
-
-void ChangeRequest::seekToBeginning() {
-    dbFile.clear();
-    dbFile.seekg(0, ios::beg);
+void ChangeRequest::readFromBuffer(const char* buffer) {
+    memcpy(description, buffer, sizeof(description));
 }
 
 // ----- User methods -----
@@ -178,103 +187,35 @@ int User::getID() const {
     return id;
 }
 
-void User::openFile() {
-    dbFile.open("User.dat", ios::in | ios::out | ios::binary);
-    if (!dbFile) {
-        dbFile.open("User.dat", ios::out | ios::binary);
-        dbFile.close();
-        dbFile.open("User.dat", ios::in | ios::out | ios::binary);
-    }
-    if (!dbFile.is_open()) {
-        cerr << "Error opening User file." << endl;
-        exit(1);
-    }
-}
-
-void User::closeFile() {
-    if (dbFile.is_open()) {
-        dbFile.close();
-    }
-}
-
-bool User::writeRecord(const User& user) {
+bool User::writeRecord() const {
     dbFile.seekp(0, ios::end);
-    dbFile.write(reinterpret_cast<const char*>(&user.id), sizeof(user.id));
-    dbFile.write(user.name, sizeof(user.name));
+    dbFile.write(reinterpret_cast<const char*>(&id), sizeof(id));
+    dbFile.write(name, sizeof(name));
     dbFile.flush();
     return true;
 }
 
-bool User::getNext(User& user) {
+bool User::readRecord() {
     int tempID;
     char tempName[30];
     if (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
         dbFile.read(tempName, sizeof(tempName));
-        user.setID(tempID);
-        user.setInfo(tempName);
+        setID(tempID);
+        setInfo(tempName);
         return true;
     }
     return false;
 }
 
-bool User::findRecord(int id, User& user) {
-    seekToBeginning();
-    int tempID;
-    char tempName[30];
-    while (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
-        dbFile.read(tempName, sizeof(tempName));
-        if (tempID == id) {
-            user.setID(tempID);
-            user.setInfo(tempName);
-            return true;
-        }
-    }
-    return false;
+int User::getRecordSize() const {
+    return sizeof(id) + sizeof(name);
 }
 
-bool User::deleteRecord(int id) {
-    seekToBeginning();
-    User temp;
-    streampos posToDelete;
-    bool found = false;
-
-    while (dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id))) {
-        posToDelete = dbFile.tellg();
-        dbFile.read(temp.name, sizeof(temp.name));
-        if (temp.id == id) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) return false;
-
-    dbFile.seekg(-recordSize, ios::end);
-    streampos lastPos = dbFile.tellg();
-    dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id));
-    dbFile.read(temp.name, sizeof(temp.name));
-
-    dbFile.seekp(posToDelete - sizeof(temp.id) - sizeof(temp.name), ios::beg);
-    dbFile.write(reinterpret_cast<const char*>(&temp.id), sizeof(temp.id));
-    dbFile.write(temp.name, sizeof(temp.name));
-    dbFile.flush();
-
-    dbFile.close();
-    if (truncate("User.dat", lastPos) != 0) {
-        cerr << "Error truncating User file." << endl;
-        return false;
-    }
-    openFile();
-
-    return true;
+void User::readFromBuffer(const char* buffer) {
+    memcpy(name, buffer, sizeof(name));
 }
 
-void User::seekToBeginning() {
-    dbFile.clear();
-    dbFile.seekg(0, ios::beg);
-}
-
-// ChangeItem methods
+// ----- ChangeItem methods -----
 ChangeItem::ChangeItem() : id(0), status(0), priority(0) {
     memset(productID, 0, sizeof(productID));
     memset(description, 0, sizeof(description));
@@ -338,38 +279,19 @@ const char* ChangeItem::getRequester() const {
     return requester;
 }
 
-void ChangeItem::openFile() {
-    dbFile.open("ChangeItem.dat", ios::in | ios::out | ios::binary);
-    if (!dbFile) {
-        dbFile.open("ChangeItem.dat", ios::out | ios::binary);
-        dbFile.close();
-        dbFile.open("ChangeItem.dat", ios::in | ios::out | ios::binary);
-    }
-    if (!dbFile.is_open()) {
-        cerr << "Error opening ChangeItem file." << endl;
-        exit(1);
-    }
-}
-
-void ChangeItem::closeFile() {
-    if (dbFile.is_open()) {
-        dbFile.close();
-    }
-}
-
-bool ChangeItem::writeRecord(const ChangeItem& changeItem) {
+bool ChangeItem::writeRecord() const {
     dbFile.seekp(0, ios::end);
-    dbFile.write(reinterpret_cast<const char*>(&changeItem.id), sizeof(changeItem.id));
-    dbFile.write(changeItem.productID, sizeof(changeItem.productID));
-    dbFile.write(changeItem.description, sizeof(changeItem.description));
-    dbFile.write(reinterpret_cast<const char*>(&changeItem.status), sizeof(changeItem.status));
-    dbFile.write(reinterpret_cast<const char*>(&changeItem.priority), sizeof(changeItem.priority));
-    dbFile.write(changeItem.requester, sizeof(changeItem.requester));
+    dbFile.write(reinterpret_cast<const char*>(&id), sizeof(id));
+    dbFile.write(productID, sizeof(productID));
+    dbFile.write(description, sizeof(description));
+    dbFile.write(reinterpret_cast<const char*>(&status), sizeof(status));
+    dbFile.write(reinterpret_cast<const char*>(&priority), sizeof(priority));
+    dbFile.write(requester, sizeof(requester));
     dbFile.flush();
     return true;
 }
 
-bool ChangeItem::getNext(ChangeItem& changeItem) {
+bool ChangeItem::readRecord() {
     int tempID, tempStatus, tempPriority;
     char tempProductID[30], tempDescription[30], tempRequester[30];
 
@@ -380,98 +302,75 @@ bool ChangeItem::getNext(ChangeItem& changeItem) {
         dbFile.read(reinterpret_cast<char*>(&tempPriority), sizeof(tempPriority));
         dbFile.read(tempRequester, sizeof(tempRequester));
 
-        changeItem.setID(tempID);
-        changeItem.setProductID(tempProductID);
-        changeItem.setDescription(tempDescription);
-        changeItem.setStatus(tempStatus);
-        changeItem.setPriority(tempPriority);
-        changeItem.setRequester(tempRequester);
+        setID(tempID);
+        setProductID(tempProductID);
+        setDescription(tempDescription);
+        setStatus(tempStatus);
+        setPriority(tempPriority);
+        setRequester(tempRequester);
 
         return true;
     }
     return false;
 }
 
-bool ChangeItem::findRecord(int id, ChangeItem& changeItem) {
-    seekToBeginning();
-    int tempID, tempStatus, tempPriority;
-    char tempProductID[30], tempDescription[30], tempRequester[30];
+int ChangeItem::getRecordSize() const {
+    return sizeof(id) + sizeof(productID) + sizeof(description) + sizeof(status) + sizeof(priority) + sizeof(requester);
+}
 
-    while (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
-        dbFile.read(tempProductID, sizeof(tempProductID));
-        dbFile.read(tempDescription, sizeof(tempDescription));
-        dbFile.read(reinterpret_cast<char*>(&tempStatus), sizeof(tempStatus));
-        dbFile.read(reinterpret_cast<char*>(&tempPriority), sizeof(tempPriority));
-        dbFile.read(tempRequester, sizeof(tempRequester));
+void ChangeItem::readFromBuffer(const char* buffer) {
+    memcpy(productID, buffer, sizeof(productID));
+    memcpy(description, buffer + sizeof(productID), sizeof(description));
+    memcpy(&status, buffer + sizeof(productID) + sizeof(description), sizeof(status));
+    memcpy(&priority, buffer + sizeof(productID) + sizeof(description) + sizeof(status), sizeof(priority));
+    memcpy(requester, buffer + sizeof(productID) + sizeof(description) + sizeof(status) + sizeof(priority), sizeof(requester));
+}
 
-        if (tempID == id) {
-            changeItem.setID(tempID);
-            changeItem.setProductID(tempProductID);
-            changeItem.setDescription(tempDescription);
-            changeItem.setStatus(tempStatus);
-            changeItem.setPriority(tempPriority);
-            changeItem.setRequester(tempRequester);
-            return true;
-        }
+bool ChangeItem::updStatus(int id, int newStatus) {
+    ChangeItem changeItem;
+    if (findRecord(id, changeItem)) {
+        changeItem.setStatus(newStatus);
+        changeItem.writeRecord();
+        return true;
     }
     return false;
 }
 
-bool ChangeItem::deleteRecord(int id) {
-    seekToBeginning();
-    ChangeItem temp;
-    streampos posToDelete;
-    bool found = false;
-
-    while (dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id))) {
-        posToDelete = dbFile.tellg();
-        dbFile.read(temp.productID, sizeof(temp.productID));
-        dbFile.read(temp.description, sizeof(temp.description));
-        dbFile.read(reinterpret_cast<char*>(&temp.status), sizeof(temp.status));
-        dbFile.read(reinterpret_cast<char*>(&temp.priority), sizeof(temp.priority));
-        dbFile.read(temp.requester, sizeof(temp.requester));
-        if (temp.id == id) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) return false;
-
-    dbFile.seekg(-recordSize, ios::end);
-    streampos lastPos = dbFile.tellg();
-    dbFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id));
-    dbFile.read(temp.productID, sizeof(temp.productID));
-    dbFile.read(temp.description, sizeof(temp.description));
-    dbFile.read(reinterpret_cast<char*>(&temp.status), sizeof(temp.status));
-    dbFile.read(reinterpret_cast<char*>(&temp.priority), sizeof(temp.priority));
-    dbFile.read(temp.requester, sizeof(temp.requester));
-
-    dbFile.seekp(posToDelete - sizeof(temp.id) - sizeof(temp.productID) - sizeof(temp.description) - sizeof(temp.status) - sizeof(temp.priority) - sizeof(temp.requester), ios::beg);
-    dbFile.write(reinterpret_cast<const char*>(&temp.id), sizeof(temp.id));
-    dbFile.write(temp.productID, sizeof(temp.productID));
-    dbFile.write(temp.description, sizeof(temp.description));
-    dbFile.write(reinterpret_cast<const char*>(&temp.status), sizeof(temp.status));
-    dbFile.write(reinterpret_cast<const char*>(&temp.priority), sizeof(temp.priority));
-    dbFile.write(temp.requester, sizeof(temp.requester));
-    dbFile.flush();
-
-    dbFile.close();
-    if (truncate("ChangeItem.dat", lastPos) != 0) {
-        cerr << "Error truncating ChangeItem file." << endl;
-        return false;
-    }
-    openFile();
-
-    return true;
+bool ChangeItem::updRelease(int id, int newRelease) {
+    // Implementation of updating release
+    return false;
 }
 
-void ChangeItem::seekToBeginning() {
-    dbFile.clear();
-    dbFile.seekg(0, ios::beg);
+bool ChangeItem::updPriority(int id, int newPriority) {
+    ChangeItem changeItem;
+    if (findRecord(id, changeItem)) {
+        changeItem.setPriority(newPriority);
+        changeItem.writeRecord();
+        return true;
+    }
+    return false;
 }
 
-// ProductRelease methods
+bool ChangeItem::updDesc(int id, const char* newDescription) {
+    ChangeItem changeItem;
+    if (findRecord(id, changeItem)) {
+        changeItem.setDescription(newDescription);
+        changeItem.writeRecord();
+        return true;
+    }
+    return false;
+}
+
+bool ChangeItem::showRequester(int id) {
+    ChangeItem changeItem;
+    if (findRecord(id, changeItem)) {
+        cout << "Requester: " << changeItem.getRequester() << endl;
+        return true;
+    }
+    return false;
+}
+
+// ----- ProductRelease methods -----
 ProductRelease::ProductRelease() : id(0) {
     memset(name, 0, sizeof(name));
     memset(version, 0, sizeof(version));
@@ -508,23 +407,36 @@ const char* ProductRelease::getVersion() const {
     return version;
 }
 
-void ProductRelease::openFile() {
-    dbFile.open("ProductRelease.dat", ios::in | ios::out | ios::binary);
-    if (!dbFile) {
-        dbFile.open("ProductRelease.dat", ios::out | ios::binary);
-        dbFile.close();
-        dbFile.open("ProductRelease.dat", ios::in | ios::out | ios::binary);
-    }
-    if (!dbFile.is_open()) {
-        cerr << "Error opening ProductRelease file." << endl;
-        exit(1);
-    }
+bool ProductRelease::writeRecord() const {
+    dbFile.seekp(0, ios::end);
+    dbFile.write(reinterpret_cast<const char*>(&id), sizeof(id));
+    dbFile.write(name, sizeof(name));
+    dbFile.write(version, sizeof(version));
+    dbFile.flush();
+    return true;
 }
 
-void ProductRelease::closeFile() {
-    if (dbFile.is_open()) {
-        dbFile.close();
+bool ProductRelease::readRecord() {
+    int tempID;
+    char tempName[30], tempVersion[30];
+    if (dbFile.read(reinterpret_cast<char*>(&tempID), sizeof(tempID))) {
+        dbFile.read(tempName, sizeof(tempName));
+        dbFile.read(tempVersion, sizeof(tempVersion));
+        setID(tempID);
+        setName(tempName);
+        setVersion(tempVersion);
+        return true;
     }
+    return false;
+}
+
+int ProductRelease::getRecordSize() const {
+    return sizeof(id) + sizeof(name) + sizeof(version);
+}
+
+void ProductRelease::readFromBuffer(const char* buffer) {
+    memcpy(name, buffer, sizeof(name));
+    memcpy(version, buffer + sizeof(name), sizeof(version));
 }
 
 bool ProductRelease::addRelease(const ProductRelease& release) {
@@ -551,25 +463,13 @@ bool ProductRelease::showRelease(int id) {
     return false;
 }
 
-void ProductRelease::seekToBeginning() {
-    dbFile.clear();
-    dbFile.seekg(0, ios::beg);
-}
-
-
 // Functions to open and close all database files
 void openDatabase() {
-    ChangeRequest::openFile();
-    User::openFile();
-    ChangeItem::openFile();
-    ProductRelease::openFile();
+    DatabaseRecord::openFile();
 }
 
 void closeDatabase() {
-    ChangeRequest::closeFile();
-    User::closeFile();
-    ChangeItem::closeFile();
-    ProductRelease::closeFile();
+    DatabaseRecord::closeFile();
 }
 
 // Function to truncate a file
