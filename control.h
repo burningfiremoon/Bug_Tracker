@@ -58,7 +58,7 @@ void PrintOpenBugs();
 void PrintStatusReport();
 bool Init_ProductRelease();
 bool Init_ChangeItem();
-bool Init_User();
+bool Init_User(string Name, string PhoneNumber, string Email);
 bool Init_ChangeRequest(string ProductID);
 bool Init_Product();
 bool PrintChangeRequestReport();
