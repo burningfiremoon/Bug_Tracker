@@ -46,7 +46,7 @@ void showChangeRequestReport();
 
 // Show Change Items
 // Displays All Change items for ProductID
-void ShowChangeItems(string ProductID);
+void ShowChangeItems(char ProductID[31]);
 
 // -----
 // Connect Change Request
@@ -58,8 +58,8 @@ void PrintOpenBugs();
 void PrintStatusReport();
 bool Init_ProductRelease();
 bool Init_ChangeItem();
-bool Init_User();
-bool Init_ChangeRequest(string ProductID);
+bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
+bool Init_ChangeRequest(char ProductID[31], char ReleaseID[9], char Description[31], int Priority);
 bool Init_Product();
 bool PrintChangeRequestReport();
 bool PrintUserInfo();
