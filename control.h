@@ -47,6 +47,12 @@ void showChangeRequestReport();
 // Show Change Items
 // Displays All Change items for ProductID
 void ShowChangeItems(string ProductID);
+
+// -----
+// Connect Change Request
+// Connects matching change request to change item
+void connectChangeRequest();
+
 void PrintChangeItem();
 void PrintOpenBugs();
 void PrintStatusReport();
