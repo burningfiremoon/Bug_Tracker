@@ -133,14 +133,6 @@ void BackupData(){
 }
 
 
-// -----
-// showUserInfo
-// Displays user information
-void showUserInfo();
 
-// -----
-// showChangeRequestReport
-// Displays a report for change requests
-void showChangeRequestReport();
 
 #endif // UI_H

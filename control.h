@@ -22,22 +22,14 @@
 //functions taking care of different scenarios
 
 // -----
-// UC1
-// Handles scenario 1
-void UC1();
+// showUserInfo
+// Displays user information
+void showUserInfo();
 
 // -----
-// UC2
-// Handles scenario 2
-void UC2();
-void UC3();
-void UC4();
-void UC5();
-void UC6();
-void UC7();
-void UC8();
-void UC9();
-void UC10();
-void UC11();
+// showChangeRequestReport
+// Displays a report for change requests
+void showChangeRequestReport();
+
 
 #endif // CONTROL_H
