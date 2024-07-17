@@ -1,6 +1,7 @@
 /*
     Revision History:
     1.0 - 03-05-2024 [Date] - Modified by Skyler
+    1.0 - 12-07-2024 [Date] - Modified by Charles
 
     control.h:
     This header file contains function declarations for handling different scenarios.
@@ -21,6 +22,18 @@
 
 //functions taking care of different scenarios
 
+void StopAccepting();
+void StartAccepting();
+void CloseDatabase();
+void OpenDatabase();
+void UpdateUserInfo();
+void UpdateChangeRequest();
+void CheckChangeRequestExists();
+void CheckUserExists();
+void CheckChangeItemExists();
+void CheckProductExists();
+void OpenBugs();
+void CheckStatusReport();
 // -----
 // showUserInfo
 // Displays user information
@@ -31,5 +44,19 @@ void showUserInfo();
 // Displays a report for change requests
 void showChangeRequestReport();
 
+// Show Change Items
+// Displays All Change items for ProductID
+void ShowChangeItems(string ProductID);
+void PrintChangeItem();
+void PrintOpenBugs();
+void PrintStatusReport();
+bool Init_ProductRelease();
+bool Init_ChangeItem();
+bool Init_User();
+bool Init_ChangeRequest(string ProductID);
+bool Init_Product();
+bool PrintChangeRequestReport();
+bool PrintUserInfo();
+void Add();
 
 #endif // CONTROL_H
