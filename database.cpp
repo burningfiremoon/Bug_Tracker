@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
+#include <ctime>
 #include <cstring>
 using namespace std;
 
@@ -26,6 +27,14 @@ fstream DatabaseRecord::dbFile;
 // Function definitions
 
 // ----- DatabaseRecord methods -----
+DatabaseRecord::DatabaseRecord() {
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    this->id = 10000000 + std::rand() % 90000000;
+}
+
+int DatabaseRecord::getID() const {
+    return this->id;
+}
 void DatabaseRecord::openFile() {
     dbFile.open("Database.dat", ios::in | ios::out | ios::binary);
     if (!dbFile) {
@@ -110,8 +119,8 @@ ChangeRequest::ChangeRequest() : id(0) {
     memset(description, 0, sizeof(description));
 }
 
-ChangeRequest::ChangeRequest(int id, const char* description) : id(id) {
-    strncpy(this->description, description, sizeof(this->description));
+ChangeRequest::ChangeRequest(int id, const char* requester) : id(id) {
+    strncpy(this->requester, requester, sizeof(this->requester));
 }
 
 ChangeRequest::~ChangeRequest() {}
