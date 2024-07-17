@@ -99,7 +99,7 @@ void CreateCustomerRequest(){
         char PhoneNumber[18];
         char Email[25];
         char ProductID[31];
-        char ReleaseID[9];
+        char Version[9];
         char Description[31];
         int decision;
         int Priority;
@@ -115,13 +115,13 @@ void CreateCustomerRequest(){
             // Ask for ProductID to create a Change Request for product
             cin >> ProductID;
             cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
-            cin >> ReleaseID;
+            cin >> Version;
             cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
             cin >> Description;
             cout << "Enter the Priority (Ranging: 1-5):" << endl;
             cin >> Priority;
 
-            Init_ChangeRequest(ProductID, ReleaseID, Description, Priority);
+            Init_ChangeRequest(ProductID, Version, Description, Priority);
             // Show list of Change Items with matching Product ID
             ShowChangeItems(ProductID);
             // If There is a matching Change Item, connect change request to change item
@@ -143,17 +143,17 @@ void CreateCustomerRequest(){
         break;
     case 2:
         {
-        char ProductID[31];
-        char ReleaseID[9];
+        char Product[11];
+        char Version[9];
         char Description[31];
         int Priority;
         char decision;
         
-        cout << "Enter the ProductID which needs a change Request: ";
+        cout << "Enter the Product Name which needs a change Request: ";
         // Ask for ProductID to create a Change Request for product
-        cin >> ProductID;
+        cin >> Product;
         cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
-        cin >> ReleaseID;
+        cin >> Version;
         cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
         cin >> Description;
         cout << "Enter the Priority (Ranging: 1-5):" << endl;
@@ -162,13 +162,13 @@ void CreateCustomerRequest(){
 
         if (decision == 'Y')
         {
-            Init_ChangeRequest(ProductID, ReleaseID, Description, Priority);
+            Init_ChangeRequest(Product, Version, Description, Priority);
 
         } else if (decision == 'N'){
             cout << "Insert Event here" << endl;
         }
         // Show list of Change Items with matching Product ID
-        ShowChangeItems(ProductID);
+        ShowChangeItems(Product);
         // If There is a matching Change Item, connect change request to change item
         cout << "Is there a matching change item for the change request (Y/N)?" << endl;
         if (decision == 'Y')
@@ -208,8 +208,19 @@ void ModifyRequest(){
     switch (input)
     {
     case 1:
-
+        {
+        int changeID;
+        int decision;
+        do 
+        {
+        cout << "Enter ChangeID to view status (6 digits):" << endl;
+        cin >> changeID;
+        UpdateChangeRequest(changeID);
+        cout << "To repeat the process, enter '1' or go back to main menu, enter '0'" << endl;
+        cin >> decision;
+        } while (decision);
         break;
+        }
     case 2:
         
         break;
@@ -244,8 +255,17 @@ int PrintReportsAndInquiries(){
 
         break;
     case 2:
-        
+        {
+        char ProductID[16];
+        string dateRange;
+        cout << "Enter the Product ID [Must be between 5 to 15 characters]:" << endl;
+        cin >> ProductID;
+        CheckProductExists(ProductID);
+        cout << "Enter the Date Range (YYYY-MM-DD to YYYY-MM-DD):" << endl;
+        cin >> dateRange;
+        CheckStatusReport(dateRange);
         break;
+        }
     case 3:
         {
         int changeID;

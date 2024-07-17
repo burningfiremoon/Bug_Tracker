@@ -27,13 +27,17 @@ void StartAccepting();
 void CloseDatabase();
 void OpenDatabase();
 void UpdateUserInfo();
-void UpdateChangeRequest();
+void UpdateChangeRequest(int changeID);
 void CheckChangeRequestExists();
 void CheckUserExists();
 void CheckChangeItemExists(int ChangeID);
-void CheckProductExists();
+void CheckProductExists(char ProductID[16]);
 void OpenBugs();
-void CheckStatusReport();
+// -----
+// Check Status report
+// receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range 
+void CheckStatusReport(string dateRange);
+
 // -----
 // showUserInfo
 // Displays user information
@@ -62,7 +66,7 @@ void PrintStatusReport();
 bool Init_ProductRelease();
 bool Init_ChangeItem();
 bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
-bool Init_ChangeRequest(char ProductID[31], char ReleaseID[9], char Description[31], int Priority);
+bool Init_ChangeRequest(char ProductName[31], char ReleaseID[9], char Description[31], int Priority);
 bool Init_Product();
 bool PrintChangeRequestReport();
 bool PrintUserInfo();
