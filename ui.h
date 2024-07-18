@@ -98,7 +98,7 @@ void CreateCustomerRequest(){
         char Name[31];
         char PhoneNumber[18];
         char Email[25];
-        char ProductID[31];
+        char Product[11];
         char Version[9];
         char Description[31];
         int decision;
@@ -111,9 +111,9 @@ void CreateCustomerRequest(){
         cout << "Enter Email address:" << endl;
         cin >> Email;
         if (Init_User(Name, PhoneNumber, Email)){
-            cout << "Enter the ProductID which needs a change Request: ";
+            cout << "Enter the name of the Product which needs a change Request: ";
             // Ask for ProductID to create a Change Request for product
-            cin >> ProductID;
+            cin >> Product;
             cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
             cin >> Version;
             cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
@@ -121,20 +121,48 @@ void CreateCustomerRequest(){
             cout << "Enter the Priority (Ranging: 1-5):" << endl;
             cin >> Priority;
 
-            Init_ChangeRequest(ProductID, Version, Description, Priority);
+            Init_ChangeRequest(Product, Version, Description, Priority);
             // Show list of Change Items with matching Product ID
-            ShowChangeItems(ProductID);
+            ShowChangeItems(Product);
             // If There is a matching Change Item, connect change request to change item
             cout << "Is there a matching change item for the change request (Y/N)?" << endl;
             cin >> decision;
-            if (decision)
-            {
-                // connect change request to change item
-                connectChangeRequest();
-            } else if (!decision){
-                // else create a new change item
-                Init_ChangeItem();
-                Init_ProductRelease();
+            if (decision == 'Y')
+        {
+            Init_ChangeRequest(Product, Version, Description, Priority);
+
+        } else if (decision == 'N'){
+            cout << "Insert Event here" << endl;
+        }
+        // Show list of Change Items with matching Product ID
+        ShowChangeItems(Product);
+        // If There is a matching Change Item, connect change request to change item
+        cout << "Is there a matching change item for the change request (Y/N)?" << endl;
+        if (decision == 'Y')
+        {
+            // connect change request to change item
+            connectChangeRequest();
+        } else if (decision == 'N'){
+            char ChangeDescription[31];
+            // else create a new change item
+            if (!CheckProductReleaseExists(Product)){
+                // Creating a new Product Release if there's no product release for product name
+                string strDate;
+                Date date;
+                cout << "There's no product release for " << Product << endl;
+                cout << "Enter a date of release for product(YYYY-MM-DD): ";
+                cin >> strDate;
+                date.y = stoi(strDate.substr(0,4));
+                date.m = stoi(strDate.substr(5,6));
+                date.d = stoi(strDate.substr(8,9));
+
+                Init_ProductRelease(Product, date);
+            }
+
+            cout << "Enter the change description for new change Item (length: 30 characters max):"<< endl;
+            cin >> ChangeDescription;
+
+            Init_ChangeItem(Product, ChangeDescription);
             } else{
                 cout << "Insert Error Here";
             }
@@ -176,9 +204,26 @@ void CreateCustomerRequest(){
             // connect change request to change item
             connectChangeRequest();
         } else if (decision == 'N'){
+            char ChangeDescription[31];
             // else create a new change item
-            Init_ChangeItem();
-            Init_ProductRelease();
+            if (!CheckProductReleaseExists(Product)){
+                // Creating a new Product Release if there's no product release for product name
+                string strDate;
+                Date date;
+                cout << "There's no product release for " << Product << endl;
+                cout << "Enter a date of release for product(YYYY-MM-DD): ";
+                cin >> strDate;
+                date.y = stoi(strDate.substr(0,4));
+                date.m = stoi(strDate.substr(5,6));
+                date.d = stoi(strDate.substr(8,9));
+
+                Init_ProductRelease(Product, date);
+            }
+            // input for Change Description for new Change Item
+            cout << "Enter the change description for new change Item (length: 30 characters max):"<< endl;
+            cin >> ChangeDescription;
+
+            Init_ChangeItem(Product, ChangeDescription);
         } else{
             cout << "Insert Error Here";
         }
@@ -232,8 +277,21 @@ void ModifyRequest(){
         
         break;
     case 4:
-
+    {       
+        char Name[11];
+        string strDate;
+        Date date;
+        // new Product Release case 6
+        cout << "Enter name of new product release (Length: 10 characters max): ";
+        cin >> Name;
+        cout << "Enter date of release (YYYY-MM-DD): ";
+        cin >> strDate;
+        date.y = stoi(strDate.substr(0,4));
+        date.m = stoi(strDate.substr(5,6));
+        date.d = stoi(strDate.substr(8,9));
+        Init_ProductRelease(Name, date);
         break;
+    }
     case 0:
         return;
     default:
@@ -282,7 +340,7 @@ int PrintReportsAndInquiries(){
         end.m = stoi(dateEnd.substr(5,6));
         end.d = stoi(dateEnd.substr(8,9));
 
-        CheckStatusReport(start, end);
+        ViewStatusReport(start, end);
         break;
         }
     case 3:

@@ -30,15 +30,16 @@ void CloseDatabase();
 void OpenDatabase();
 void UpdateUserInfo();
 void UpdateChangeRequestStatus(int changeID, int status);
-void CheckChangeRequestExists();
-void CheckUserExists();
-void CheckChangeItemExists(int ChangeID);
-void CheckProductExists(char ProductID[16]);
+bool CheckChangeRequestExists();
+bool CheckUserExists();
+bool CheckChangeItemExists(int ChangeID);
+bool CheckProductExists(char ProductID[16]);
+bool CheckProductReleaseExists(char Productname[11]);
 void OpenBugs();
 // -----
 // Check Status report
 // receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range 
-void CheckStatusReport(Date start, Date end){
+void ViewStatusReport(Date start, Date end){
     // !!!!!! DELETE THIS LATER
     // TESTING TO SEE IF STOI SUBSTR WORKS
     // THIS WORKS, GOOD TO GO
@@ -67,12 +68,12 @@ void connectChangeRequest();
 
 void ViewChangeItem(int changeID){
     // Check existence
-    void CheckChangeItemExists(int ChangeID);
+    CheckChangeItemExists(changeID);
 }
 void PrintOpenBugs();
 void PrintStatusReport();
-bool Init_ProductRelease();
-bool Init_ChangeItem();
+bool Init_ProductRelease(char Product[11], Date date);
+bool Init_ChangeItem(char Product[11], char ChangeDescription[31]);
 bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
 bool Init_ChangeRequest(char ProductName[31], char ReleaseID[9], char Description[31], int Priority);
 bool Init_Product();
