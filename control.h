@@ -22,12 +22,14 @@
 
 //functions taking care of different scenarios
 
+
+
 void StopAccepting();
 void StartAccepting();
 void CloseDatabase();
 void OpenDatabase();
 void UpdateUserInfo();
-void UpdateChangeRequest(int changeID);
+void UpdateChangeRequestStatus(int changeID, int status);
 void CheckChangeRequestExists();
 void CheckUserExists();
 void CheckChangeItemExists(int ChangeID);
@@ -36,7 +38,13 @@ void OpenBugs();
 // -----
 // Check Status report
 // receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range 
-void CheckStatusReport(string dateRange);
+void CheckStatusReport(Date start, Date end){
+    // !!!!!! DELETE THIS LATER
+    // TESTING TO SEE IF STOI SUBSTR WORKS
+    // THIS WORKS, GOOD TO GO
+    cout << start.y <<" " << start.m << " " << start.d << endl;
+    cout << typeid(start.y).name() << " " << typeid(start.m).name() << " " << typeid(start.d).name() << endl; 
+}
 
 // -----
 // showUserInfo
@@ -46,7 +54,7 @@ void showUserInfo();
 // -----
 // showChangeRequestReport
 // Displays a report for change requests
-void showChangeRequestReport();
+void showChangeRequestReport(int changeID);
 
 // Show Change Items
 // Displays All Change items for ProductID

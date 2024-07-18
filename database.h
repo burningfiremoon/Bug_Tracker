@@ -244,7 +244,7 @@ struct ReleaseID {
     int big;
     int med;
     int sml;
-}
+};
 
 class ChangeItem : public DatabaseRecord {
 public:

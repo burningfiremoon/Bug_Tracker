@@ -201,6 +201,7 @@ void ModifyRequest(){
     cout << "1) Update status" << endl;
     cout << "2) Update anticipated release date" << endl;
     cout << "3) Update description" << endl;
+    cout << "4) Add new product release" << endl;
     cout << "0) Return to Main Menu" << endl;
     cout << "Input your selection (0-3) and hit Enter: ";
     cin >> input;
@@ -215,7 +216,10 @@ void ModifyRequest(){
         {
         cout << "Enter ChangeID to view status (6 digits):" << endl;
         cin >> changeID;
-        UpdateChangeRequest(changeID);
+        showChangeRequestReport(changeID);
+        cout << "Enter the desired status:\n0) Reported\n1) InProgress\n2) Done\n3) Cancelled";
+        cin >> decision;
+        UpdateChangeRequestStatus(changeID, decision);
         cout << "To repeat the process, enter '1' or go back to main menu, enter '0'" << endl;
         cin >> decision;
         } while (decision);
@@ -226,6 +230,9 @@ void ModifyRequest(){
         break;
     case 3:
         
+        break;
+    case 4:
+
         break;
     case 0:
         return;
@@ -257,13 +264,25 @@ int PrintReportsAndInquiries(){
     case 2:
         {
         char ProductID[16];
-        string dateRange;
+        string dateStart;
+        string dateEnd;
+        Date start;
+        Date end;
         cout << "Enter the Product ID [Must be between 5 to 15 characters]:" << endl;
         cin >> ProductID;
         CheckProductExists(ProductID);
-        cout << "Enter the Date Range (YYYY-MM-DD to YYYY-MM-DD):" << endl;
-        cin >> dateRange;
-        CheckStatusReport(dateRange);
+        cout << "Enter start date for date range (YYYY-MM-DD): ";
+        cin >> dateStart;
+        cout << "Enter end date for date range (YYYY-MM-DD): ";
+        cin >> dateEnd;
+        start.y = stoi(dateStart.substr(0,4));
+        start.m = stoi(dateStart.substr(5,6));
+        start.d = stoi(dateStart.substr(8,9));
+        end.y = stoi(dateEnd.substr(0,4));
+        end.m = stoi(dateEnd.substr(5,6));
+        end.d = stoi(dateEnd.substr(8,9));
+
+        CheckStatusReport(start, end);
         break;
         }
     case 3:
