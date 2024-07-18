@@ -1,25 +1,12 @@
-/*
-    Revision History:
-    1.0 - 03-07-2024 [Date] - Created by Skyler
-    2.0 - 16-07-2024 [Date] - Modified by Anthony
-
-    user.cpp:
-    This file contains the implementations of the User class methods.
-    It includes necessary headers and implements classes and functions to interact with the database.
-    The purpose of this file is to provide a concrete implementation of the User class operations, ensuring that
-    the main logic of the application remains separate from the database-specific code. This design promotes 
-    cohesion by grouping all User-related functionality together.
-*/
-//-------------------------------------
-// List of #includes
 #include "User.h"
 #include <iostream>
 #include <cstring>
+
 using namespace std;
 
 const int User::recordSize = sizeof(requesterName) + sizeof(phone) + sizeof(email) + sizeof(address);
 
-User::User(const char* requesterName) {
+User::User(const char* requesterName) : DatabaseRecord() {
     strncpy(this->requesterName, requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
     memset(phone, 0, sizeof(phone));
@@ -27,7 +14,7 @@ User::User(const char* requesterName) {
     memset(address, 0, sizeof(address));
 }
 
-User::User(const User& data) {
+User::User(const User& data) : DatabaseRecord() {
     strncpy(this->requesterName, data.requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
     strncpy(this->phone, data.phone, sizeof(this->phone) - 1);
@@ -115,4 +102,12 @@ void User::readFromBuffer(const char* buffer) {
     memcpy(phone, buffer + sizeof(requesterName), sizeof(phone));
     memcpy(email, buffer + sizeof(requesterName) + sizeof(phone), sizeof(email));
     memcpy(address, buffer + sizeof(requesterName) + sizeof(phone) + sizeof(email), sizeof(address));
+}
+
+ostream& operator<<(ostream& os, const User& user) {
+    os << "Requester Name: " << user.requesterName << endl;
+    os << "Phone: " << user.phone << endl;
+    os << "Email: " << user.email << endl;
+    os << "Address: " << user.address << endl;
+    return os;
 }

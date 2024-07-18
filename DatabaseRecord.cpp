@@ -1,31 +1,13 @@
-/*
-    Revision History:
-    1.0 - 03-07-2024 [Date] - Created by Skyler
-    2.0 - 16-07-2024 [Date] - Modified by Anthony
-
-    database.cpp:
-    This file contains the implementations of the database operations.
-    It includes necessary headers and implements classes and functions to interact with the database.
-    The purpose of this file is to provide a concrete implementation of the database operations, ensuring that
-    the main logic of the application remains separate from the database-specific code. This design promotes 
-    cohesion by grouping all database-related functionality together.
-*/
-//-------------------------------------
-// List of #includes
 #include "DatabaseRecord.h"
 #include <iostream>
-#include <fcntl.h>
-#include <unistd.h>
 #include <ctime>
 #include <cstring>
+
 using namespace std;
 
-// Static member initialization
 fstream DatabaseRecord::dbFile;
 
-//-------------------------------------
-// Function definitions
-
+// Define the constructor
 DatabaseRecord::DatabaseRecord() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     for (int i = 0; i < 6; i++) {
@@ -33,6 +15,7 @@ DatabaseRecord::DatabaseRecord() {
     }
 }
 
+// Define the getID method
 int DatabaseRecord::getID() const {
     int intID = 0;
     for (int i = 0; i < 6; i++) {
@@ -40,6 +23,8 @@ int DatabaseRecord::getID() const {
     }
     return intID;
 }
+
+// Rest of the DatabaseRecord methods
 
 void DatabaseRecord::openFile() {
     dbFile.open("Database.dat", ios::in | ios::out | ios::binary);

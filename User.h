@@ -23,6 +23,8 @@ public:
     int getRecordSize() const override;
     void readFromBuffer(const char* buffer) override;
 
+    friend ostream& operator<<(ostream& os, const User& user);
+
 private:
     char requesterName[31]; // 30 characters plus null terminator
     char phone[12]; // 11 characters plus null terminator

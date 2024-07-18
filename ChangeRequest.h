@@ -2,19 +2,18 @@
 #define CHANGEREQUEST_H
 
 #include "DatabaseRecord.h"
-#include <string>
-
-struct Date {
-    int y;
-    int m;
-    int d;
-};
 
 enum Status {
     REPORTED,
     IN_PROGRESS,
     DONE,
     CANCELLED
+};
+
+struct Date {
+    int y;
+    int m;
+    int d;
 };
 
 class ChangeRequest : public DatabaseRecord {
@@ -42,8 +41,8 @@ public:
     void readFromBuffer(const char* buffer) override;
 
 private:
-    char changeID[6]; // key
-    char requesterName[31]; // key
+    char changeID[7]; // 7 characters plus null terminator
+    char requesterName[31]; // 30 characters plus null terminator
     char description[30];
     Date reportedDate;
     int priority;
