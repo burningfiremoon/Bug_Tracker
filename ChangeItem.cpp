@@ -1,48 +1,39 @@
-/*
-    Revision History:
-    1.0 - 03-07-2024 [Date] - Created by Skyler
-    2.0 - 16-07-2024 [Date] - Modified by Anthony
-
-    database.cpp:
-    This file contains the implementations of the database operations.
-    It includes necessary headers and implements classes and functions to interact with the database.
-    The purpose of this file is to provide a concrete implementation of the database operations, ensuring that
-    the main logic of the application remains separate from the database-specific code. This design promotes 
-    cohesion by grouping all database-related functionality together.
-*/
-//-------------------------------------
-// List of #includes
 #include "ChangeItem.h"
 #include <iostream>
-#include <ctime>
+#include <fstream>
 #include <cstring>
+
 using namespace std;
 
 const int ChangeItem::recordSize = sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status) + sizeof(priority) + sizeof(releaseID) + sizeof(dateFirstReported);
 
 ChangeItem::ChangeItem(const char* changeID) {
-    strncpy(this->changeID, changeID, sizeof(this->changeID));
+    strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
+    this->changeID[sizeof(this->changeID) - 1] = '\0'; // Ensure null termination
     status = 0;
     priority = 0;
     memset(productName, 0, sizeof(productName));
     memset(changeDescription, 0, sizeof(changeDescription));
-    memset(releaseID, 0, sizeof(releaseID));
 }
 
 ChangeItem::ChangeItem(const ChangeItem& data) {
-    strncpy(this->changeID, data.changeID, sizeof(this->changeID));
-    strncpy(this->productName, data.productName, sizeof(this->productName));
-    strncpy(this->changeDescription, data.changeDescription, sizeof(this->changeDescription));
+    strncpy(this->changeID, data.changeID, sizeof(this->changeID) - 1);
+    this->changeID[sizeof(this->changeID) - 1] = '\0'; // Ensure null termination
+    strncpy(this->productName, data.productName, sizeof(this->productName) - 1);
+    this->productName[sizeof(this->productName) - 1] = '\0'; // Ensure null termination
+    strncpy(this->changeDescription, data.changeDescription, sizeof(this->changeDescription) - 1);
+    this->changeDescription[sizeof(this->changeDescription) - 1] = '\0'; // Ensure null termination
     this->status = data.status;
     this->priority = data.priority;
-    strncpy(this->releaseID, data.releaseID, sizeof(this->releaseID));
+    this->releaseID = data.releaseID;
     this->dateFirstReported = data.dateFirstReported;
 }
 
 ChangeItem::~ChangeItem() {}
 
 void ChangeItem::setChangeID(const char* changeID) {
-    strncpy(this->changeID, changeID, sizeof(this->changeID));
+    strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
+    this->changeID[sizeof(this->changeID) - 1] = '\0'; // Ensure null termination
 }
 
 const char* ChangeItem::getChangeID() const {
@@ -50,7 +41,8 @@ const char* ChangeItem::getChangeID() const {
 }
 
 void ChangeItem::setProductName(const char* productName) {
-    strncpy(this->productName, productName, sizeof(this->productName));
+    strncpy(this->productName, productName, sizeof(this->productName) - 1);
+    this->productName[sizeof(this->productName) - 1] = '\0'; // Ensure null termination
 }
 
 const char* ChangeItem::getProductName() const {
@@ -58,7 +50,8 @@ const char* ChangeItem::getProductName() const {
 }
 
 void ChangeItem::setChangeDescription(const char* changeDescription) {
-    strncpy(this->changeDescription, changeDescription, sizeof(this->changeDescription));
+    strncpy(this->changeDescription, changeDescription, sizeof(this->changeDescription) - 1);
+    this->changeDescription[sizeof(this->changeDescription) - 1] = '\0'; // Ensure null termination
 }
 
 const char* ChangeItem::getChangeDescription() const {
@@ -81,11 +74,11 @@ int ChangeItem::getPriority() const {
     return priority;
 }
 
-void ChangeItem::setReleaseID(const char* releaseID) {
-    strncpy(this->releaseID, releaseID, sizeof(this->releaseID));
+void ChangeItem::setReleaseID(ReleaseID releaseID) {
+    this->releaseID = releaseID;
 }
 
-const char* ChangeItem::getReleaseID() const {
+ReleaseID ChangeItem::getReleaseID() const {
     return releaseID;
 }
 
@@ -104,18 +97,18 @@ bool ChangeItem::writeRecord(fstream &dbFile) const {
     dbFile.write(changeDescription, sizeof(changeDescription));
     dbFile.write(reinterpret_cast<const char*>(&status), sizeof(status));
     dbFile.write(reinterpret_cast<const char*>(&priority), sizeof(priority));
-    dbFile.write(releaseID, sizeof(releaseID));
+    dbFile.write(reinterpret_cast<const char*>(&releaseID), sizeof(releaseID));
     dbFile.write(reinterpret_cast<const char*>(&dateFirstReported), sizeof(dateFirstReported));
     dbFile.flush();
     return true;
 }
 
 bool ChangeItem::readRecord(fstream &dbFile) {
-    char tempChangeID[6];
+    char tempChangeID[7];
     char tempProductName[31];
     char tempChangeDescription[31];
     int tempStatus, tempPriority;
-    char tempReleaseID[9];
+    ReleaseID tempReleaseID;
     Date tempDateFirstReported;
 
     if (dbFile.read(tempChangeID, sizeof(tempChangeID))) {
@@ -123,7 +116,7 @@ bool ChangeItem::readRecord(fstream &dbFile) {
         dbFile.read(tempChangeDescription, sizeof(tempChangeDescription));
         dbFile.read(reinterpret_cast<char*>(&tempStatus), sizeof(tempStatus));
         dbFile.read(reinterpret_cast<char*>(&tempPriority), sizeof(tempPriority));
-        dbFile.read(tempReleaseID, sizeof(tempReleaseID));
+        dbFile.read(reinterpret_cast<char*>(&tempReleaseID), sizeof(tempReleaseID));
         dbFile.read(reinterpret_cast<char*>(&tempDateFirstReported), sizeof(tempDateFirstReported));
 
         setChangeID(tempChangeID);
@@ -149,7 +142,7 @@ void ChangeItem::readFromBuffer(const char* buffer) {
     memcpy(changeDescription, buffer + sizeof(changeID) + sizeof(productName), sizeof(changeDescription));
     memcpy(&status, buffer + sizeof(changeID) + sizeof(productName) + sizeof(changeDescription), sizeof(status));
     memcpy(&priority, buffer + sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status), sizeof(priority));
-    memcpy(releaseID, buffer + sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status) + sizeof(priority), sizeof(releaseID));
+    memcpy(&releaseID, buffer + sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status) + sizeof(priority), sizeof(releaseID));
     memcpy(&dateFirstReported, buffer + sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status) + sizeof(priority) + sizeof(releaseID), sizeof(dateFirstReported));
 }
 
@@ -163,10 +156,12 @@ bool ChangeItem::updStatus(const char* id, int newStatus) {
     return false;
 }
 
-bool ChangeItem::updRelease(const char* id, const char* newRelease) {
+bool ChangeItem::updRelease(const char* id, int newRelease) {
     ChangeItem changeItem(id);
     if (findRecord(id, changeItem)) {
-        changeItem.setReleaseID(newRelease);
+        ReleaseID newReleaseID;
+        snprintf(newReleaseID.id, sizeof(newReleaseID.id), "%08d", newRelease);
+        changeItem.setReleaseID(newReleaseID);
         changeItem.writeRecord(dbFile);
         return true;
     }

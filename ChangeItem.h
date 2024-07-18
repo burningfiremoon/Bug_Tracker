@@ -1,13 +1,8 @@
-#ifndef CHANGE_ITEM_H
-#define CHANGE_ITEM_H
+#ifndef CHANGEITEM_H
+#define CHANGEITEM_H
 
 #include "DatabaseRecord.h"
-
-struct Date {
-    int y;
-    int m;
-    int d;
-};
+#include <fstream>
 
 class ChangeItem : public DatabaseRecord {
 public:
@@ -25,31 +20,31 @@ public:
     int getStatus() const;
     void setPriority(int priority);
     int getPriority() const;
-    void setReleaseID(const char* releaseID);
-    const char* getReleaseID() const;
+    void setReleaseID(ReleaseID releaseID);
+    ReleaseID getReleaseID() const;
     void setDateFirstReported(Date date);
     Date getDateFirstReported() const;
 
-    bool writeRecord(fstream &dbFile) const override;
-    bool readRecord(fstream &dbFile) override;
+    bool writeRecord(std::fstream &dbFile) const override;
+    bool readRecord(std::fstream &dbFile) override;
     int getRecordSize() const override;
     void readFromBuffer(const char* buffer) override;
 
     static bool updStatus(const char* id, int newStatus);
-    static bool updRelease(const char* id, const char* newRelease);
+    static bool updRelease(const char* id, int newRelease);
     static bool updPriority(const char* id, int newPriority);
     static bool updDesc(const char* id, const char* newDescription);
 
 private:
-    char changeID[6];
-    char productName[31];
-    char changeDescription[31];
+    char changeID[7]; // 6 characters plus null terminator
+    char productName[31]; // 30 characters plus null terminator
+    char changeDescription[31]; // 30 characters plus null terminator
     int status;
     int priority;
-    char releaseID[9]; // 8 digits plus null terminator
+    ReleaseID releaseID;
     Date dateFirstReported;
 
     static const int recordSize;
 };
 
-#endif // CHANGE_ITEM_H
+#endif // CHANGEITEM_H
