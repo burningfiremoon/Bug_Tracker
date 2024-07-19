@@ -243,7 +243,7 @@ bool BackUpProducts();
 
 // -----
 // BackUpEntireDatabase
-// Backs up all file in database
+// Backs up  file in database
 // bool value if back up was successful (out)
 bool BackUpEntireDatabase(){
     BackUpChangeRequest();
