@@ -28,14 +28,16 @@ void StopAccepting();
 void StartAccepting();
 void CloseDatabase();
 void OpenDatabase();
-void UpdateUserInfo();
-void UpdateChangeRequestStatus(int changeID, int status);
-bool CheckChangeRequestExists();
-bool CheckUserExists();
+
+
+void UpdateUserName(char Name[31],char newName[31]);
+void UpdateUserEmail(char Name[31], char newEmail[25]);
+void UpdateUserPhoneNumber(char Name[31], char newPhoneNumber[18]);
+void UpdateChangeItemStatus(int changeID, int status);
+bool CheckUserExists(char Name[31]);
 bool CheckChangeItemExists(int ChangeID);
-bool CheckProductExists(char ProductID[16]);
+bool CheckProductExists(char Product[11]);
 bool CheckProductReleaseExists(char Productname[11]);
-void OpenBugs();
 // -----
 // Check Status report
 // receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range 
@@ -55,7 +57,7 @@ void showUserInfo();
 // -----
 // showChangeRequestReport
 // Displays a report for change requests
-void showChangeRequestReport(int changeID);
+void showChangeItemReport(int changeID);
 
 // Show Change Items
 // Displays All Change items for ProductID
@@ -64,21 +66,29 @@ void ShowChangeItems(char ProductID[31]);
 // -----
 // Connect Change Request
 // Connects matching change request to change item
-void connectChangeRequest();
+void connectChangeRequest(char Name[31], int changeID);
 
 void ViewChangeItem(int changeID){
     // Check existence
     CheckChangeItemExists(changeID);
 }
-void PrintOpenBugs();
-void PrintStatusReport();
+void PrintOpenBugs(char Product[11],Date start, Date end);
 bool Init_ProductRelease(char Product[11], Date date);
-bool Init_ChangeItem(char Product[11], char ChangeDescription[31]);
+
+// -----
+// Init_ChangeItem
+// creates a new change Item object using Product name and a change description and outputs a new unique changeID
+int Init_ChangeItem(char Product[11], char ChangeDescription[31]);
+
+
 bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
-bool Init_ChangeRequest(char ProductName[31], char ReleaseID[9], char Description[31], int Priority);
+bool Init_ChangeRequest(char Name[31], char ProductName[31], char ReleaseID[9], char Description[31], int Priority);
+
 bool Init_Product();
-bool PrintChangeRequestReport();
-bool PrintUserInfo();
+void PrintChangeItem(int ChangeID);
+bool PrintUserInfo(char Name[31]);
+void UpdateChangeItemReleaseDate(int changeID, Date date);
+void UpdateChangeItemDescription(int changeID, char Description[31]);
 void Add();
 
 #endif // CONTROL_H
