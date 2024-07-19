@@ -11,6 +11,13 @@
 //-------------------------------------
 // List of #includes
 #include "control.h"
+#include "DatabaseRecord.h"
+#include "ChangeItem.h"
+#include "ChangeRequest.h"
+#include "ProductRelease.h"
+#include "User.h"
+#include "print.h"
+#include "ui.h"
 
 //-------------------------------------
 // Function definitions
