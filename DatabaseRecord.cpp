@@ -5,7 +5,6 @@
 1.0 - 17-July-2024 - Created by Tanvir
 Initial creation and setup of DatabaseRecord class
 2.0 - 18-July-2024 - Modified by Anthony
-Added detailed comments and explanations
 */
 
 //-------------------------------------
