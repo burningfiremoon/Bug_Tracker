@@ -452,8 +452,9 @@ int PrintReportsAndInquiries()
     cout << "1) Print Report for managers" << endl;
     cout << "2) Print Report for customer inquiries" << endl;
     cout << "3) View status" << endl;
+    cout << "4) View User Information" << endl;
     cout << "0) Return to Main Menu" << endl;
-    cout << "Input your selection (0-2) and hit Enter: ";
+    cout << "Input your selection (0-4) and hit Enter: ";
     cin >> input;
     switch (input)
     {
@@ -492,6 +493,9 @@ int PrintReportsAndInquiries()
             end.d = stoi(dateEnd.substr(8,9));
 
             PrintOpenBugs(Product, start, end);
+            char temp;
+            cout << "Enter any character to return: ";
+            cin >> temp;
             break;
         }
         case 2:
@@ -502,6 +506,9 @@ int PrintReportsAndInquiries()
             cin >> changeID;
 
             PrintChangeItem(changeID);
+            char temp;
+            cout << "Enter any character to return: ";
+            cin >> temp;
             break;
         }
         default:
@@ -516,15 +523,36 @@ int PrintReportsAndInquiries()
             cout << "Enter Customer's full name (Format: FirstName, LastName): ";
             cin >> Name;
             PrintUserInfo(Name);
+            char temp;
+            cout << "Enter any character to return: ";
+            cin >> temp;
             break;
         }
     case 3:
         {
-        int changeID;
-        cout << "Enter ChangeID to view status (6 digits):" << endl;
-        cin >> changeID;
-        ViewChangeItem(changeID);
+            int changeID;
+            cout << "Enter ChangeID to view status (6 digits):" << endl;
+            cin >> changeID;
+            ViewChangeItem(changeID);
+
+            char temp;
+            cout << "Enter any character to return: ";
+            cin >> temp;
         break;
+        }
+    case 4:
+        {
+            char name[31];
+            cout << "Enter the full name of the user to view their information (Format: FirstName, LastName): " << endl;
+            cin >> name;
+
+            showUserInfo(name);
+
+            char temp;
+            cout << "Enter any character to return: ";
+            cin >> temp;
+
+            break;
         }
     case 0:
         return 0;

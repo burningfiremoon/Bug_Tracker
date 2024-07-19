@@ -40,19 +40,16 @@ bool CheckProductExists(char Product[11]);
 bool CheckProductReleaseExists(char Productname[11]);
 // -----
 // Check Status report
-// receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range 
-void ViewStatusReport(Date start, Date end){
-    // !!!!!! DELETE THIS LATER
-    // TESTING TO SEE IF STOI SUBSTR WORKS
-    // THIS WORKS, GOOD TO GO
-    cout << start.y <<" " << start.m << " " << start.d << endl;
-    cout << typeid(start.y).name() << " " << typeid(start.m).name() << " " << typeid(start.d).name() << endl; 
-}
+// receive date range in the format (YYYY-MM-DD to YYYY-MM-DD) and couts all status reports in date range
+// Date start (in)
+// Date end (in)
+// Open Change Items between date range (out)
+void ViewStatusReport(Date start, Date end);
 
 // -----
 // showUserInfo
 // Displays user information
-void showUserInfo();
+void showUserInfo(char Name[31]);
 
 // -----
 // showChangeRequestReport
