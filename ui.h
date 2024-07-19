@@ -65,7 +65,10 @@ bool TextUI(){
 // returns which menu is selected by User
 // returns: int input (User Selection) (out)
 int MainMenu(){
+    // needed variables
     int input;
+
+    // Print Main Menu
     cout << "=== Main Menu ===" << endl;
     cout << "1) Create Customer Request" << endl;
     cout << "2) Modify Change/Feature Request" << endl;
@@ -86,7 +89,7 @@ void CreateCustomerRequest(){
     // needed variables
     int input;
 
-    // Print initial selection Menu
+    // Print initial Customer Request selection Menu
     cout << "=== Customer Request ===" << endl;
     cout << "1) New Customer" << endl;
     cout << "2) Existing Customer" << endl;
@@ -97,62 +100,145 @@ void CreateCustomerRequest(){
     {
     case 1:
         {
-        char Name[31];
-        char PhoneNumber[18];
-        char Email[25];
-        char Product[11];
-        char Version[9];
-        char Description[31];
-        int decision;
-        int Priority;
-    
-        cout << "Enter the Customer Name (Length: 30 characters max, Format: FirstName, LastName):" << endl;
-        cin >> Name;
-        cout << "Enter the Phone Number (Length: 11 digits max, Format: +D (DDD)-DDD-DDDD):" << endl;
-        cin >> PhoneNumber;
-        cout << "Enter Email address:" << endl;
-        cin >> Email;
-        if (Init_User(Name, PhoneNumber, Email)){
-            cout << "Enter the name of the Product which needs a change Request: ";
-            // Ask for ProductID to create a Change Request for product
-            cin >> Product;
-            cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
-            cin >> Version;
-            cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
-            cin >> Description;
-            cout << "Enter the Priority (Ranging: 1-5):" << endl;
-            cin >> Priority;
-            cout << "Do you confirm the Release ID, Description, and Priority (Y/N)?" << endl;
+            // Initialize needed variables for case
+            char Name[31];
+            char PhoneNumber[18];
+            char Email[25];
+            char Product[11];
+            char Version[9];
+            char Description[31];
+            int decision;
+            int Priority;
 
-            if (decision == 'Y')
-            {
-                Init_ChangeRequest(Name, Product, Version, Description, Priority);
-
-            } else if (decision == 'N'){
-                cout << "Insert Event here" << endl;
+            redoName:
+                cout << "Enter the Customer Name (Length: 30 characters max, Format: FirstName, LastName):" << endl;
+                cin >> Name;
+                cout << "Enter the Phone Number (Length: 11 digits max, Format: +D (DDD)-DDD-DDDD):" << endl;
+                cin >> PhoneNumber;
+                cout << "Enter Email address:" << endl;
+                cin >> Email;
+                cout << "Do you confirm the Name, Phone Number, and Email?\n 0) No \n1) Yes\n(0/1): ";
+                cin >> decision;
+            if (!decision){
+                goto redoName;
             }
 
+            if (Init_User(Name, PhoneNumber, Email)){
+                redoChangeRequest:
+                    cout << "Enter the name of the Product which needs a change Request: ";
+                    // Ask for ProductID to create a Change Request for product
+                    cin >> Product;
+                    cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
+                    cin >> Version;
+                    cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
+                    cin >> Description;
+                    cout << "Enter the Priority (Ranging: 1-5):" << endl;
+                    cin >> Priority;
+                    cout << "Do you confirm the Release ID, Description, and Priority?\n 0) No \n1) Yes\n(0/1): ";
+                    cin >> decision;
+                if (decision)
+                {
+                    Init_ChangeRequest(Name, Product, Version, Description, Priority);
+
+                } else if (!decision){
+                    goto redoChangeRequest;
+                }
+
+                // Show list of Change Items with matching Product ID
+                ShowChangeItems(Product);
+                // If There is a matching Change Item, connect change request to change item
+                cout << "Is there a matching change item for the change request (Y/N)?" << endl;
+                cout << "Note: if yes, please remember the changeID" << endl;
+                cout << "Enter Decision: ";
+                cin >> decision;
+                if (decision == 'Y')
+                {
+                    int changeID;
+                    cout << "Enter changeID for change item: ";
+                    cin >> changeID;
+                    // connect change request to change item
+                    connectChangeRequest(Name, changeID);
+                } 
+                else if (decision == 'N')
+                {
+                    char ChangeDescription[31];
+                    // else create a new change item
+                    if (!CheckProductReleaseExists(Product))
+                    {
+                        // Creating a new Product Release if there's no product release for product name
+                        string strDate;
+                        Date date;
+                        cout << "There's no product release for " << Product << endl;
+                        cout << "Enter a date of release for product(YYYY-MM-DD): ";
+                        cin >> strDate;
+                        date.y = stoi(strDate.substr(0,4));
+                        date.m = stoi(strDate.substr(5,6));
+                        date.d = stoi(strDate.substr(8,9));
+
+                        Init_ProductRelease(Product, date);
+                    }
+
+                    cout << "Enter the change description for new change Item (length: 30 characters max):"<< endl;
+                    cin >> ChangeDescription;
+
+                    connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
+                    } else{
+                        cout << "Insert Error Here";
+                    }
+                }
+        }
+        break;
+    case 2:
+        {
+            // Initialize needed variables for case
+            char Product[11];
+            char Version[9];
+            char Description[31];
+            int Priority;
+            char decision;
+            char Name[31];
+            
+            // Ask for name to connect change request to user
+            cout << "Enter User's full Name (Format: FirstName, LastName): ";
+            cin >> Name;
+                redoChangeRequest:
+                    cout << "Enter the name of the Product which needs a change Request: ";
+                    // Ask for ProductID to create a Change Request for product
+                    cin >> Product;
+                    cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
+                    cin >> Version;
+                    cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
+                    cin >> Description;
+                    cout << "Enter the Priority (Ranging: 1-5):" << endl;
+                    cin >> Priority;
+                    cout << "Do you confirm the Release ID, Description, and Priority?\n 0) No \n1) Yes\n(0/1): ";
+                    cin >> decision;
+                if (decision)
+                {
+                    Init_ChangeRequest(Name, Product, Version, Description, Priority);
+
+                } else if (!decision){
+                    goto redoChangeRequest;
+                }
             // Show list of Change Items with matching Product ID
             ShowChangeItems(Product);
             // If There is a matching Change Item, connect change request to change item
-            cout << "Is there a matching change item for the change request (Y/N)?" << endl;
+            redoDecision:
+            cout << "Is there a matching change item for the change request?\n 0) No \n1) Yes" << endl;
             cout << "Note: if yes, please remember the changeID" << endl;
-            cout << "Enter Decision: ";
+            cout << "Enter Decision (0/1): ";
             cin >> decision;
-            if (decision == 'Y')
+            if (decision)
             {
                 int changeID;
                 cout << "Enter changeID for change item: ";
                 cin >> changeID;
                 // connect change request to change item
                 connectChangeRequest(Name, changeID);
-            } 
-            else if (decision == 'N')
-            {
+            } else if (!decision){
                 char ChangeDescription[31];
                 // else create a new change item
-                if (!CheckProductReleaseExists(Product))
-                {
+                if (!CheckProductReleaseExists(Product)){
                     // Creating a new Product Release if there's no product release for product name
                     string strDate;
                     Date date;
@@ -165,93 +251,25 @@ void CreateCustomerRequest(){
 
                     Init_ProductRelease(Product, date);
                 }
-
+                // input for Change Description for new Change Item
                 cout << "Enter the change description for new change Item (length: 30 characters max):"<< endl;
                 cin >> ChangeDescription;
 
                 connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
-                } else{
-                    cout << "Insert Error Here";
-                }
+            } else{
+                // Error redo selection
+                cout << "!!Please enter 0 or 1 to make selection!!" << endl;
+                goto redoDecision;
             }
-        }
-        break;
-    case 2:
-        {
-        char Product[11];
-        char Version[9];
-        char Description[31];
-        int Priority;
-        char decision;
-        char Name[31];
-        
-        // Ask for name to connect change request to user
-        cout << "Enter User's full Name (Format: FirstName, LastName): ";
-        cin >> Name;
-        cout << "Enter the Product Name which needs a change Request: ";
-        // Ask for ProductID to create a Change Request for product
-        cin >> Product;
-        cout <<"Enter the Release ID (Length: 8 characters max):" << endl;
-        cin >> Version;
-        cout << "Enter the Description of the Bug (Length: 30 characters max):" << endl;
-        cin >> Description;
-        cout << "Enter the Priority (Ranging: 1-5):" << endl;
-        cin >> Priority;
-        cout << "Do you confirm the Release ID, Description, and Priority (Y/N)?" << endl;
 
-        if (decision == 'Y')
-        {
-            Init_ChangeRequest(Name, Product, Version, Description, Priority);
-
-        } else if (decision == 'N'){
-            cout << "Insert Event here" << endl;
-        }
-        // Show list of Change Items with matching Product ID
-        ShowChangeItems(Product);
-        // If There is a matching Change Item, connect change request to change item
-        cout << "Is there a matching change item for the change request (Y/N)?" << endl;
-        cout << "Note: if yes, please remember the changeID" << endl;
-        cout << "Enter Decision: ";
-        cin >> decision;
-        if (decision == 'Y')
-        {
-            int changeID;
-            cout << "Enter changeID for change item: ";
-            cin >> changeID;
-            // connect change request to change item
-            connectChangeRequest(Name, changeID);
-        } else if (decision == 'N'){
-            char ChangeDescription[31];
-            // else create a new change item
-            if (!CheckProductReleaseExists(Product)){
-                // Creating a new Product Release if there's no product release for product name
-                string strDate;
-                Date date;
-                cout << "There's no product release for " << Product << endl;
-                cout << "Enter a date of release for product(YYYY-MM-DD): ";
-                cin >> strDate;
-                date.y = stoi(strDate.substr(0,4));
-                date.m = stoi(strDate.substr(5,6));
-                date.d = stoi(strDate.substr(8,9));
-
-                Init_ProductRelease(Product, date);
-            }
-            // input for Change Description for new Change Item
-            cout << "Enter the change description for new change Item (length: 30 characters max):"<< endl;
-            cin >> ChangeDescription;
-
-            connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
-        } else{
-            cout << "Insert Error Here";
-        }
-
-        break;
+            break;
         }
     case 0:
         return;
     default:
         break;
     }
+    return;
 }
 
 // -----
@@ -264,6 +282,7 @@ void CreateCustomerRequest(){
 // Case 5: Add new Product release to database
 void ModifyRequest(){
     int input;
+    // Print initial Modify Request selection Menu
     cout << "=== Modify Change/Feature Request ===" << endl;
     cout << "1) Update status" << endl;
     cout << "2) Update anticipated release date" << endl;
@@ -281,6 +300,7 @@ void ModifyRequest(){
         {
         int changeID;
         int decision;
+        // Loop allows for multiple status updates before returning to main menu
         do 
         {
             cout << "Enter ChangeID to view status (6 digits):" << endl;
@@ -307,6 +327,7 @@ void ModifyRequest(){
             string strDate;
             Date date;
             int decision;
+            // Loop allows for multiple release date updates before returning to main menu
             do
             {
                 cout << "Enter ChangeID to view status (6 digits):" << endl;
@@ -335,22 +356,27 @@ void ModifyRequest(){
             int changeID;
             char Description[31];
             int decision;
+            // Loop allows for multiple description updates before returning to main menu
             do
             {
                 cout << "Enter ChangeID to view status (6 digits):" << endl;
                 cin >> changeID;
+                // check if change item exists
                 if (!CheckChangeItemExists(changeID)) 
                 {
                     cout << "The change Item with " << changeID << " changeID doesn't exist" << endl;
                     return;
+                } 
+                else
+                {
+                    ViewChangeItem(changeID);
+                    cout << "Enter the new description for " << changeID <<" (Length: max 30 characters): ";
+                    cin >> Description;
+                    UpdateChangeItemDescription(changeID, Description);
+                    cout << "To repeat the process, enter '1' or go back to main menu, enter '0'" << endl;
+                    cin >> decision;
                 }
 
-                ViewChangeItem(changeID);
-                cout << "Enter the new description for " << changeID <<" (Length: max 30 characters): ";
-                cin >> Description;
-                UpdateChangeItemDescription(changeID, Description);
-                cout << "To repeat the process, enter '1' or go back to main menu, enter '0'" << endl;
-                cin >> decision;
             } while (decision);
             break;
         }
@@ -364,6 +390,7 @@ void ModifyRequest(){
         cin >> Name;
         if (CheckUserExists(Name)){
             int decision;
+            // Print out update menu
             cout << "What would you like to update?" << endl;
             cout << "1) Name" << endl;
             cout << "2) Email" << endl;
@@ -457,6 +484,7 @@ void ModifyRequest(){
 void PrintReportsAndInquiries()
 {    
     int input;
+    // Print initial print/View Repots and Inquiries selection Menu
     cout << "=== Print/View Reports and Inquiries ===" << endl;
     cout << "1) Print Report for managers" << endl;
     cout << "2) Print Report for customer inquiries" << endl;
@@ -474,6 +502,7 @@ void PrintReportsAndInquiries()
         cout << "1) Print open Change Items for product\n2) Print Change Item information\n0) return to main menu" << endl;
         cout << "Input your selection (0-2) and hit Enter: ";
         cin >> decision;
+        // Allows selection between view a specific change Item or all change items for a product
         switch (decision)
         {
         case 1:
@@ -578,6 +607,7 @@ void PrintReportsAndInquiries()
 // case 2: displays menu for user to select backing up inidividual files in database
 void BackupData(){
     int input;
+    // Print initial Backup Data selection Menu
     cout << "=== Backup Data ===" << endl;
     cout << "1) Backup the entire database" << endl;
     cout << "2) Backup specific data sets" << endl;
@@ -591,6 +621,7 @@ void BackupData(){
         break;
     case 2:
         int decision;
+        // Print Specific backup selection Menu
         cout << "Which data set would you like to back up?" << endl;
         cout << "1) Change Requests" << endl;
         cout << "2) Users" << endl;
@@ -600,6 +631,7 @@ void BackupData(){
         cout << "0) Return" << endl;
         cout << "Input your selection (0-5) and hit Enter: ";
         cin >> decision;
+        // call specific back up function in control.h
         switch(decision){
         case 1:
             BackUpChangeRequest();
