@@ -5,6 +5,7 @@
 1.0 - 14-July-2024 - Created by Charles
 Initial creation and setup of ProductRelease class
 2.0 - 16-July-2024 - Modified by Anthony
+2.1 - 18-July-2024 - Modified by Skyler
 */
 
 //-------------------------------------
@@ -54,12 +55,6 @@ public:
             - Date date (in): The release date of the product.
     */
     ProductRelease(const char* name, ReleaseID id, Date date);
-
-    /*
-        ~ProductRelease()
-        - Purpose: Destructor to clean up resources used by the ProductRelease object.
-    */
-    ~ProductRelease();
 
     //-------------------------------------
     // Setters and Getters
