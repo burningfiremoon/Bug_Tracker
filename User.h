@@ -6,6 +6,7 @@
 Initial creation and setup of User class
 2.0 - 17-July-2024 - Modified by Skyler
 Added detailed comments and explanations
+2.1 - 18-July-2024 - Modified by Skyler
 */
 
 //-------------------------------------
@@ -56,12 +57,6 @@ public:
             - const User& data (in): The User object to copy.
     */
     User(const User& data);
-
-    /*
-        ~User()
-        - Purpose: Destructor to clean up resources used by the User object.
-    */
-    ~User();
 
     //-------------------------------------
     // Setters and Getters
