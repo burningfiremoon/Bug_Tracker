@@ -1,123 +1,187 @@
-/*
-    Revision History:
-    1.0 - 03-07-2024 [Date] - Created by Skyler
-    2.0 - 16-07-2024 [Date] - Modified by Anthony
-
-    database.cpp:
-    This file contains the implementations of the database operations.
-    It includes necessary headers and implements classes and functions to interact with the database.
-    The purpose of this file is to provide a concrete implementation of the database operations, ensuring that
-    the main logic of the application remains separate from the database-specific code. This design promotes 
-    cohesion by grouping all database-related functionality together.
-*/
 //-------------------------------------
-// List of #includes
+// Revision History
+//-------------------------------------
+/*
+1.0 - 14-July-2024 - Created by Charles
+Initial creation and setup of ProductRelease class
+2.0 - 16-July-2024 - Modified by Anthony
+Added detailed comments and explanations
+*/
+
+//-------------------------------------
+// Explanation
+//-------------------------------------
+/*
+    ProductRelease.cpp
+
+    This module contains the implementation of the ProductRelease class, which represents a product release record.
+    The ProductRelease class encapsulates details such as product name, release ID, and release date. The purpose 
+    of this class is to provide a cohesive representation of a product release and manage its read and write operations 
+    to a file. The attributes and methods are placed together to provide high cohesion and facilitate easy management 
+    of product release records.
+
+    Includes:
+    - ProductRelease constructors and destructor
+    - Getter and setter methods for various attributes
+    - Methods to read and write records from/to a file
+*/
+
 #include "ProductRelease.h"
-#include <iostream>
-#include <ctime>
 #include <cstring>
-using namespace std;
 
-const int ProductRelease::recordSize = sizeof(productName) + sizeof(releaseID) + sizeof(releaseDate);
-
+//-------------------------------------
+// Constructor
+//-------------------------------------
+/*
+    ProductRelease::ProductRelease()
+    - Purpose: Default constructor to initialize a ProductRelease object with default values.
+*/
 ProductRelease::ProductRelease() {
     memset(productName, 0, sizeof(productName));
-    memset(releaseID, 0, sizeof(releaseID));
+    memset(&releaseID, 0, sizeof(releaseID));
     memset(&releaseDate, 0, sizeof(releaseDate));
 }
 
-ProductRelease::ProductRelease(const char* name, const char* releaseID, Date date) {
-    strncpy(this->productName, name, sizeof(this->productName) - 1);
-    this->productName[10] = '\0'; // Ensure null termination
-    strncpy(this->releaseID, releaseID, sizeof(this->releaseID) - 1);
-    this->releaseID[8] = '\0'; // Ensure null termination
-    this->releaseDate = date;
+//-------------------------------------
+// Parameterized Constructor
+//-------------------------------------
+/*
+    ProductRelease::ProductRelease(const char* name, ReleaseID id, Date date)
+    - Purpose: Parameterized constructor to initialize a ProductRelease object with given values.
+    - Parameters:
+        - const char* name (in): The name of the product.
+        - ReleaseID id (in): The release ID of the product.
+        - Date date (in): The release date of the product.
+*/
+ProductRelease::ProductRelease(const char* name, ReleaseID id, Date date) {
+    strncpy(productName, name, sizeof(productName) - 1);
+    productName[sizeof(productName) - 1] = '\0';
+    releaseID = id;
+    releaseDate = date;
 }
 
+//-------------------------------------
+// Destructor
+//-------------------------------------
+/*
+    ProductRelease::~ProductRelease()
+    - Purpose: Destructor to clean up resources used by the ProductRelease object.
+*/
 ProductRelease::~ProductRelease() {}
 
+//-------------------------------------
+// Setters and Getters
+//-------------------------------------
+/*
+    void ProductRelease::setProductName(const char* name)
+    - Purpose: Set the product name for the ProductRelease.
+    - Parameters:
+        - const char* name (in): The product name to set.
+*/
 void ProductRelease::setProductName(const char* name) {
-    strncpy(this->productName, name, sizeof(this->productName) - 1);
-    this->productName[10] = '\0'; // Ensure null termination
+    strncpy(productName, name, sizeof(productName) - 1);
+    productName[sizeof(productName) - 1] = '\0';
 }
 
+/*
+    const char* ProductRelease::getProductName() const
+    - Purpose: Get the product name of the ProductRelease.
+    - Returns: const char* (out): The product name of the ProductRelease.
+*/
 const char* ProductRelease::getProductName() const {
     return productName;
 }
 
-void ProductRelease::setReleaseID(const char* releaseID) {
-    strncpy(this->releaseID, releaseID, sizeof(this->releaseID) - 1);
-    this->releaseID[8] = '\0'; // Ensure null termination
+/*
+    void ProductRelease::setReleaseID(ReleaseID id)
+    - Purpose: Set the release ID for the ProductRelease.
+    - Parameters:
+        - ReleaseID id (in): The release ID to set.
+*/
+void ProductRelease::setReleaseID(ReleaseID id) {
+    releaseID = id;
 }
 
-const char* ProductRelease::getReleaseID() const {
+/*
+    ReleaseID ProductRelease::getReleaseID() const
+    - Purpose: Get the release ID of the ProductRelease.
+    - Returns: ReleaseID (out): The release ID of the ProductRelease.
+*/
+ReleaseID ProductRelease::getReleaseID() const {
     return releaseID;
 }
 
+/*
+    void ProductRelease::setReleaseDate(Date date)
+    - Purpose: Set the release date for the ProductRelease.
+    - Parameters:
+        - Date date (in): The release date to set.
+*/
 void ProductRelease::setReleaseDate(Date date) {
-    this->releaseDate = date;
+    releaseDate = date;
 }
 
+/*
+    Date ProductRelease::getReleaseDate() const
+    - Purpose: Get the release date of the ProductRelease.
+    - Returns: Date (out): The release date of the ProductRelease.
+*/
 Date ProductRelease::getReleaseDate() const {
     return releaseDate;
 }
 
+//-------------------------------------
+// File Operations
+//-------------------------------------
+/*
+    bool ProductRelease::writeRecord(fstream &dbFile) const
+    - Purpose: Write the ProductRelease record to the given file stream.
+    - Parameters:
+        - fstream &dbFile (in/out): The file stream to write the record to.
+    - Returns: bool (out): True if the record is written successfully, false otherwise.
+*/
 bool ProductRelease::writeRecord(fstream &dbFile) const {
     dbFile.seekp(0, ios::end);
     dbFile.write(productName, sizeof(productName));
-    dbFile.write(releaseID, sizeof(releaseID));
+    dbFile.write(reinterpret_cast<const char*>(&releaseID), sizeof(releaseID));
     dbFile.write(reinterpret_cast<const char*>(&releaseDate), sizeof(releaseDate));
     dbFile.flush();
     return true;
 }
 
+/*
+    bool ProductRelease::readRecord(fstream &dbFile)
+    - Purpose: Read a ProductRelease record from the given file stream.
+    - Parameters:
+        - fstream &dbFile (in/out): The file stream to read the record from.
+    - Returns: bool (out): True if the record is read successfully, false otherwise.
+*/
 bool ProductRelease::readRecord(fstream &dbFile) {
-    char tempName[11];
-    char tempID[9];
-    Date tempDate;
-
-    if (dbFile.read(tempName, sizeof(tempName))) {
-        dbFile.read(tempID, sizeof(tempID));
-        dbFile.read(reinterpret_cast<char*>(&tempDate), sizeof(tempDate));
-
-        setProductName(tempName);
-        setReleaseID(tempID);
-        setReleaseDate(tempDate);
+    if (dbFile.read(productName, sizeof(productName))) {
+        dbFile.read(reinterpret_cast<char*>(&releaseID), sizeof(releaseID));
+        dbFile.read(reinterpret_cast<char*>(&releaseDate), sizeof(releaseDate));
         return true;
     }
     return false;
 }
 
+/*
+    int ProductRelease::getRecordSize() const
+    - Purpose: Get the size of the ProductRelease record.
+    - Returns: int (out): The size of the ProductRelease record.
+*/
 int ProductRelease::getRecordSize() const {
     return sizeof(productName) + sizeof(releaseID) + sizeof(releaseDate);
 }
 
+/*
+    void ProductRelease::readFromBuffer(const char* buffer)
+    - Purpose: Read the ProductRelease record from a buffer.
+    - Parameters:
+        - const char* buffer (in): The buffer to read the record from.
+*/
 void ProductRelease::readFromBuffer(const char* buffer) {
     memcpy(productName, buffer, sizeof(productName));
-    memcpy(releaseID, buffer + sizeof(productName), sizeof(releaseID));
+    memcpy(&releaseID, buffer + sizeof(productName), sizeof(releaseID));
     memcpy(&releaseDate, buffer + sizeof(productName) + sizeof(releaseID), sizeof(releaseDate));
-}
-
-bool ProductRelease::addRelease(const ProductRelease& release) {
-    dbFile.seekp(0, ios::end);
-    dbFile.write(release.productName, sizeof(release.productName));
-    dbFile.write(release.releaseID, sizeof(release.releaseID));
-    dbFile.write(reinterpret_cast<const char*>(&release.releaseDate), sizeof(release.releaseDate));
-    dbFile.flush();
-    return true;
-}
-
-bool ProductRelease::addProduct(int id, const char* name) {
-    // Implementation of adding a product
-    return false;
-}
-
-bool ProductRelease::showProduct(int id) {
-    // Implementation of showing a product
-    return false;
-}
-
-bool ProductRelease::showRelease(int id) {
-    // Implementation of showing a release
-    return false;
 }
