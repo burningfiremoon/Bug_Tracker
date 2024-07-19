@@ -548,16 +548,42 @@ void BackupData(){
     switch (input)
     {
     case 1:
-
+        BackUpEntireDatabase();
         break;
     case 2:
-        
-        break;
-    case 3:
-        
+        int decision;
+        cout << "Which data set would you like to back up?" << endl;
+        cout << "1) Change Requests" << endl;
+        cout << "2) Users" << endl;
+        cout << "3) Change Items" << endl;
+        cout << "4) Product Releases" << endl;
+        cout << "5) Products" << endl;
+        cout << "0) Return" << endl;
+        cout << "Input your selection (0-5) and hit Enter: ";
+        cin >> decision;
+        switch(decision){
+        case 1:
+            BackUpChangeRequest();
+            break;
+        case 2:
+            BackUpUsers();
+            break;
+        case 3:
+            BackUpChangeItems();
+            break;
+        case 4:
+            BackUpProductReleases();
+            break;
+        case 5:
+            BackUpProducts();
+            break;
+        case 0:
+            return;
+        default:
+            return;
+        }
         break;
     case 0:
-        
         return;
     default:
         break;

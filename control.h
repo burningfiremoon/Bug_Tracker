@@ -89,6 +89,41 @@ void PrintChangeItem(int ChangeID);
 bool PrintUserInfo(char Name[31]);
 void UpdateChangeItemReleaseDate(int changeID, Date date);
 void UpdateChangeItemDescription(int changeID, char Description[31]);
-void Add();
+
+// -----
+// BackUpChangeRequest
+// Backs all ChangeRequests in database into a new file
+bool BackUpChangeRequest();
+
+// -----
+// BackUpUsers
+// Backs all Users in database into a new file
+bool BackUpUsers();
+
+// -----
+// BackUpChangeItems
+// Backs all Change Items in database into a new file
+bool BackUpChangeItems();
+
+// -----
+// BackUpProductReleases
+// Backs all Product Releases in database into a new file
+bool BackUpProductReleases();
+
+// -----
+// BackUpProducts
+// Backs all Products in database into a new file
+bool BackUpProducts();
+
+// -----
+// BackUpEntireDatabase
+// Backs all files in database into a new file
+bool BackUpEntireDatabase(){
+    BackUpChangeRequest();
+    BackUpUsers();
+    BackUpChangeItems();
+    BackUpProductReleases();
+    BackUpProducts();
+}
 
 #endif // CONTROL_H
