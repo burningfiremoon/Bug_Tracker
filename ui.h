@@ -23,7 +23,7 @@ using namespace std;
 int MainMenu();
 void CreateCustomerRequest();
 void ModifyRequest();
-int PrintReportsAndInquiries();
+void PrintReportsAndInquiries();
 void BackupData();
 
 //-------------------------------------
@@ -31,7 +31,7 @@ void BackupData();
 
 // -----
 // mainMenu
-// Handles user input
+// Handles user input and calls the next function step according to main menu input
 // returns: Bool, true if user chooses to exit, false otherwise (out)
 bool TextUI(){
     switch(MainMenu())
@@ -80,6 +80,8 @@ int MainMenu(){
 // -----
 // Create Customer Request
 // Displays menu for Create Customer Request and waits for User input
+// Case 1: Non-Existing Customer Submits a Change Request
+// Case 2: Existing Customer Submits a Change Request
 void CreateCustomerRequest(){
     // needed variables
     int input;
@@ -255,6 +257,11 @@ void CreateCustomerRequest(){
 // -----
 // Modify Change/Feature Request
 // Displays Modify Change/Feature Request menu and waits for User input
+// Case 1: Updates Change Item Status
+// Case 2: Updates anticipated release date of Change Item
+// Case 3: Updates Change Item Description
+// Case 4: Updates User Information
+// Case 5: Add new Product release to database
 void ModifyRequest(){
     int input;
     cout << "=== Modify Change/Feature Request ===" << endl;
@@ -442,10 +449,12 @@ void ModifyRequest(){
 
 // -----
 // PrintReportsAndInquiries
-// Displays Menu for print reports and inquiries, waits for User input, and
-// Returns which action is selected by user
-// returns: int input (User Selection) (out)
-int PrintReportsAndInquiries()
+// Displays Menu for print reports and inquiries and waits for User input
+// case 1: Prints open Change Items for a product or prints Change Item information for a specific change Item
+// case 2: Prints report for customers
+// case 3: Displays status of a Change Item
+// case 4: Displays Information of a user
+void PrintReportsAndInquiries()
 {    
     int input;
     cout << "=== Print/View Reports and Inquiries ===" << endl;
@@ -479,7 +488,7 @@ int PrintReportsAndInquiries()
             cin >> Product;
             if (!CheckProductExists(Product)) {
                 cout << "Product doesn't exist in our system" << endl;
-                return 1;
+                return;
             }
             cout << "Enter start date for date range (YYYY-MM-DD): ";
             cin >> dateStart;
@@ -555,16 +564,18 @@ int PrintReportsAndInquiries()
             break;
         }
     case 0:
-        return 0;
+        return;
     default:
         break;
     }
-    return 0;
+    return;
 }
 
 // -----
 // BackupData
 // Displays Backup Data menu and waits for User input
+// case 1: backs up every file storing objects in database
+// case 2: displays menu for user to select backing up inidividual files in database
 void BackupData(){
     int input;
     cout << "=== Backup Data ===" << endl;
