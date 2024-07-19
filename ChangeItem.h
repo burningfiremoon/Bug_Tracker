@@ -5,6 +5,7 @@
 1.0 - 14-July-2024 - Created by Tanvir
 Initial creation and setup of ChangeItem class
 2.0 - 17-July-2024 - Modified by Charles
+2.1 - 18-July-2024 - Modified by Skyler
 */
 
 //-------------------------------------
@@ -39,7 +40,7 @@ Initial creation and setup of ChangeItem class
 class ChangeItem : public DatabaseRecord {
 public:
     //-------------------------------------
-    // Constructors and Destructor
+    // Constructors
     //-------------------------------------
     /*
         ChangeItem(const char* changeID)
@@ -49,6 +50,9 @@ public:
     */
     ChangeItem(const char* changeID);
 
+    //-------------------------------------
+    // Copy Constructor
+    //-------------------------------------
     /*
         ChangeItem(const ChangeItem& data)
         - Purpose: Copy constructor to create a copy of an existing ChangeItem object.

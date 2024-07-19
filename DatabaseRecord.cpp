@@ -5,6 +5,7 @@
 1.0 - 17-July-2024 - Created by Tanvir
 Initial creation and setup of DatabaseRecord class
 2.0 - 18-July-2024 - Modified by Anthony
+2.1 - 18-July-2024 - Modified by Skyler
 */
 
 //-------------------------------------
@@ -32,19 +33,8 @@ Initial creation and setup of DatabaseRecord class
 
 using namespace std;
 
-//-------------------------------------
-// Static Member Initialization
-//-------------------------------------
-
 fstream DatabaseRecord::dbFile;
 
-//-------------------------------------
-// Constructor
-//-------------------------------------
-/*
-    DatabaseRecord::DatabaseRecord()
-    - Purpose: Initialize a DatabaseRecord object and generate a random ID.
-*/
 DatabaseRecord::DatabaseRecord() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     for (int i = 0; i < 6; i++) {
@@ -52,14 +42,6 @@ DatabaseRecord::DatabaseRecord() {
     }
 }
 
-//-------------------------------------
-// Getter for ID
-//-------------------------------------
-/*
-    int DatabaseRecord::getID() const
-    - Purpose: Get the integer representation of the record ID.
-    - Returns: int (out): The integer representation of the record ID.
-*/
 int DatabaseRecord::getID() const {
     int intID = 0;
     for (int i = 0; i < 6; i++) {
@@ -68,15 +50,6 @@ int DatabaseRecord::getID() const {
     return intID;
 }
 
-//-------------------------------------
-// File Operations
-//-------------------------------------
-/*
-    void DatabaseRecord::openFile(const string& fileName)
-    - Purpose: Open the database file with the given file name.
-    - Parameters:
-        - const string& fileName (in): The name of the file to open.
-*/
 void DatabaseRecord::openFile(const string& fileName) {
     dbFile.open(fileName, ios::in | ios::out | ios::binary);
     if (!dbFile) {
@@ -90,48 +63,21 @@ void DatabaseRecord::openFile(const string& fileName) {
     }
 }
 
-/*
-    void DatabaseRecord::closeFile()
-    - Purpose: Close the database file.
-*/
 void DatabaseRecord::closeFile() {
     if (dbFile.is_open()) {
         dbFile.close();
     }
 }
 
-//-------------------------------------
-// Utility Methods
-//-------------------------------------
-/*
-    void DatabaseRecord::seekToBeginning()
-    - Purpose: Seek to the beginning of the database file.
-*/
 void DatabaseRecord::seekToBeginning() {
     dbFile.clear();
     dbFile.seekg(0, ios::beg);
 }
 
-/*
-    fstream& DatabaseRecord::getFile()
-    - Purpose: Get the file stream for the database file.
-    - Returns: fstream& (out): The file stream for the database file.
-*/
 fstream& DatabaseRecord::getFile() {
     return dbFile;
 }
 
-//-------------------------------------
-// Record Operations
-//-------------------------------------
-/*
-    bool DatabaseRecord::findRecord(const char* id, DatabaseRecord& record)
-    - Purpose: Find a record with the given ID in the database file.
-    - Parameters:
-        - const char* id (in): The ID of the record to find.
-        - DatabaseRecord& record (out): The record object to store the found record.
-    - Returns: bool (out): True if the record is found, false otherwise.
-*/
 bool DatabaseRecord::findRecord(const char* id, DatabaseRecord& record) {
     seekToBeginning();
     string line;
@@ -147,13 +93,6 @@ bool DatabaseRecord::findRecord(const char* id, DatabaseRecord& record) {
     return false;
 }
 
-/*
-    bool DatabaseRecord::deleteRecord(const char* id)
-    - Purpose: Delete a record with the given ID from the database file.
-    - Parameters:
-        - const char* id (in): The ID of the record to delete.
-    - Returns: bool (out): True if the record is deleted successfully, false otherwise.
-*/
 bool DatabaseRecord::deleteRecord(const char* id) {
     seekToBeginning();
     string line;

@@ -5,6 +5,7 @@
 1.0 - 15-July-2024 - Created by Tanvir
 Initial creation and setup of ChangeRequest class
 2.0 - 16-July-2024 - Modified by Anthony
+2.1 - 18-July-2024 - Modified by Skyler
 */
 
 //-------------------------------------
@@ -31,22 +32,8 @@ Initial creation and setup of ChangeRequest class
 
 using namespace std;
 
-//-------------------------------------
-// Static Member Initialization
-//-------------------------------------
-
 const int ChangeRequest::recordSize = sizeof(changeID) + sizeof(requesterName) + sizeof(description) + sizeof(reportedDate) + sizeof(priority) + sizeof(state);
 
-//-------------------------------------
-// Constructor
-//-------------------------------------
-/*
-    ChangeRequest::ChangeRequest(const char* changeID, const char* requesterName)
-    - Purpose: Initialize a ChangeRequest object with a given change ID and requester name.
-    - Parameters:
-        - const char* changeID (in): The change ID to initialize the ChangeRequest with.
-        - const char* requesterName (in): The requester name to initialize the ChangeRequest with.
-*/
 ChangeRequest::ChangeRequest(const char* changeID, const char* requesterName) : DatabaseRecord() {
     strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
@@ -62,15 +49,6 @@ ChangeRequest::ChangeRequest(const char* changeID, const char* requesterName) : 
     cout << "Constructor: reportedDate = " << reportedDate.y << "-" << reportedDate.m << "-" << reportedDate.d << endl;
 }
 
-//-------------------------------------
-// Copy Constructor
-//-------------------------------------
-/*
-    ChangeRequest::ChangeRequest(const ChangeRequest& data)
-    - Purpose: Copy constructor to create a copy of an existing ChangeRequest object.
-    - Parameters:
-        - const ChangeRequest& data (in): The ChangeRequest object to copy.
-*/
 ChangeRequest::ChangeRequest(const ChangeRequest& data) : DatabaseRecord() {
     strncpy(this->changeID, data.changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
@@ -83,145 +61,57 @@ ChangeRequest::ChangeRequest(const ChangeRequest& data) : DatabaseRecord() {
     this->state = data.state;
 }
 
-//-------------------------------------
-// Destructor
-//-------------------------------------
-/*
-    ChangeRequest::~ChangeRequest()
-    - Purpose: Destructor to clean up resources used by the ChangeRequest object.
-*/
-ChangeRequest::~ChangeRequest() {}
-
-//-------------------------------------
-// Setters and Getters
-//-------------------------------------
-/*
-    void ChangeRequest::setChangeID(const char* changeID)
-    - Purpose: Set the change ID for the ChangeRequest.
-    - Parameters:
-        - const char* changeID (in): The change ID to set.
-*/
 void ChangeRequest::setChangeID(const char* changeID) {
     strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
 }
 
-/*
-    const char* ChangeRequest::getChangeID() const
-    - Purpose: Get the change ID of the ChangeRequest.
-    - Returns: const char* (out): The change ID of the ChangeRequest.
-*/
 const char* ChangeRequest::getChangeID() const {
     return changeID;
 }
 
-/*
-    void ChangeRequest::setRequesterName(const char* requesterName)
-    - Purpose: Set the requester name for the ChangeRequest.
-    - Parameters:
-        - const char* requesterName (in): The requester name to set.
-*/
 void ChangeRequest::setRequesterName(const char* requesterName) {
     strncpy(this->requesterName, requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
 }
 
-/*
-    const char* ChangeRequest::getRequesterName() const
-    - Purpose: Get the requester name of the ChangeRequest.
-    - Returns: const char* (out): The requester name of the ChangeRequest.
-*/
 const char* ChangeRequest::getRequesterName() const {
     return requesterName;
 }
 
-/*
-    void ChangeRequest::setDescription(const char* description)
-    - Purpose: Set the description for the ChangeRequest.
-    - Parameters:
-        - const char* description (in): The description to set.
-*/
 void ChangeRequest::setDescription(const char* description) {
     strncpy(this->description, description, sizeof(this->description) - 1);
     this->description[29] = '\0'; // Ensure null termination
 }
 
-/*
-    const char* ChangeRequest::getDescription() const
-    - Purpose: Get the description of the ChangeRequest.
-    - Returns: const char* (out): The description of the ChangeRequest.
-*/
 const char* ChangeRequest::getDescription() const {
     return description;
 }
 
-/*
-    void ChangeRequest::setReportedDate(Date date)
-    - Purpose: Set the reported date for the ChangeRequest.
-    - Parameters:
-        - Date date (in): The reported date to set.
-*/
 void ChangeRequest::setReportedDate(Date date) {
     this->reportedDate = date;
 }
 
-/*
-    Date ChangeRequest::getReportedDate() const
-    - Purpose: Get the reported date of the ChangeRequest.
-    - Returns: Date (out): The reported date of the ChangeRequest.
-*/
 Date ChangeRequest::getReportedDate() const {
     return reportedDate;
 }
 
-/*
-    void ChangeRequest::setPriority(int priority)
-    - Purpose: Set the priority for the ChangeRequest.
-    - Parameters:
-        - int priority (in): The priority to set.
-*/
 void ChangeRequest::setPriority(int priority) {
     this->priority = priority;
 }
 
-/*
-    int ChangeRequest::getPriority() const
-    - Purpose: Get the priority of the ChangeRequest.
-    - Returns: int (out): The priority of the ChangeRequest.
-*/
 int ChangeRequest::getPriority() const {
     return priority;
 }
 
-/*
-    void ChangeRequest::setState(Status state)
-    - Purpose: Set the state for the ChangeRequest.
-    - Parameters:
-        - Status state (in): The state to set.
-*/
 void ChangeRequest::setState(Status state) {
     this->state = state;
 }
 
-/*
-    Status ChangeRequest::getState() const
-    - Purpose: Get the state of the ChangeRequest.
-    - Returns: Status (out): The state of the ChangeRequest.
-*/
 Status ChangeRequest::getState() const {
     return state;
 }
 
-//-------------------------------------
-// File Operations
-//-------------------------------------
-/*
-    bool ChangeRequest::writeRecord(fstream &dbFile) const
-    - Purpose: Write the ChangeRequest record to the given file stream.
-    - Parameters:
-        - fstream &dbFile (in/out): The file stream to write the record to.
-    - Returns: bool (out): True if the record is written successfully, false otherwise.
-*/
 bool ChangeRequest::writeRecord(fstream &dbFile) const {
     dbFile.seekp(0, ios::end);
     dbFile.write(changeID, sizeof(changeID));
@@ -234,13 +124,6 @@ bool ChangeRequest::writeRecord(fstream &dbFile) const {
     return true;
 }
 
-/*
-    bool ChangeRequest::readRecord(fstream &dbFile)
-    - Purpose: Read a ChangeRequest record from the given file stream.
-    - Parameters:
-        - fstream &dbFile (in/out): The file stream to read the record from.
-    - Returns: bool (out): True if the record is read successfully, false otherwise.
-*/
 bool ChangeRequest::readRecord(fstream &dbFile) {
     char tempChangeID[7];
     char tempRequesterName[31];
@@ -272,21 +155,10 @@ bool ChangeRequest::readRecord(fstream &dbFile) {
     return false;
 }
 
-/*
-    int ChangeRequest::getRecordSize() const
-    - Purpose: Get the size of the ChangeRequest record.
-    - Returns: int (out): The size of the ChangeRequest record.
-*/
 int ChangeRequest::getRecordSize() const {
     return sizeof(changeID) + sizeof(requesterName) + sizeof(description) + sizeof(reportedDate) + sizeof(priority) + sizeof(state);
 }
 
-/*
-    void ChangeRequest::readFromBuffer(const char* buffer)
-    - Purpose: Read the ChangeRequest record from a buffer.
-    - Parameters:
-        - const char* buffer (in): The buffer to read the record from.
-*/
 void ChangeRequest::readFromBuffer(const char* buffer) {
     memcpy(changeID, buffer, sizeof(changeID));
     memcpy(requesterName, buffer + sizeof(changeID), sizeof(requesterName));
