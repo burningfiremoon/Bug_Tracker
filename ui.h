@@ -283,7 +283,7 @@ void ModifyRequest(){
                 cout << "The change Item with " << changeID << " changeID doesn't exist" << endl;
                 return;
             }
-            showChangeItemReport(changeID);
+            ViewChangeItem(changeID);
             cout << "Enter the desired status:\n0) Reported\n1) InProgress\n2) Done\n3) Cancelled";
             cout << "Input your selection (0-3) and hit Enter: ";
             cin >> decision;
@@ -309,7 +309,7 @@ void ModifyRequest(){
                     cout << "The change Item with " << changeID << " changeID doesn't exist" << endl;
                     return;
                 }
-                showChangeItemReport(changeID);
+                ViewChangeItem(changeID);
                 cout << "Enter the new release date for " << changeID <<" (YYYY-MM-DD): ";
                 cin >> strDate;
                 date.y = stoi(strDate.substr(0,4));
@@ -338,7 +338,7 @@ void ModifyRequest(){
                     return;
                 }
 
-                showChangeItemReport(changeID);
+                ViewChangeItem(changeID);
                 cout << "Enter the new description for " << changeID <<" (Length: max 30 characters): ";
                 cin >> Description;
                 UpdateChangeItemDescription(changeID, Description);
