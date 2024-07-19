@@ -13,7 +13,7 @@
 
 //-------------------------------------
 // List of #includes
-#include "DatabaseRecordh."
+#include "DatabaseRecord.h"
 #include "ChangeItem.h"
 #include "ChangeRequest.h"
 #include "ProductRelease.h"
