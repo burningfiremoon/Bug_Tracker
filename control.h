@@ -47,21 +47,21 @@ void OpenDatabase();
 // Updates User's name from Name to newName
 // char[31] Name (in)
 // char[31] newName (in)
-void UpdateUserName(char Name[31], char newName[31]);
+void UpdateUserName(char* Name, char* newName);
 
 // -----
 // UpdateUserEmail
 // Updates User's Email to newEmail
 // char[31] Name (in)
 // char[25] newEmail (in)
-void UpdateUserEmail(char Name[31], char newEmail[25]);
+void UpdateUserEmail(char* Name, char* newEmail);
 
 // -----
 // UpdateUserPhoneNumber
 // Updates User's phone number to newPhoneNumber
 // char[31] Name (in)
 // char[18] newPhoneNumber (in)
-void UpdateUserPhoneNumber(char Name[31], char newPhoneNumber[18]);
+void UpdateUserPhoneNumber(char* Name, char* newPhoneNumber);
 
 // -----
 // UpdateChangeItemStatus
@@ -75,7 +75,7 @@ void UpdateChangeItemStatus(int changeID, int status);
 // Checks if User object exists in database and returns a bool value indicating existence
 // char[31] Name (in)
 // bool value if object exists (out)
-bool CheckUserExists(char Name[31]);
+bool CheckUserExists(char* Name);
 
 // -----
 // CheckChangeItemExists
@@ -89,14 +89,14 @@ bool CheckChangeItemExists(int ChangeID);
 // Checks if Product object exists in database and returns a bool value indicating existence
 // char[11] Product (in)
 // bool value if object exists (out)
-bool CheckProductExists(char Product[11]);
+bool CheckProductExists(char* Product);
 
 // -----
 // CheckProductReleaseExists
 // Checks if Product Release object exists in database and returns a bool value indicating existence
 // char[11] Productname (in)
 // bool value if object exists (out)
-bool CheckProductReleaseExists(char Product[11]);
+bool CheckProductReleaseExists(char* Product);
 
 // -----
 // ViewStatusReport
@@ -110,20 +110,20 @@ void ViewStatusReport(Date start, Date end);
 // showUserInfo
 // Displays User information with matching Name onto terminal
 // char[31] Name (in)
-void showUserInfo(char Name[31]);
+void showUserInfo(char* Name);
 
 // -----
 // ShowChangeItems
 // Displays all Change Items for Product onto terminal
 // char[11] ProductID (in)
-void ShowChangeItems(char Product[11]);
+void ShowChangeItems(char* Product);
 
 // -----
 // connectChangeRequest
 // Connects Change Request to Change Item
 // char[31] Name (in)
 // int changeID (in)
-void connectChangeRequest(char Name[31], int changeID);
+void connectChangeRequest(char* Name, int changeID);
 
 // -----
 // ViewChangeItem
@@ -140,7 +140,7 @@ void ViewChangeItem(int changeID){
 // char[11] Product (in)
 // Date start (in)
 // Date end (in)
-void PrintOpenBugs(char Product[11], Date start, Date end);
+void PrintOpenBugs(char* Product, Date start, Date end);
 
 // -----
 // Init_ProductRelease
@@ -148,7 +148,7 @@ void PrintOpenBugs(char Product[11], Date start, Date end);
 // char[11] Product (in)
 // Date date (in)
 // bool value if initialization was successful (out)
-bool Init_ProductRelease(char Product[11], Date date);
+bool Init_ProductRelease(char* Product, Date date);
 
 // -----
 // Init_ChangeItem
@@ -156,7 +156,7 @@ bool Init_ProductRelease(char Product[11], Date date);
 // char[11] Product (in)
 // char[31] ChangeDescription (in)
 // returns new unique (int) changeID (out)
-int Init_ChangeItem(char Product[11], char ChangeDescription[31]);
+int Init_ChangeItem(char* Product, char* ChangeDescription);
 
 // -----
 // Init_User
@@ -165,7 +165,7 @@ int Init_ChangeItem(char Product[11], char ChangeDescription[31]);
 // char[18] PhoneNumber (in)
 // char[25] Email (in)
 // bool value if initialization was successful (out)
-bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
+bool Init_User(char* Name, char* PhoneNumber, char* Email);
 
 // -----
 // Init_ChangeRequest
@@ -176,14 +176,14 @@ bool Init_User(char Name[31], char PhoneNumber[18], char Email[25]);
 // char[31] Description (in)
 // int Priority (in)
 // bool value if initialization was successful (out)
-bool Init_ChangeRequest(char Name[31], char Product[11], char ReleaseID[9], char Description[31], int Priority);
+bool Init_ChangeRequest(char* Name, char* Product, char* ReleaseID, char* Description, int Priority);
 
 // -----
 // Init_Product
 // Initializes new Product
 // char[11] Product (in)
 // bool value if initialization was successful (out)
-bool Init_Product(char Product[11]);
+bool Init_Product(char* Product);
 
 // -----
 // PrintChangeItem
@@ -195,7 +195,7 @@ void PrintChangeItem(int ChangeID);
 // PrintUserInfo
 // Sends information for a specific user to printer
 // char[31] Name (in)
-void PrintUserInfo(char Name[31]);
+void PrintUserInfo(char* Name);
 
 // -----
 // UpdateChangeItemReleaseDate
@@ -209,7 +209,7 @@ void UpdateChangeItemReleaseDate(int changeID, Date date);
 // Updates changeID's Description
 // int changeID (in)
 // char[31] Description (in)
-void UpdateChangeItemDescription(int changeID, char Description[31]);
+void UpdateChangeItemDescription(int changeID, char* Description);
 
 // -----
 // BackUpChangeRequest
