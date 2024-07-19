@@ -8,7 +8,6 @@ class ChangeItem : public DatabaseRecord {
 public:
     ChangeItem(const char* changeID);
     ChangeItem(const ChangeItem& data);
-    ~ChangeItem();
 
     void setChangeID(const char* changeID);
     const char* getChangeID() const;
