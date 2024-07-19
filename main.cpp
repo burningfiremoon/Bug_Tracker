@@ -43,12 +43,17 @@
         ii) any possible exceptions
 */
 
-#include "database.h"
+#include "DatabaseRecord.h"
+#include "ChangeItem.h"
+#include "ChangeRequest.h"
+#include "User.h"
+#include "ProductRelease.h"
 #include "print.h"
 #include "control.h"
 #include "ui.h"
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 int main()
