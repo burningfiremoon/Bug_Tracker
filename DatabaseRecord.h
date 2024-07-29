@@ -5,7 +5,7 @@
 1.0 - 17-July-2024 - Created by Tanvir
 Initial creation and setup of DatabaseRecord class
 2.0 - 18-July-2024 - Modified by Anthony
-2.1 - 18-July-2024 - Modified by Skyler
+3.0 - 26-July-2024 - Modified by Anthony
 */
 
 //-------------------------------------
@@ -66,6 +66,15 @@ public:
         - Purpose: Initialize a DatabaseRecord object and generate a random ID.
     */
     DatabaseRecord();
+
+    //-------------------------------------
+    // Destructor
+    //-------------------------------------
+    /*
+        ~DatabaseRecord()
+        - Purpose: Virtual destructor to clean up resources used by the DatabaseRecord object.
+    */
+    virtual ~DatabaseRecord() = default;
 
     //-------------------------------------
     // Setters and Getters
@@ -131,19 +140,6 @@ public:
     static void closeFile();
 
     /*
-        static void seekToBeginning()
-        - Purpose: Seek to the beginning of the database file.
-    */
-    static void seekToBeginning();
-
-    /*
-        static fstream& getFile()
-        - Purpose: Get the file stream of the database file.
-        - Returns: fstream& (out): The file stream of the database file.
-    */
-    static fstream& getFile();
-
-    /*
         static bool findRecord(const char* id, DatabaseRecord& record)
         - Purpose: Find a record with the given ID in the database file.
         - Parameters:
@@ -161,6 +157,19 @@ public:
         - Returns: bool (out): True if the record is deleted successfully, false otherwise.
     */
     static bool deleteRecord(const char* id);
+
+    /*
+        static fstream& getFile()
+        - Purpose: Get the file stream of the database file.
+        - Returns: fstream& (out): The file stream of the database file.
+    */
+    static fstream& getFile();
+
+    /*
+        static void seekToBeginning()
+        - Purpose: Seek to the beginning of the database file.
+    */
+    static void seekToBeginning();
 
 protected:
     //-------------------------------------

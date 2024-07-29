@@ -5,7 +5,7 @@
 1.0 - 14-July-2024 - Created by Tanvir
 Initial creation and setup of ChangeItem class
 2.0 - 17-July-2024 - Modified by Charles
-2.1 - 18-July-2024 - Modified by Skyler
+3.0 - 26-July-2024 - Modified by Anthony
 */
 
 //-------------------------------------
@@ -40,7 +40,7 @@ Initial creation and setup of ChangeItem class
 class ChangeItem : public DatabaseRecord {
 public:
     //-------------------------------------
-    // Constructors
+    // Constructors and Destructor
     //-------------------------------------
     /*
         ChangeItem(const char* changeID)
@@ -50,9 +50,6 @@ public:
     */
     ChangeItem(const char* changeID);
 
-    //-------------------------------------
-    // Copy Constructor
-    //-------------------------------------
     /*
         ChangeItem(const ChangeItem& data)
         - Purpose: Copy constructor to create a copy of an existing ChangeItem object.
@@ -61,7 +58,21 @@ public:
     */
     ChangeItem(const ChangeItem& data);
 
+    /*
+        ~ChangeItem()
+        - Purpose: Destructor to clean up resources used by the ChangeItem object.
+    */
+    ~ChangeItem() override;
 
+    //-------------------------------------
+    // Setters and Getters
+    //-------------------------------------
+    /*
+        void setChangeID(const char* changeID)
+        - Purpose: Set the change ID for the ChangeItem.
+        - Parameters:
+            - const char* changeID (in): The change ID to set.
+    */
     void setChangeID(const char* changeID);
 
     /*
