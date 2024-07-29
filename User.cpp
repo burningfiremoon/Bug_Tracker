@@ -1,40 +1,13 @@
-//-------------------------------------
-// Revision History
-//-------------------------------------
-/*
-1.0 - 15-July-2024 - Created by Skyler
-Initial creation and setup of User class
-2.0 - 17-July-2024 - Modified by Skyler
-Added detailed comments and explanations
-2.1 - 18-July-2024 - Modified by Skyler
-*/
-
-//-------------------------------------
-// Explanation
-//-------------------------------------
-/*
-    User.cpp
-
-    This module contains the implementation of the User class, which represents a user record.
-    The User class encapsulates details such as requester name, phone number, email, and address.
-    The purpose of this class is to provide a cohesive representation of a user and manage its read 
-    and write operations to a file. The attributes and methods are placed together to provide high 
-    cohesion and facilitate easy management of user records.
-
-    Includes:
-    - User constructors and destructor
-    - Getter and setter methods for various attributes
-    - Methods to read and write records from/to a file
-*/
-
 #include "User.h"
 #include <iostream>
 #include <cstring>
 
 using namespace std;
 
+// Static Member Initialization
 const int User::recordSize = sizeof(requesterName) + sizeof(phone) + sizeof(email) + sizeof(address);
 
+// Constructor
 User::User(const char* requesterName) : DatabaseRecord() {
     strncpy(this->requesterName, requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
@@ -43,6 +16,7 @@ User::User(const char* requesterName) : DatabaseRecord() {
     memset(address, 0, sizeof(address));
 }
 
+// Copy Constructor
 User::User(const User& data) : DatabaseRecord() {
     strncpy(this->requesterName, data.requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
@@ -54,6 +28,10 @@ User::User(const User& data) : DatabaseRecord() {
     this->address[30] = '\0'; // Ensure null termination
 }
 
+// Destructor
+User::~User() {}
+
+// Setters and Getters
 void User::setRequesterName(const char* requesterName) {
     strncpy(this->requesterName, requesterName, sizeof(this->requesterName) - 1);
     this->requesterName[30] = '\0'; // Ensure null termination
@@ -90,6 +68,7 @@ const char* User::getAddress() const {
     return address;
 }
 
+// File Operations
 bool User::writeRecord(fstream &dbFile) const {
     dbFile.seekp(0, ios::end);
     dbFile.write(requesterName, sizeof(requesterName));

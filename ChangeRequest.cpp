@@ -1,39 +1,13 @@
-//-------------------------------------
-// Revision History
-//-------------------------------------
-/*
-1.0 - 15-July-2024 - Created by Tanvir
-Initial creation and setup of ChangeRequest class
-2.0 - 16-July-2024 - Modified by Anthony
-2.1 - 18-July-2024 - Modified by Skyler
-*/
-
-//-------------------------------------
-// Explanation
-//-------------------------------------
-/*
-    ChangeRequest.cpp
-
-    This module contains the implementation of the ChangeRequest class, which represents a change request record.
-    The ChangeRequest class encapsulates details such as change ID, requester name, description, reported date,
-    priority, and state. The purpose of this class is to provide a cohesive representation of a change request and 
-    manage its read and write operations to a file. The attributes and methods are placed together to provide high
-    cohesion and facilitate easy management of change request records.
-
-    Includes:
-    - ChangeRequest constructor and destructor
-    - Getter and setter methods for various attributes
-    - Methods to read and write records from/to a file
-*/
-
 #include "ChangeRequest.h"
 #include <iostream>
 #include <cstring>
 
 using namespace std;
 
+// Static Member Initialization
 const int ChangeRequest::recordSize = sizeof(changeID) + sizeof(requesterName) + sizeof(description) + sizeof(reportedDate) + sizeof(priority) + sizeof(state);
 
+// Constructor
 ChangeRequest::ChangeRequest(const char* changeID, const char* requesterName) : DatabaseRecord() {
     strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
@@ -49,6 +23,7 @@ ChangeRequest::ChangeRequest(const char* changeID, const char* requesterName) : 
     cout << "Constructor: reportedDate = " << reportedDate.y << "-" << reportedDate.m << "-" << reportedDate.d << endl;
 }
 
+// Copy Constructor
 ChangeRequest::ChangeRequest(const ChangeRequest& data) : DatabaseRecord() {
     strncpy(this->changeID, data.changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
@@ -61,6 +36,10 @@ ChangeRequest::ChangeRequest(const ChangeRequest& data) : DatabaseRecord() {
     this->state = data.state;
 }
 
+// Destructor
+ChangeRequest::~ChangeRequest() {}
+
+// Setters and Getters
 void ChangeRequest::setChangeID(const char* changeID) {
     strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
     this->changeID[6] = '\0'; // Ensure null termination
@@ -112,6 +91,7 @@ Status ChangeRequest::getState() const {
     return state;
 }
 
+// File Operations
 bool ChangeRequest::writeRecord(fstream &dbFile) const {
     dbFile.seekp(0, ios::end);
     dbFile.write(changeID, sizeof(changeID));
@@ -127,7 +107,7 @@ bool ChangeRequest::writeRecord(fstream &dbFile) const {
 bool ChangeRequest::readRecord(fstream &dbFile) {
     char tempChangeID[7];
     char tempRequesterName[31];
-    char tempDescription[30];
+    char tempDescription[31];
     Date tempDate;
     int tempPriority;
     Status tempState;
