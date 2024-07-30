@@ -13,21 +13,20 @@
 
 //-------------------------------------
 // List of #includes
-#include "DatabaseRecord.h"
-#include "ChangeItem.h"
+#include <iostream>
+#include <fstream>
+#include <cassert>
+#include <cstring>
 #include "ChangeRequest.h"
-#include "ProductRelease.h"
 #include "User.h"
-#include "print.h"
-#include "ui.h"
 
 //-------------------------------------
 // Function prototypes
 
 //functions taking care of different scenarios
 
-// -----
-// StopAccepting
+// ----- *Redundant?
+// StopAccepting 
 // Tells main To stop accepting User input
 void StopAccepting()
 {
@@ -35,7 +34,7 @@ void StopAccepting()
 }
 
 // -----
-// StartAccepting
+// StartAccepting *Redundant?
 // Tells main To start accepting User input
 void StartAccepting()
 {
@@ -47,15 +46,15 @@ void StartAccepting()
 // Closes access to database
 void CloseDatabase()
 {
-    return;
+    closeDatabase();
 }
 
 // -----
 // OpenDatabase
 // opens access to database
-void OpenDatabase()
+void OpenDatabase(const string& fileName)
 {
-    return;
+    OpenDatabase(fileName);
 }
 
 // -----
@@ -144,48 +143,32 @@ bool CheckProductReleaseExists(char* Product)
 // Date start (in)
 // Date end (in)
 // Open Change Items between date range (out)
-void ViewStatusReport(Date start, Date end)
-{
-    return;
-}
+void ViewStatusReport(Date start, Date end);
 
 // -----
 // showUserInfo
 // Displays User information with matching Name onto terminal
 // char[31] Name (in)
-void showUserInfo(char* Name)
-{
-    return;
-}
+void showUserInfo(char* Name);
 
 // -----
 // ShowChangeItems
 // Displays all Change Items for Product onto terminal
 // char[11] ProductID (in)
-void ShowChangeItems(char* Product)
-{
-    return;
-}
+void ShowChangeItems(char* Product);
 
 // -----
 // connectChangeRequest
 // Connects Change Request to Change Item
 // char[31] Name (in)
 // int changeID (in)
-void connectChangeRequest(char* Name, int changeID)
-{
-    return;
-}
+void connectChangeRequest(char* Name, int changeID);
 
 // -----
 // ViewChangeItem
 // Displays Change Item information onto terminal
 // int changeID (in)
-void ViewChangeItem(int changeID)
-{
-    return;
-}
-
+void ViewChangeItem(int changeID);
 
 // -----
 // PrintOpenBugs
@@ -193,10 +176,7 @@ void ViewChangeItem(int changeID)
 // char[11] Product (in)
 // Date start (in)
 // Date end (in)
-void PrintOpenBugs(char* Product, Date start, Date end)
-{
-    return;
-}
+void PrintOpenBugs(char* Product, Date start, Date end);
 
 // -----
 // Init_ProductRelease
@@ -204,10 +184,7 @@ void PrintOpenBugs(char* Product, Date start, Date end)
 // char[11] Product (in)
 // Date date (in)
 // bool value if initialization was successful (out)
-bool Init_ProductRelease(char* Product, Date date)
-{
-    return;
-}
+bool Init_ProductRelease(char* Product, Date date);
 
 // -----
 // Init_ChangeItem
@@ -215,10 +192,7 @@ bool Init_ProductRelease(char* Product, Date date)
 // char[11] Product (in)
 // char[31] ChangeDescription (in)
 // returns new unique (int) changeID (out)
-int Init_ChangeItem(char* Product, char* ChangeDescription)
-{
-    return 1;
-}
+int Init_ChangeItem(char* Product, char* ChangeDescription);
 
 // -----
 // Init_User
@@ -227,10 +201,7 @@ int Init_ChangeItem(char* Product, char* ChangeDescription)
 // char[18] PhoneNumber (in)
 // char[25] Email (in)
 // bool value if initialization was successful (out)
-bool Init_User(char* Name, char* PhoneNumber, char* Email)
-{
-    return true;
-}
+bool Init_User(char* Name, char* PhoneNumber, char* Email);
 
 // -----
 // Init_ChangeRequest
@@ -241,121 +212,79 @@ bool Init_User(char* Name, char* PhoneNumber, char* Email)
 // char[31] Description (in)
 // int Priority (in)
 // bool value if initialization was successful (out)
-bool Init_ChangeRequest(char* Name, char* Product, char* ReleaseID, char* Description, int Priority)
-{
-    return true;
-}
+bool Init_ChangeRequest(char* Name, char* Product, char* ReleaseID, char* Description, int Priority);
 
 // -----
 // Init_Product
 // Initializes new Product
 // char[11] Product (in)
 // bool value if initialization was successful (out)
-bool Init_Product(char* Product)
-{
-    return true;
-}
+bool Init_Product(char* Product);
 
 // -----
 // PrintChangeItem
 // Sends information for a specific change item to printer
 // int ChangeID (in)
-void PrintChangeItem(int ChangeID)
-{
-    return;
-}
+void PrintChangeItem(int ChangeID);
 
 // -----
 // PrintUserInfo
 // Sends information for a specific user to printer
 // char[31] Name (in)
-void PrintUserInfo(char* Name)
-{
-    return;
-}
+void PrintUserInfo(char* Name);
 
 // -----
 // UpdateChangeItemReleaseDate
 // Updates changeID's release date to date
 // int changeID (in)
 // Date date (in)
-void UpdateChangeItemReleaseDate(int changeID, Date date)
-{
-    return;
-}
+void UpdateChangeItemReleaseDate(int changeID, Date date);
 
 // -----
 // UpdateChangeItemDescription
 // Updates changeID's Description
 // int changeID (in)
 // char[31] Description (in)
-void UpdateChangeItemDescription(int changeID, char* Description)
-{
-    return;
-}
+void UpdateChangeItemDescription(int changeID, char* Description);
 
 // -----
 // BackUpChangeRequest
 // Backs up Change Request file in database
 // bool value if back up was successful (out)
-bool BackUpChangeRequest()
-{
-    return true;
-}
+bool BackUpChangeRequest();
 
 // -----
 // BackUpUsers
 // Backs up Users file in database
 // bool value if back up was successful (out)
-bool BackUpUsers()
-{
-    return true;
-}
-
+bool BackUpUsers();
 
 // -----
 // BackUpChangeItems
 // Backs up Change Items file in database
 // bool value if back up was successful (out)
-bool BackUpChangeItems()
-{
-    return true;
-}
+bool BackUpChangeItems();
 
 
 // -----
 // BackUpProductReleases
 // Backs up Product Releases file in database
 // bool value if back up was successful (out)
-bool BackUpProductReleases()
-{
-    return true;
-}
+bool BackUpProductReleases();
 
 
 // -----
 // BackUpProducts
 // Backs up Products file in database
 // bool value if back up was successful (out)
-bool BackUpProducts()
-{
-    return true;
-}
+bool BackUpProducts();
 
 
 // -----
 // BackUpEntireDatabase
 // Backs up  file in database
 // bool value if back up was successful (out)
-bool BackUpEntireDatabase()
-{
-    BackUpChangeRequest();
-    BackUpUsers();
-    BackUpChangeItems();
-    BackUpProductReleases();
-    BackUpProducts();
-    return true;
-}
+bool BackUpEntireDatabase();
 
 
 #endif // CONTROL_H

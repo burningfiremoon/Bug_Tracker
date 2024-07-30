@@ -59,6 +59,14 @@ public:
     ChangeItem(const ChangeItem& data);
 
     /*
+    ChangeItem::ChangeItem()
+    - Purpose: Initialize a black ChangeItem object to use functions
+    - Parameters:
+        - None
+    */
+    ChangeItem();
+
+    /*
         ~ChangeItem()
         - Purpose: Destructor to clean up resources used by the ChangeItem object.
     */

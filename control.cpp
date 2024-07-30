@@ -235,7 +235,7 @@ bool Init_ChangeRequest(char* Name, char* Product, char* ReleaseID, char* Descri
     ChangeRequest cr(Name, Product);
     cr.setDescription(Description);
     cr.setPriority(Priority);
-    ReleaseID rid;
+    struct ReleaseID rid;
     strncpy(rid.id, ReleaseID, sizeof(rid.id));
     cr.setReleaseID(rid);
     fstream &dbFile = DatabaseRecord::getFile();

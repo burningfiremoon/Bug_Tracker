@@ -58,12 +58,12 @@ using namespace std;
 
 int main()
 {
-    //openDatabase();
+    openDatabase("Database.dat");
     bool exit;
     do
     {
         exit = TextUI();
     } while (exit == false);
-    // closeDatabase();
+    CloseDatabase();
     return 0;
 }

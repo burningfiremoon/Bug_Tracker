@@ -154,6 +154,20 @@ public:
     void setState(Status state);
 
     /*
+        const ReleaseID getReleaseID() const
+        - Purpose: Get the ReleaseID for the ChangeRequest.
+    */
+    const ReleaseID getReleaseID() const;
+
+    /*
+        void setReleaseID(ReleaseID rid)
+        - Purpose: Set the ReleaseID for the ChangeRequest.
+        - Parameters:
+            - ReleaseID rid (in): The new ReleaseID to set.
+    */
+    void setReleaseID(ReleaseID rid);
+
+    /*
         Status getState() const
         - Purpose: Get the state of the ChangeRequest.
         - Returns: Status (out): The state of the ChangeRequest.
@@ -201,6 +215,7 @@ private:
     // Member Variables
     //-------------------------------------
     char changeID[7]; // 6 characters plus null terminator
+    ReleaseID releaseID;
     char requesterName[31]; // 30 characters plus null terminator
     char description[31]; // 30 characters plus null terminator
     Date reportedDate;

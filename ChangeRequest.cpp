@@ -87,6 +87,14 @@ void ChangeRequest::setState(Status state) {
     this->state = state;
 }
 
+const ReleaseID ChangeRequest::getReleaseID() const {
+    return releaseID;
+}
+
+void ChangeRequest::setReleaseID(ReleaseID rid){
+    this->releaseID = rid;
+}
+
 Status ChangeRequest::getState() const {
     return state;
 }

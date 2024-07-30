@@ -15,16 +15,16 @@
 // -----
 // printChangeItem
 // Prints details of a change item
-void printChangeItem();
+void printChangeItem(const ChangeItem& item);
 
 // -----
 // printOpenBugs
 // Prints a list of open bugs
-void printOpenBugs();
+void printOpenBugs(const char* productName, Date start, Date end);
 
 // -----
 // printStatusReport
 // Prints a status report
-void printStatusReport();
+void printStatusReport(Date start, Date end);
 
 #endif // PRINT_H

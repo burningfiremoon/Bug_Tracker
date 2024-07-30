@@ -84,6 +84,20 @@ ChangeItem::ChangeItem(const ChangeItem& data) {
 }
 
 //-------------------------------------
+// Default Constructor
+//-------------------------------------
+/*
+    ChangeItem::ChangeItem()
+    - Purpose: Initialize a black ChangeItem object to use functions
+    - Parameters:
+        - None
+*/
+
+ChangeItem::ChangeItem() {
+
+}
+
+//-------------------------------------
 // Destructor
 //-------------------------------------
 /*
