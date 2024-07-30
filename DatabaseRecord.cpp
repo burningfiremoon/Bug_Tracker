@@ -51,6 +51,7 @@ DatabaseRecord::DatabaseRecord() {
     for (int i = 0; i < 6; i++) {
         this->id[i] = 'A' + std::rand() % 26;
     }
+    this->id[6] = '\0'; // Ensure null termination
 }
 
 //-------------------------------------
@@ -80,18 +81,17 @@ int DatabaseRecord::getID() const {
         - const string& fileName (in): The name of the file to open.
 */
 void DatabaseRecord::openFile(const string& fileName) {
-    dbFile.open(fileName, ios::in | ios::out | ios::binary | ios::app);
+    dbFile.open(fileName, ios::in | ios::out | ios::binary);
     if (!dbFile) {
-        dbFile.open(fileName, ios::out | ios::binary | ios::app);
+        dbFile.open(fileName, ios::out | ios::binary);
         dbFile.close();
-        dbFile.open(fileName, ios::in | ios::out | ios::binary | ios::app);
+        dbFile.open(fileName, ios::in | ios::out | ios::binary);
     }
     if (!dbFile.is_open()) {
         throw runtime_error("Error opening database file: " + fileName);
     }
     cout << "Database file " << fileName << " opened successfully." << endl; // Debug output
 }
-
 
 /*
     void DatabaseRecord::closeFile()
@@ -100,6 +100,7 @@ void DatabaseRecord::openFile(const string& fileName) {
 void DatabaseRecord::closeFile() {
     if (dbFile.is_open()) {
         dbFile.close();
+        cout << "Database file closed successfully." << endl; // Debug output
     }
 }
 
@@ -111,8 +112,8 @@ void DatabaseRecord::closeFile() {
     - Purpose: Seek to the beginning of the database file.
 */
 void DatabaseRecord::seekToBeginning() {
-    dbFile.clear();
-    dbFile.seekg(0, ios::beg);
+    dbFile.clear(); // Clear any error flags
+    dbFile.seekg(0, ios::beg); // Go to the beginning of the file
 }
 
 /*
@@ -124,7 +125,6 @@ fstream& DatabaseRecord::getFile() {
     cout << "Returning database file stream." << endl; // Debug output
     return dbFile;
 }
-
 
 //-------------------------------------
 // Record Operations
@@ -176,9 +176,50 @@ bool DatabaseRecord::deleteRecord(const char* id) {
         tempFile << line << endl;
     }
     tempFile.close();
+    dbFile.close();
     if (found) {
         remove("Database.txt");
         rename("temp.txt", "Database.txt");
+        openFile("Database.txt");
     }
     return found;
+}
+
+//-------------------------------------
+// Function Implementations
+//-------------------------------------
+/*
+    void openDatabase(const string& fileName)
+    - Purpose: Open the database file with the given name.
+    - Parameters:
+        - const string& fileName (in): The name of the file to open.
+*/
+void openDatabase(const string& fileName) {
+    DatabaseRecord::openFile(fileName);
+}
+
+/*
+    void closeDatabase()
+    - Purpose: Close the database file.
+*/
+void closeDatabase() {
+    DatabaseRecord::closeFile();
+}
+
+/*
+    int truncateFile(const char* path, off_t length)
+    - Purpose: Truncate the file to the given length.
+    - Parameters:
+        - const char* path (in): The path of the file to truncate.
+        - off_t length (in): The length to truncate the file to.
+    - Returns: int (out): 0 on success, -1 on failure.
+*/
+int truncateFile(const char* path, off_t length) {
+    int result = truncate(path, length);
+    if (result == 0) {
+        cout << "File truncated successfully." << endl;
+    } else {
+        perror("truncate");
+    }
+    return result;
 }
