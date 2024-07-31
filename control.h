@@ -28,114 +28,75 @@
 // ----- *Redundant?
 // StopAccepting 
 // Tells main To stop accepting User input
-void StopAccepting()
-{
-    return;
-}
+void StopAccepting();
 
 // -----
 // StartAccepting *Redundant?
 // Tells main To start accepting User input
-void StartAccepting()
-{
-    return;
-}
+void StartAccepting();
 
 // -----
 // CloseDatabase
 // Closes access to database
-void CloseDatabase()
-{
-    closeDatabase();
-}
-
+void CloseDatabase();
 // -----
 // OpenDatabase
 // opens access to database
-void OpenDatabase(const string& fileName)
-{
-    OpenDatabase(fileName);
-}
-
+void OpenDatabase(const string& fileName);
 // -----
 // UpdateUserName
 // Updates User's name from Name to newName
 // char[31] Name (in)
 // char[31] newName (in)
-void UpdateUserName(char* Name, char* newName)
-{
-    return;
-}
+void UpdateUserName(char* Name, char* newName);
 
 // -----
 // UpdateUserEmail
 // Updates User's Email to newEmail
 // char[31] Name (in)
 // char[25] newEmail (in)
-void UpdateUserEmail(char* Name, char* newEmail)
-{
-    return;
-}
+void UpdateUserEmail(char* Name, char* newEmail);
 
 // -----
 // UpdateUserPhoneNumber
 // Updates User's phone number to newPhoneNumber
 // char[31] Name (in)
 // char[18] newPhoneNumber (in)
-void UpdateUserPhoneNumber(char* Name, char* newPhoneNumber)
-{
-    return;
-}
+void UpdateUserPhoneNumber(char* Name, char* newPhoneNumber);
 
 // -----
 // UpdateChangeItemStatus
 // Updates the status of change item with the matching ChangeID with status
 // int changeID (in)
 // int status (in)
-void UpdateChangeItemStatus(int changeID, int status)
-{
-    return;
-}
+void UpdateChangeItemStatus(int changeID, int status);
 
 // -----
 // CheckUserExists
 // Checks if User object exists in database and returns a bool value indicating existence
 // char[31] Name (in)
 // bool value if object exists (out)
-bool CheckUserExists(char* Name)
-{
-    return true;
-}
-
+bool CheckUserExists(char* Name);
 // -----
 // CheckChangeItemExists
 // Checks if Change Item object exists in database and returns a bool value indicating existence
 // int ChangeID (in)
 // bool value if object exists (out)
-bool CheckChangeItemExists(int ChangeID)
-{
-    return true;
-}
+bool CheckChangeItemExists(int ChangeID);
 
 // -----
 // CheckProductExists
 // Checks if Product object exists in database and returns a bool value indicating existence
 // char[11] Product (in)
 // bool value if object exists (out)
-bool CheckProductExists(char* Product)
-{
-    return true;
-}
+bool CheckProductExists(char* Product);
 
 // -----
 // CheckProductReleaseExists
 // Checks if Product Release object exists in database and returns a bool value indicating existence
 // char[11] Productname (in)
 // bool value if object exists (out)
-bool CheckProductReleaseExists(char* Product)
-{
-    return true;
-}
+bool CheckProductReleaseExists(char* Product);
 
 // -----
 // ViewStatusReport
