@@ -21,6 +21,12 @@ using namespace std;
 //-------------------------------------
 // Function definitions
 
+/*
+    void printChangeItem(const ChangeItem& item)
+    - Purpose: Prints the details of a ChangeItem to the console.
+    - Parameters:
+        - const ChangeItem& item (in): The ChangeItem object whose details are to be printed.
+*/
 void printChangeItem(const ChangeItem& item) {
     cout << "Change ID: " << item.getChangeID() << endl;
     cout << "Product Name: " << item.getProductName() << endl;
@@ -33,6 +39,14 @@ void printChangeItem(const ChangeItem& item) {
          << item.getDateFirstReported().d << endl;
 }
 
+/*
+    void printOpenBugs(const char* productName, Date start, Date end)
+    - Purpose: Prints all open change items for a specified product within a date range.
+    - Parameters:
+        - const char* productName (in): The name of the product to filter change items by.
+        - Date start (in): The start date of the range.
+        - Date end (in): The end date of the range.
+*/
 void printOpenBugs(const char* productName, Date start, Date end) {
     fstream &dbFile = DatabaseRecord::getFile();
     ChangeItem item;
@@ -49,6 +63,13 @@ void printOpenBugs(const char* productName, Date start, Date end) {
     }
 }
 
+/*
+    void printStatusReport(Date start, Date end)
+    - Purpose: Prints a report of all change items within a specified date range.
+    - Parameters:
+        - Date start (in): The start date of the range.
+        - Date end (in): The end date of the range.
+*/
 void printStatusReport(Date start, Date end) {
     fstream &dbFile = DatabaseRecord::getFile();
     ChangeItem item;
