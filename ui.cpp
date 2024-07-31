@@ -5,7 +5,7 @@
 using namespace std;
 
 // Main menu for the application
-void MainMenu() {
+int MainMenu() {
     int input;
     bool exit = false;
 
@@ -39,6 +39,8 @@ void MainMenu() {
                 cout << "Invalid option. Please try again." << endl;
         }
     }
+
+    return input;
 }
 
 // Function to handle the creation of customer requests
