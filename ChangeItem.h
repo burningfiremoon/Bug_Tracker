@@ -1,25 +1,44 @@
 #ifndef CHANGEITEM_H
 #define CHANGEITEM_H
 
-#include "DatabaseRecord.h"
-#include <cstring>  // For strcpy and strncpy
+//-------------------------------------
+// Revision History
+//-------------------------------------
+/*
+1.0 - 14-July-2024 - Created by Tanvir
+Initial creation and setup of ChangeItem class
+2.0 - 17-July-2024 - Modified by Charles
+3.0 - 26-July-2024 - Modified by Anthony
+4.0 - 29 July-2024 - Modified by Anthony
+*/
 
-// Define constants for status string lengths and default statuses
-const int StatusStringLength = 20;
-const char StatusReported[StatusStringLength + 1] = "Reported            ";   // 18 chars + 2 spaces
-const char StatusAssessed[StatusStringLength + 1] = "Assessed            ";   // 18 chars + 2 spaces
-const char StatusInProgress[StatusStringLength + 1] = "InProgress          "; // 16 chars + 4 spaces
-const char StatusDone[StatusStringLength + 1] = "Done                ";     // 4 chars + 16 spaces
-const char StatusCancelled[StatusStringLength + 1] = "Cancelled           ";  // 10 chars + 10 spaces
+//-------------------------------------
+// Explanation
+//-------------------------------------
+/*
+    ChangeItem.h
+
+    This header file contains the definition of the ChangeItem class, which represents a change item record.
+    The ChangeItem class inherits from the DatabaseRecord class and encapsulates details such as change ID,
+    product name, change description, status, priority, release ID, and the date first reported. The purpose of this class
+    is to provide a cohesive representation of a change item and manage its read and write operations to a file.
+    The attributes and methods are placed together to provide high cohesion and facilitate easy management of
+    change item records.
+
+    Includes:
+    - ChangeItem constructors and destructor
+    - Getter and setter methods for various attributes
+    - Methods to read and write records from/to a file
+    - Static methods to update specific fields in a change item record
+*/
+
+#include "DatabaseRecord.h"
+#include "StatusConstants.h" // Include shared status constants
 
 //-------------------------------------
 // Class Definition
 //-------------------------------------
 
-/*
-    Class: ChangeItem
-    - Purpose: Represents a change item in the database, inheriting from DatabaseRecord.
-*/
 class ChangeItem : public DatabaseRecord {
 public:
     //-------------------------------------
@@ -92,10 +111,8 @@ public:
         void setChangeDescription(const char* changeDescription)
         - Purpose: Set the change description for the ChangeItem.
         - Parameters:
-            - const char* changeDescription (in): The change description to set. The input string is copied into
+            - const char* changeDescription (in): The change description to set. The input string is copied into 
               a fixed-length buffer and padded with spaces if necessary.
-        - Post-condition: The description is stored in a fixed-length buffer, with any unused buffer space
-          filled with spaces, ensuring that the buffer is null-terminated.
     */
     void setChangeDescription(const char* changeDescription);
 

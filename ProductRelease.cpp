@@ -30,29 +30,16 @@ Added detailed comments and explanations
 #include "ProductRelease.h"
 #include <cstring>
 
-//-------------------------------------
-// Constructors
-//-------------------------------------
-/*
-    ProductRelease::ProductRelease()
-    - Purpose: Default constructor that initializes a ProductRelease object with empty or zero values.
-    - Parameters:
-        - None
-*/
+const int ProductRelease::recordSize = sizeof(productName) + sizeof(releaseID) + sizeof(releaseDate);
+
+// Default constructor
 ProductRelease::ProductRelease() {
     memset(productName, 0, sizeof(productName));
     memset(&releaseID, 0, sizeof(releaseID));
     memset(&releaseDate, 0, sizeof(releaseDate));
 }
 
-/*
-    ProductRelease::ProductRelease(const char* name, ReleaseID id, Date date)
-    - Purpose: Parameterized constructor that initializes a ProductRelease object with specified values.
-    - Parameters:
-        - const char* name (in): The name of the product.
-        - ReleaseID id (in): The ID of the release.
-        - Date date (in): The date of the release.
-*/
+// Parameterized constructor
 ProductRelease::ProductRelease(const char* name, ReleaseID id, Date date) {
     strncpy(productName, name, sizeof(productName) - 1);
     productName[sizeof(productName) - 1] = '\0';
@@ -60,77 +47,43 @@ ProductRelease::ProductRelease(const char* name, ReleaseID id, Date date) {
     releaseDate = date;
 }
 
-//-------------------------------------
-// Setters and Getters
-//-------------------------------------
-/*
-    void ProductRelease::setProductName(const char* name)
-    - Purpose: Set the name of the product for the ProductRelease object.
-    - Parameters:
-        - const char* name (in): The name to set.
-*/
+// Setter for product name
 void ProductRelease::setProductName(const char* name) {
     strncpy(productName, name, sizeof(productName) - 1);
     productName[sizeof(productName) - 1] = '\0';
 }
 
-/*
-    const char* ProductRelease::getProductName() const
-    - Purpose: Get the name of the product for the ProductRelease object.
-    - Returns: const char* (out): The name of the product.
-*/
+// Getter for product name (const)
 const char* ProductRelease::getProductName() const {
     return productName;
 }
 
-/*
-    void ProductRelease::setReleaseID(ReleaseID id)
-    - Purpose: Set the release ID for the ProductRelease object.
-    - Parameters:
-        - ReleaseID id (in): The release ID to set.
-*/
+// Mutable getter for product name (non-const)
+char* ProductRelease::getProductNameMutable() {
+    return productName;
+}
+
+// Setter for release ID
 void ProductRelease::setReleaseID(ReleaseID id) {
     releaseID = id;
 }
 
-/*
-    ReleaseID ProductRelease::getReleaseID() const
-    - Purpose: Get the release ID for the ProductRelease object.
-    - Returns: ReleaseID (out): The release ID of the ProductRelease.
-*/
+// Getter for release ID
 ReleaseID ProductRelease::getReleaseID() const {
     return releaseID;
 }
 
-/*
-    void ProductRelease::setReleaseDate(Date date)
-    - Purpose: Set the release date for the ProductRelease object.
-    - Parameters:
-        - Date date (in): The release date to set.
-*/
+// Setter for release date
 void ProductRelease::setReleaseDate(Date date) {
     releaseDate = date;
 }
 
-/*
-    Date ProductRelease::getReleaseDate() const
-    - Purpose: Get the release date for the ProductRelease object.
-    - Returns: Date (out): The release date of the ProductRelease.
-*/
+// Getter for release date
 Date ProductRelease::getReleaseDate() const {
     return releaseDate;
 }
 
-//-------------------------------------
-// File Operations
-//-------------------------------------
-/*
-    bool ProductRelease::writeRecord(fstream &dbFile) const
-    - Purpose: Write the ProductRelease record to the given file stream.
-    - Parameters:
-        - fstream &dbFile (in/out): The file stream to write the record to.
-    - Returns: bool (out): True if the record is written successfully, false otherwise.
-*/
+// Write the ProductRelease record to a file
 bool ProductRelease::writeRecord(fstream &dbFile) const {
     dbFile.seekp(0, ios::end);
     dbFile.write(productName, sizeof(productName));
@@ -140,13 +93,7 @@ bool ProductRelease::writeRecord(fstream &dbFile) const {
     return true;
 }
 
-/*
-    bool ProductRelease::readRecord(fstream &dbFile)
-    - Purpose: Read a ProductRelease record from the given file stream.
-    - Parameters:
-        - fstream &dbFile (in/out): The file stream to read the record from.
-    - Returns: bool (out): True if the record is read successfully, false otherwise.
-*/
+// Read a ProductRelease record from a file
 bool ProductRelease::readRecord(fstream &dbFile) {
     if (dbFile.read(productName, sizeof(productName))) {
         dbFile.read(reinterpret_cast<char*>(&releaseID), sizeof(releaseID));
@@ -156,21 +103,12 @@ bool ProductRelease::readRecord(fstream &dbFile) {
     return false;
 }
 
-/*
-    int ProductRelease::getRecordSize() const
-    - Purpose: Get the size of the ProductRelease record.
-    - Returns: int (out): The size of the ProductRelease record in bytes.
-*/
+// Get the size of the ProductRelease record
 int ProductRelease::getRecordSize() const {
-    return sizeof(productName) + sizeof(releaseID) + sizeof(releaseDate);
+    return recordSize;
 }
 
-/*
-    void ProductRelease::readFromBuffer(const char* buffer)
-    - Purpose: Read the ProductRelease record from a buffer.
-    - Parameters:
-        - const char* buffer (in): The buffer to read the record from.
-*/
+// Read the ProductRelease record from a buffer
 void ProductRelease::readFromBuffer(const char* buffer) {
     memcpy(productName, buffer, sizeof(productName));
     memcpy(&releaseID, buffer + sizeof(productName), sizeof(releaseID));

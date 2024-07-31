@@ -5,6 +5,12 @@
 #include "ChangeRequest.h"
 #include "User.h"
 
+/* g++ -o testChangeReqUserandDatabaseRecord testChangeReqUserandDatabaseRecord.cpp ChangeRequest.cpp User.cpp DatabaseRecord.cpp
+
+ ./testChangeReqUserandDatabaseRecord
+
+ */
+
 // Function to trim trailing spaces from a C-style string
 std::string trim(const char* str) {
     std::string result(str);

@@ -75,6 +75,13 @@ public:
     const char* getProductName() const;
 
     /*
+        char* getProductNameMutable()
+        - Purpose: Get a mutable pointer to the product name for modification.
+        - Returns: char* (out): A mutable pointer to the product name.
+    */
+    char* getProductNameMutable();
+
+    /*
         void setReleaseID(ReleaseID id)
         - Purpose: Set the release ID for the ProductRelease.
         - Parameters:

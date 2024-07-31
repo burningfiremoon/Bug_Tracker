@@ -1,3 +1,6 @@
+#ifndef CHANGEREQUEST_H
+#define CHANGEREQUEST_H
+
 //-------------------------------------
 // Revision History
 //-------------------------------------
@@ -29,20 +32,9 @@ Initial creation and setup of ChangeRequest class
     - Static methods to update specific fields in a change request record
 */
 
-#ifndef CHANGEREQUEST_H
-#define CHANGEREQUEST_H
-
 #include "DatabaseRecord.h"
-#include <cstring>  // For strcpy and strncpy
-
-const int StatusStringLength = 20;
-
-// Define fixed-length strings for each status
-const char StatusReported[StatusStringLength + 1] = "Reported            ";
-const char StatusAssessed[StatusStringLength + 1] = "Assessed            ";
-const char StatusInProgress[StatusStringLength + 1] = "InProgress          ";
-const char StatusDone[StatusStringLength + 1] = "Done                ";
-const char StatusCancelled[StatusStringLength + 1] = "Cancelled           ";
+#include "StatusConstants.h" // Include shared status constants
+#include "ProductRelease.h"
 
 //-------------------------------------
 // Class Definition

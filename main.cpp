@@ -67,3 +67,7 @@ int main()
     CloseDatabase();
     return 0;
 }
+
+/* g++ -o my_program ChangeItem.cpp ChangeRequest.cpp control.cpp DatabaseRecord.cpp main.cpp print.cpp ProductRelease.cpp ui.cpp User.cpp -I.
+./my_program
+ */
