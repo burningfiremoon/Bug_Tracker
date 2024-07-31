@@ -244,7 +244,7 @@ bool Init_ChangeRequest(char* Name, char* Product, char* ReleaseID, char* Descri
 
 bool Init_Product(char* Product) {
     ProductRelease pr;
-    strncpy(pr.productName, Product, sizeof(pr.productName));
+    strncpy(pr.getProductName(), Product, sizeof(pr.getProductName()));
     fstream &dbFile = DatabaseRecord::getFile();
     return pr.writeRecord(dbFile);
 }
