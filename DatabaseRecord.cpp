@@ -81,16 +81,19 @@ int DatabaseRecord::getID() const {
         - const string& fileName (in): The name of the file to open.
 */
 void DatabaseRecord::openFile(const string& fileName) {
-    dbFile.open(fileName, ios::in | ios::out | ios::binary);
+    // Try to open the file with both input and output modes
+    dbFile.open(fileName, ios::in | ios::out);
     if (!dbFile) {
-        dbFile.open(fileName, ios::out | ios::binary);
-        dbFile.close();
-        dbFile.open(fileName, ios::in | ios::out | ios::binary);
+        // If the file doesn't exist or cannot be opened, create the file
+        dbFile.open(fileName, ios::out); // Create the file if not existing
+        dbFile.close(); // Close immediately after creating
+        dbFile.open(fileName, ios::in | ios::out); // Reopen with input and output mode
     }
     if (!dbFile.is_open()) {
-        throw runtime_error("Error opening database file: " + fileName);
+        std::cerr << "Error: Unable to open file " << fileName << " for reading and writing." << std::endl;
+    } else {
+        cout << "Database file " << fileName << " opened successfully." << endl; // Debug output
     }
-    cout << "Database file " << fileName << " opened successfully." << endl; // Debug output
 }
 
 /*
@@ -122,7 +125,6 @@ void DatabaseRecord::seekToBeginning() {
     - Returns: fstream& (out): The file stream for the database file.
 */
 fstream& DatabaseRecord::getFile() {
-    cout << "Returning database file stream." << endl; // Debug output
     return dbFile;
 }
 

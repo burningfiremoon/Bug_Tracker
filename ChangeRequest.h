@@ -2,9 +2,11 @@
 // Revision History
 //-------------------------------------
 /*
-1.0 - 15-July-2024 - Created by Tanvir
+1.0 - 14-July-2024 - Created by Tanvir
 Initial creation and setup of ChangeRequest class
-2.0 - 16-July-2024 - Modified by Anthony
+2.0 - 17-July-2024 - Modified by Charles
+3.0 - 26-July-2024 - Modified by Anthony
+4.0 - 29 July-2024 - Modified by Anthony
 */
 
 //-------------------------------------
@@ -14,26 +16,33 @@ Initial creation and setup of ChangeRequest class
     ChangeRequest.h
 
     This header file contains the definition of the ChangeRequest class, which represents a change request record.
-    The ChangeRequest class inherits from the DatabaseRecord class and encapsulates details such as change ID, 
-    requester name, description, reported date, priority, and state. The purpose of this class is to provide a cohesive 
-    representation of a change request and manage its read and write operations to a file. The attributes and methods 
-    are placed together to provide high cohesion and facilitate easy management of change request records.
+    The ChangeRequest class inherits from the DatabaseRecord class and encapsulates details such as change ID,
+    requester name, description, status, priority, and the date first reported. The purpose of this class is to
+    provide a cohesive representation of a change request and manage its read and write operations to a file.
+    The attributes and methods are placed together to provide high cohesion and facilitate easy management of
+    change request records.
 
     Includes:
     - ChangeRequest constructors and destructor
     - Getter and setter methods for various attributes
     - Methods to read and write records from/to a file
+    - Static methods to update specific fields in a change request record
 */
 
 #ifndef CHANGEREQUEST_H
 #define CHANGEREQUEST_H
 
 #include "DatabaseRecord.h"
+#include <cstring>  // For strcpy and strncpy
 
-//-------------------------------------
-// Enum Definitions
-//-------------------------------------
-enum Status { REPORTED, IN_PROGRESS, DONE, CANCELLED };
+const int StatusStringLength = 20;
+
+// Define fixed-length strings for each status
+const char StatusReported[StatusStringLength + 1] = "Reported            ";
+const char StatusAssessed[StatusStringLength + 1] = "Assessed            ";
+const char StatusInProgress[StatusStringLength + 1] = "InProgress          ";
+const char StatusDone[StatusStringLength + 1] = "Done                ";
+const char StatusCancelled[StatusStringLength + 1] = "Cancelled           ";
 
 //-------------------------------------
 // Class Definition
@@ -45,13 +54,12 @@ public:
     // Constructors and Destructor
     //-------------------------------------
     /*
-        ChangeRequest(const char* changeID, const char* requesterName)
-        - Purpose: Initialize a ChangeRequest object with a given change ID and requester name.
+        ChangeRequest(const char* changeID)
+        - Purpose: Initialize a ChangeRequest object with a given change ID.
         - Parameters:
             - const char* changeID (in): The change ID to initialize the ChangeRequest with.
-            - const char* requesterName (in): The requester name to initialize the ChangeRequest with.
     */
-    ChangeRequest(const char* changeID, const char* requesterName);
+    ChangeRequest(const char* changeID);
 
     /*
         ChangeRequest(const ChangeRequest& data)
@@ -62,10 +70,18 @@ public:
     ChangeRequest(const ChangeRequest& data);
 
     /*
+        ChangeRequest()
+        - Purpose: Default constructor to initialize a blank ChangeRequest object.
+        - Parameters:
+            - None
+    */
+    ChangeRequest();
+
+    /*
         ~ChangeRequest()
         - Purpose: Destructor to clean up resources used by the ChangeRequest object.
     */
-    ~ChangeRequest();
+    ~ChangeRequest() override;
 
     //-------------------------------------
     // Setters and Getters
@@ -116,19 +132,19 @@ public:
     const char* getDescription() const;
 
     /*
-        void setReportedDate(Date date)
-        - Purpose: Set the reported date for the ChangeRequest.
+        void setStatus(const char* status)
+        - Purpose: Set the status for the ChangeRequest.
         - Parameters:
-            - Date date (in): The reported date to set.
+            - const char* status (in): The status to set.
     */
-    void setReportedDate(Date date);
+    void setStatus(const char* status);
 
     /*
-        Date getReportedDate() const
-        - Purpose: Get the reported date of the ChangeRequest.
-        - Returns: Date (out): The reported date of the ChangeRequest.
+        const char* getStatus() const
+        - Purpose: Get the status of the ChangeRequest.
+        - Returns: const char* (out): The status of the ChangeRequest.
     */
-    Date getReportedDate() const;
+    const char* getStatus() const;
 
     /*
         void setPriority(int priority)
@@ -146,33 +162,19 @@ public:
     int getPriority() const;
 
     /*
-        void setState(Status state)
-        - Purpose: Set the state for the ChangeRequest.
+        void setDateFirstReported(Date date)
+        - Purpose: Set the date first reported for the ChangeRequest.
         - Parameters:
-            - Status state (in): The state to set.
+            - Date date (in): The date first reported to set.
     */
-    void setState(Status state);
+    void setDateFirstReported(Date date);
 
     /*
-        const ReleaseID getReleaseID() const
-        - Purpose: Get the ReleaseID for the ChangeRequest.
+        Date getDateFirstReported() const
+        - Purpose: Get the date first reported of the ChangeRequest.
+        - Returns: Date (out): The date first reported of the ChangeRequest.
     */
-    const ReleaseID getReleaseID() const;
-
-    /*
-        void setReleaseID(ReleaseID rid)
-        - Purpose: Set the ReleaseID for the ChangeRequest.
-        - Parameters:
-            - ReleaseID rid (in): The new ReleaseID to set.
-    */
-    void setReleaseID(ReleaseID rid);
-
-    /*
-        Status getState() const
-        - Purpose: Get the state of the ChangeRequest.
-        - Returns: Status (out): The state of the ChangeRequest.
-    */
-    Status getState() const;
+    Date getDateFirstReported() const;
 
     //-------------------------------------
     // File Operations
@@ -210,17 +212,39 @@ public:
     */
     void readFromBuffer(const char* buffer) override;
 
+    //-------------------------------------
+    // Static Methods for Updating Records
+    //-------------------------------------
+    /*
+        static bool updStatus(const char* id, const char* newStatus)
+        - Purpose: Update the status of a ChangeRequest record with the given ID.
+        - Parameters:
+            - const char* id (in): The ID of the ChangeRequest record to update.
+            - const char* newStatus (in): The new status to set.
+        - Returns: bool (out): True if the status is updated successfully, false otherwise.
+    */
+    static bool updStatus(const char* id, const char* newStatus);
+
+    /*
+        static bool updDescription(const char* id, const char* newDescription)
+        - Purpose: Update the description of a ChangeRequest record with the given ID.
+        - Parameters:
+            - const char* id (in): The ID of the ChangeRequest record to update.
+            - const char* newDescription (in): The new description to set.
+        - Returns: bool (out): True if the description is updated successfully, false otherwise.
+    */
+    static bool updDescription(const char* id, const char* newDescription);
+
 private:
     //-------------------------------------
     // Member Variables
     //-------------------------------------
     char changeID[7]; // 6 characters plus null terminator
-    ReleaseID releaseID;
     char requesterName[31]; // 30 characters plus null terminator
-    char description[31]; // 30 characters plus null terminator
-    Date reportedDate;
+    char description[51]; // 50 characters plus null terminator
+    char status[StatusStringLength + 1]; // Fixed-length status C-string
     int priority;
-    Status state;
+    Date dateFirstReported;
 
     static const int recordSize;
 };

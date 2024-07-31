@@ -1,42 +1,25 @@
-//-------------------------------------
-// Revision History
-//-------------------------------------
-/*
-1.0 - 14-July-2024 - Created by Tanvir
-Initial creation and setup of ChangeItem class
-2.0 - 17-July-2024 - Modified by Charles
-3.0 - 26-July-2024 - Modified by Anthony
-*/
-
-//-------------------------------------
-// Explanation
-//-------------------------------------
-/*
-    ChangeItem.h
-
-    This header file contains the definition of the ChangeItem class, which represents a change item record.
-    The ChangeItem class inherits from the DatabaseRecord class and encapsulates details such as change ID, 
-    product name, change description, status, priority, release ID, and the date first reported. The purpose of 
-    this class is to provide a cohesive representation of a change item and manage its read and write operations 
-    to a file. The attributes and methods are placed together to provide high cohesion and facilitate easy management 
-    of change item records.
-
-    Includes:
-    - ChangeItem constructors and destructor
-    - Getter and setter methods for various attributes
-    - Methods to read and write records from/to a file
-    - Static methods to update specific fields in a change item record
-*/
-
 #ifndef CHANGEITEM_H
 #define CHANGEITEM_H
 
 #include "DatabaseRecord.h"
+#include <cstring>  // For strcpy and strncpy
+
+// Define constants for status string lengths and default statuses
+const int StatusStringLength = 20;
+const char StatusReported[StatusStringLength + 1] = "Reported            ";   // 18 chars + 2 spaces
+const char StatusAssessed[StatusStringLength + 1] = "Assessed            ";   // 18 chars + 2 spaces
+const char StatusInProgress[StatusStringLength + 1] = "InProgress          "; // 16 chars + 4 spaces
+const char StatusDone[StatusStringLength + 1] = "Done                ";     // 4 chars + 16 spaces
+const char StatusCancelled[StatusStringLength + 1] = "Cancelled           ";  // 10 chars + 10 spaces
 
 //-------------------------------------
 // Class Definition
 //-------------------------------------
 
+/*
+    Class: ChangeItem
+    - Purpose: Represents a change item in the database, inheriting from DatabaseRecord.
+*/
 class ChangeItem : public DatabaseRecord {
 public:
     //-------------------------------------
@@ -59,10 +42,10 @@ public:
     ChangeItem(const ChangeItem& data);
 
     /*
-    ChangeItem::ChangeItem()
-    - Purpose: Initialize a black ChangeItem object to use functions
-    - Parameters:
-        - None
+        ChangeItem()
+        - Purpose: Default constructor to initialize a blank ChangeItem object.
+        - Parameters:
+            - None
     */
     ChangeItem();
 
@@ -109,7 +92,10 @@ public:
         void setChangeDescription(const char* changeDescription)
         - Purpose: Set the change description for the ChangeItem.
         - Parameters:
-            - const char* changeDescription (in): The change description to set.
+            - const char* changeDescription (in): The change description to set. The input string is copied into
+              a fixed-length buffer and padded with spaces if necessary.
+        - Post-condition: The description is stored in a fixed-length buffer, with any unused buffer space
+          filled with spaces, ensuring that the buffer is null-terminated.
     */
     void setChangeDescription(const char* changeDescription);
 
@@ -121,19 +107,19 @@ public:
     const char* getChangeDescription() const;
 
     /*
-        void setStatus(int status)
+        void setStatus(const char* status)
         - Purpose: Set the status for the ChangeItem.
         - Parameters:
-            - int status (in): The status to set.
+            - const char* status (in): The status to set.
     */
-    void setStatus(int status);
+    void setStatus(const char* status);
 
     /*
-        int getStatus() const
+        const char* getStatus() const
         - Purpose: Get the status of the ChangeItem.
-        - Returns: int (out): The status of the ChangeItem.
+        - Returns: const char* (out): The status of the ChangeItem.
     */
-    int getStatus() const;
+    const char* getStatus() const;
 
     /*
         void setPriority(int priority)
@@ -220,14 +206,14 @@ public:
     // Static Methods for Updating Records
     //-------------------------------------
     /*
-        static bool updStatus(const char* id, int newStatus)
+        static bool updStatus(const char* id, const char* newStatus)
         - Purpose: Update the status of a ChangeItem record with the given ID.
         - Parameters:
             - const char* id (in): The ID of the ChangeItem record to update.
-            - int newStatus (in): The new status to set.
+            - const char* newStatus (in): The new status to set.
         - Returns: bool (out): True if the status is updated successfully, false otherwise.
     */
-    static bool updStatus(const char* id, int newStatus);
+    static bool updStatus(const char* id, const char* newStatus);
 
     /*
         static bool updRelease(const char* id, int newRelease)
@@ -266,7 +252,7 @@ private:
     char changeID[7]; // 6 characters plus null terminator
     char productName[31]; // 30 characters plus null terminator
     char changeDescription[31]; // 30 characters plus null terminator
-    int status;
+    char status[StatusStringLength + 1]; // Fixed-length status C-string
     int priority;
     ReleaseID releaseID;
     Date dateFirstReported;

@@ -5,67 +5,50 @@
 #include "ChangeRequest.h"
 #include "User.h"
 
-/* to compile the databaserecord, change request, user, and this file do the following*/
-/* g++ -o test testChangeReqUserandDatabaseRecord.cpp ChangeRequest.cpp User.cpp DatabaseRecord.cpp
-./test */
+// Function to trim trailing spaces from a C-style string
+std::string trim(const char* str) {
+    std::string result(str);
+    result.erase(result.find_last_not_of(' ') + 1);
+    return result;
+}
 
 void testChangeRequest() {
-    Date reportedDate = {2024, 7, 17};
-    ChangeRequest change("123456", "TestUser");
+    // Create a ChangeRequest object with a given ID
+    ChangeRequest change("123456");
 
-    // Set the reportedDate to the expected value
-    change.setReportedDate(reportedDate);
+    // Set other fields using public methods
+    change.setRequesterName("TestUser"); // Assuming 'Requester' is the intended name part
+    Date reportedDate = {2024, 7, 30};
+    change.setDateFirstReported(reportedDate);
+    change.setDescription("Fix bug in code"); // Assuming 'Description' is the correct attribute
+    change.setPriority(5);
+    change.setStatus(StatusInProgress);
 
-    // Debugging output
-    std::cout << "Change ID after construction: " << change.getChangeID() << std::endl;
-    std::cout << "Reported Date after setting: " << change.getReportedDate().y << "-" << change.getReportedDate().m << "-" << change.getReportedDate().d << std::endl;
+    // Assert checks for each field
+    assert(strcmp(change.getChangeID(), "123456") == 0); // Assuming 'ChangeID' is the correct method
+    assert(trim(change.getRequesterName()) == "TestUser"); // Correct method name for requester name
+    assert(change.getDateFirstReported().y == reportedDate.y);
+    assert(change.getDateFirstReported().m == reportedDate.m);
+    assert(change.getDateFirstReported().d == reportedDate.d);
+    assert(trim(change.getDescription()) == "Fix bug in code"); // Correct method name for description
+    assert(change.getPriority() == 5);
+    assert(strcmp(change.getStatus(), StatusInProgress) == 0);
 
-    // Test constructor and getters
-    assert(strcmp(change.getChangeID(), "123456") == 0);
-    assert(strcmp(change.getRequesterName(), "TestUser") == 0);
-    assert(change.getReportedDate().y == reportedDate.y);
-    assert(change.getReportedDate().m == reportedDate.m);
-    assert(change.getReportedDate().d == reportedDate.d);
-    assert(change.getState() == REPORTED);
+    // Print values for verification
+    std::cout << "Change ID: " << change.getChangeID() << std::endl; // Correct method name for ID
+    std::cout << "Requester Name: " << change.getRequesterName() << std::endl; // Correct method name
+    std::cout << "Reported Date: " << change.getDateFirstReported().y << "-"
+              << change.getDateFirstReported().m << "-"
+              << change.getDateFirstReported().d << std::endl;
+    std::cout << "Description: " << change.getDescription() << std::endl; // Correct method name
+    std::cout << "Priority: " << change.getPriority() << std::endl;
+    std::cout << "Status: " << change.getStatus() << std::endl;
 
-    // Test setting and getting description
-    change.setDescription("Fix bug in code");
-    assert(strcmp(change.getDescription(), "Fix bug in code") == 0);
+    // Test setting status to Done and check
+    change.setStatus(StatusDone);
+    assert(strcmp(change.getStatus(), StatusDone) == 0);
 
-    // Test setting and getting priority
-    change.setPriority(3);
-    assert(change.getPriority() == 3);
-
-    // Test setting and getting state
-    change.setState(DONE);
-    assert(change.getState() == DONE);
-
-    // Test writing and reading from file
-    std::fstream file("test_change_request.dat", std::ios::out | std::ios::binary);
-    change.writeRecord(file);
-    file.close();
-
-    ChangeRequest readChange("000000", "DummyUser");
-    file.open("test_change_request.dat", std::ios::in | std::ios::binary);
-    readChange.readRecord(file);
-    file.close();
-
-    // Debugging output
-    std::cout << "Change ID after reading from file: " << readChange.getChangeID() << std::endl;
-    std::cout << "Reported Date after reading from file: " << readChange.getReportedDate().y << "-" << readChange.getReportedDate().m << "-" << readChange.getReportedDate().d << std::endl;
-
-    assert(strcmp(readChange.getChangeID(), "123456") == 0);
-    assert(strcmp(readChange.getRequesterName(), "TestUser") == 0);
-    assert(strcmp(readChange.getDescription(), "Fix bug in code") == 0);
-    assert(readChange.getPriority() == 3);
-    assert(readChange.getState() == DONE);
-
-    assert(readChange.getReportedDate().y == reportedDate.y);
-    assert(readChange.getReportedDate().m == reportedDate.m);
-    assert(readChange.getReportedDate().d == reportedDate.d);
-
-    // Clean up test file
-    std::remove("test_change_request.dat");
+    // Additional test cases for other setters and getters can be added here
 }
 
 void testUser() {

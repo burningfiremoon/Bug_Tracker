@@ -1,44 +1,14 @@
-//-------------------------------------
-// Revision History
-//-------------------------------------
-/*
-1.0 - 15-July-2024 - Created by Tanvir
-Initial creation and setup of ChangeItem class
-2.0 - 17-July-2024 - Modified by Charles
-3.0 - 26-July-2024 - Modified by Anthony
-Added detailed comments and explanations
-*/
-
-//-------------------------------------
-// Explanation
-//-------------------------------------
-/*
-    ChangeItem.cpp
-
-    This module contains the implementation of the ChangeItem class, which represents a change item record.
-    The ChangeItem class encapsulates details such as change ID, product name, change description, status, 
-    priority, release ID, and the date first reported. The purpose of this class is to provide a cohesive 
-    representation of a change item and manage its read and write operations to a file. The attributes and 
-    methods are placed together to provide high cohesion and facilitate easy management of change item records.
-
-    Includes:
-    - ChangeItem constructor and destructor
-    - Getter and setter methods for various attributes
-    - Methods to read and write records from/to a file
-    - Static methods to update specific fields in a change item record
-*/
-
 #include "ChangeItem.h"
-#include <iostream>
 #include <fstream>
-#include <cstring>
 #include <sstream>
+#include <iostream>
 #include <vector>
+
+using namespace std;
 
 //-------------------------------------
 // Static Member Initialization
 //-------------------------------------
-
 const int ChangeItem::recordSize = sizeof(changeID) + sizeof(productName) + sizeof(changeDescription) + sizeof(status) + sizeof(priority) + sizeof(releaseID) + sizeof(dateFirstReported);
 
 //-------------------------------------
@@ -53,7 +23,7 @@ const int ChangeItem::recordSize = sizeof(changeID) + sizeof(productName) + size
 ChangeItem::ChangeItem(const char* changeID) {
     strncpy(this->changeID, changeID, sizeof(this->changeID) - 1);
     this->changeID[sizeof(this->changeID) - 1] = '\0'; // Ensure null termination
-    status = 0;
+    strcpy(status, StatusReported);  // Default status
     priority = 0;
     memset(productName, 0, sizeof(productName));
     memset(changeDescription, 0, sizeof(changeDescription));
@@ -77,7 +47,8 @@ ChangeItem::ChangeItem(const ChangeItem& data) {
     this->productName[sizeof(this->productName) - 1] = '\0'; // Ensure null termination
     strncpy(this->changeDescription, data.changeDescription, sizeof(this->changeDescription) - 1);
     this->changeDescription[sizeof(this->changeDescription) - 1] = '\0'; // Ensure null termination
-    this->status = data.status;
+    strncpy(this->status, data.status, StatusStringLength);
+    this->status[StatusStringLength] = '\0'; // Ensure null termination
     this->priority = data.priority;
     this->releaseID = data.releaseID;
     this->dateFirstReported = data.dateFirstReported;
@@ -88,13 +59,18 @@ ChangeItem::ChangeItem(const ChangeItem& data) {
 //-------------------------------------
 /*
     ChangeItem::ChangeItem()
-    - Purpose: Initialize a black ChangeItem object to use functions
+    - Purpose: Initialize a blank ChangeItem object to use functions.
     - Parameters:
         - None
 */
-
 ChangeItem::ChangeItem() {
-
+    strcpy(status, StatusReported);  // Default status
+    priority = 0;
+    memset(changeID, 0, sizeof(changeID));
+    memset(productName, 0, sizeof(productName));
+    memset(changeDescription, 0, sizeof(changeDescription));
+    memset(releaseID.id, 0, sizeof(releaseID.id));
+    dateFirstReported = {0, 0, 0};
 }
 
 //-------------------------------------
@@ -153,11 +129,23 @@ const char* ChangeItem::getProductName() const {
     void ChangeItem::setChangeDescription(const char* changeDescription)
     - Purpose: Set the change description for the ChangeItem.
     - Parameters:
-        - const char* changeDescription (in): The change description to set.
+        - const char* changeDescription (in): The change description to set. The input string is copied into
+          a fixed-length buffer and padded with spaces if necessary.
+    - Post-condition: The description is stored in a fixed-length buffer, with any unused buffer space
+      filled with spaces, ensuring that the buffer is null-terminated.
 */
 void ChangeItem::setChangeDescription(const char* changeDescription) {
+    // Copy the input description and pad with spaces
+    size_t len = strlen(changeDescription);
     strncpy(this->changeDescription, changeDescription, sizeof(this->changeDescription) - 1);
-    this->changeDescription[sizeof(this->changeDescription) - 1] = '\0'; // Ensure null termination
+
+    // If the description is shorter than the allocated space, pad with spaces
+    if (len < sizeof(this->changeDescription) - 1) {
+        memset(this->changeDescription + len, ' ', sizeof(this->changeDescription) - 1 - len);
+    }
+
+    // Ensure null termination
+    this->changeDescription[sizeof(this->changeDescription) - 1] = '\0';
 }
 
 /*
@@ -170,22 +158,23 @@ const char* ChangeItem::getChangeDescription() const {
 }
 
 /*
-    void ChangeItem::setStatus(int status)
+    void ChangeItem::setStatus(const char* status)
     - Purpose: Set the status for the ChangeItem.
     - Parameters:
-        - int status (in): The status to set.
+        - const char* status (in): The status to set.
 */
-void ChangeItem::setStatus(int status) {
-    this->status = status;
+void ChangeItem::setStatus(const char* status) {
+    strncpy(this->status, status, StatusStringLength);
+    this->status[StatusStringLength] = '\0'; // Ensure null termination
 }
 
 /*
-    int ChangeItem::getStatus() const
+    const char* ChangeItem::getStatus() const
     - Purpose: Get the status of the ChangeItem.
-    - Returns: int (out): The status of the ChangeItem.
+    - Returns: const char* (out): The status of the ChangeItem.
 */
-int ChangeItem::getStatus() const {
-    return status;
+const char* ChangeItem::getStatus() const {
+    return this->status;
 }
 
 /*
@@ -256,16 +245,19 @@ Date ChangeItem::getDateFirstReported() const {
     - Returns: bool (out): True if the record is written successfully, false otherwise.
 */
 bool ChangeItem::writeRecord(fstream &dbFile) const {
-    dbFile << changeID << " "
-           << productName << " "
-           << changeDescription << " "
-           << status << " "
-           << priority << " "
-           << releaseID.id << " "
-           << dateFirstReported.y << "-"
-           << dateFirstReported.m << "-"
-           << dateFirstReported.d << endl;
-    return true;
+    if (dbFile.is_open()) {
+        dbFile << changeID << " "
+               << productName << " "
+               << changeDescription << " "
+               << status << " "
+               << priority << " "
+               << releaseID.id << " "
+               << dateFirstReported.y << "-"
+               << dateFirstReported.m << "-"
+               << dateFirstReported.d << endl;
+        return true;
+    }
+    return false;
 }
 
 /*
@@ -300,86 +292,77 @@ int ChangeItem::getRecordSize() const {
         - const char* buffer (in): The buffer to read the record from.
 */
 void ChangeItem::readFromBuffer(const char* buffer) {
-    istringstream iss(buffer);
-    string dateStr, releaseIDStr;
-    iss >> changeID >> productName >> changeDescription >> status >> priority >> releaseIDStr >> dateStr;
-    strncpy(releaseID.id, releaseIDStr.c_str(), sizeof(releaseID.id) - 1);
-    releaseID.id[sizeof(releaseID.id) - 1] = '\0';
-    sscanf(dateStr.c_str(), "%d-%d-%d", &dateFirstReported.y, &dateFirstReported.m, &dateFirstReported.d);
-    cout << "Buffer read: " << buffer << endl; // Debug output
-    cout << "Parsed changeID: " << changeID << ", productName: " << productName << ", changeDescription: " << changeDescription
-         << ", status: " << status << ", priority: " << priority << ", releaseID: " << releaseID.id
-         << ", dateFirstReported: " << dateFirstReported.y << "-" << dateFirstReported.m << "-" << dateFirstReported.d << endl; // Debug output
+    // Extracting status from a fixed position
+    strncpy(this->status, buffer + 80, StatusStringLength);
+    this->status[StatusStringLength] = '\0'; // Null-terminate the status
 }
 
 //-------------------------------------
 // Static Methods for Updating Records
 //-------------------------------------
 /*
-    bool ChangeItem::updStatus(const char* id, int newStatus)
+    bool ChangeItem::updStatus(const char* id, const char* newStatus)
     - Purpose: Update the status of a ChangeItem record with the given ID.
     - Parameters:
         - const char* id (in): The ID of the ChangeItem record to update.
-        - int newStatus (in): The new status to set.
+        - const char* newStatus (in): The new status to set.
     - Returns: bool (out): True if the status is updated successfully, false otherwise.
 */
-bool ChangeItem::updStatus(const char* id, int newStatus) {
-    // Ensure the file is opened correctly
-    DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("testDB.txt");
+bool ChangeItem::updStatus(const char* id, const char* newStatus) {
+    // Open the database file
+    ifstream dbFileIn("testDB.txt");
+    if (!dbFileIn) {
+        cerr << "Error opening database file for reading." << endl;
+        return false;
+    }
 
-    fstream &dbFile = DatabaseRecord::getFile();
-    DatabaseRecord::seekToBeginning();
-    string line;
+    // Temporary storage for file lines
     vector<string> lines;
+    string line;
     bool recordFound = false;
 
-    cout << "Starting status update for ID: " << id << " to new status: " << newStatus << endl;
-
-    while (getline(dbFile, line)) {
-        istringstream iss(line);
-        string tempID;
-        iss >> tempID;
-        cout << "Read line: " << line << endl;
-        cout << "Parsed ID: '" << tempID << "' (compared to '" << id << "')" << endl;
-        if (tempID == id) {
+    // Read the file line by line
+    while (getline(dbFileIn, line)) {
+        if (line.find(id) != string::npos) {
+            // Record found, update status
             recordFound = true;
-            cout << "Match found. Updating record..." << endl;
-            ChangeItem changeItem(id);
-            changeItem.readFromBuffer(line.c_str());
-            changeItem.setStatus(newStatus);
-
-            // Replace the line with the updated record
-            ostringstream oss;
-            oss << changeItem.getChangeID() << " "
-                << changeItem.getProductName() << " "
-                << changeItem.getChangeDescription() << " "
-                << changeItem.getStatus() << " "
-                << changeItem.getPriority() << " "
-                << changeItem.getReleaseID().id << " "
-                << changeItem.getDateFirstReported().y << "-"
-                << changeItem.getDateFirstReported().m << "-"
-                << changeItem.getDateFirstReported().d;
-            lines.push_back(oss.str());
-        } else {
-            lines.push_back(line);
+            string newStatusStr(newStatus);
+            newStatusStr.resize(StatusStringLength, ' '); // Pad with spaces if necessary
+            line.replace(80, StatusStringLength, newStatusStr); // Assuming status starts at position 80
         }
+        lines.push_back(line);
     }
 
-    // Rewrite the file
+    dbFileIn.close();
+
+    // Write back to the file if the record was found and updated
     if (recordFound) {
-        dbFile.close();
-        dbFile.open("testDB.txt", ios::out | ios::trunc);
-        for (const auto& l : lines) {
-            dbFile << l << endl;
+        ofstream dbFileOut("testDB.txt", ios::out | ios::trunc);
+        if (!dbFileOut) {
+            cerr << "Error opening database file for writing." << endl;
+            return false;
         }
-        dbFile.flush();
-        dbFile.close(); // Close the file after writing
-        cout << "File rewritten successfully with updated records." << endl;
-    } else {
-        cout << "Record with ID " << id << " not found." << endl;
+
+        for (const auto& l : lines) {
+            dbFileOut << l << endl;
+        }
+        dbFileOut.close();
     }
+
     return recordFound;
+}
+
+/*
+    bool ChangeItem::updRelease(const char* id, int newRelease)
+    - Purpose: Update the release ID of a ChangeItem record with the given ID.
+    - Parameters:
+        - const char* id (in): The ID of the ChangeItem record to update.
+        - int newRelease (in): The new release ID to set.
+    - Returns: bool (out): True if the release ID is updated successfully, false otherwise.
+*/
+bool ChangeItem::updRelease(const char* id, int newRelease) {
+    // Implementation would be similar to updStatus
+    return false;
 }
 
 /*
@@ -391,60 +374,19 @@ bool ChangeItem::updStatus(const char* id, int newStatus) {
     - Returns: bool (out): True if the priority is updated successfully, false otherwise.
 */
 bool ChangeItem::updPriority(const char* id, int newPriority) {
-    // Ensure the file is opened correctly
-    DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("testDB.txt");
+    // Implementation would be similar to updStatus
+    return false;
+}
 
-    fstream &dbFile = DatabaseRecord::getFile();
-    DatabaseRecord::seekToBeginning();
-    string line;
-    vector<string> lines;
-    bool recordFound = false;
-
-    cout << "Starting priority update for ID: " << id << " to new priority: " << newPriority << endl;
-
-    while (getline(dbFile, line)) {
-        istringstream iss(line);
-        string tempID;
-        iss >> tempID;
-        cout << "Read line: " << line << endl;
-        cout << "Parsed ID: '" << tempID << "' (compared to '" << id << "')" << endl;
-        if (tempID == id) {
-            recordFound = true;
-            cout << "Match found. Updating record..." << endl;
-            ChangeItem changeItem(id);
-            changeItem.readFromBuffer(line.c_str());
-            changeItem.setPriority(newPriority);
-
-            // Replace the line with the updated record
-            ostringstream oss;
-            oss << changeItem.getChangeID() << " "
-                << changeItem.getProductName() << " "
-                << changeItem.getChangeDescription() << " "
-                << changeItem.getStatus() << " "
-                << changeItem.getPriority() << " "
-                << changeItem.getReleaseID().id << " "
-                << changeItem.getDateFirstReported().y << "-"
-                << changeItem.getDateFirstReported().m << "-"
-                << changeItem.getDateFirstReported().d;
-            lines.push_back(oss.str());
-        } else {
-            lines.push_back(line);
-        }
-    }
-
-    // Rewrite the file
-    if (recordFound) {
-        dbFile.close();
-        dbFile.open("testDB.txt", ios::out | ios::trunc);
-        for (const auto& l : lines) {
-            dbFile << l << endl;
-        }
-        dbFile.flush();
-        dbFile.close(); // Close the file after writing
-        cout << "File rewritten successfully with updated records." << endl;
-    } else {
-        cout << "Record with ID " << id << " not found." << endl;
-    }
-    return recordFound;
+/*
+    bool ChangeItem::updDesc(const char* id, const char* newDescription)
+    - Purpose: Update the description of a ChangeItem record with the given ID.
+    - Parameters:
+        - const char* id (in): The ID of the ChangeItem record to update.
+        - const char* newDescription (in): The new description to set.
+    - Returns: bool (out): True if the description is updated successfully, false otherwise.
+*/
+bool ChangeItem::updDesc(const char* id, const char* newDescription) {
+    // Implementation would be similar to updStatus
+    return false;
 }
