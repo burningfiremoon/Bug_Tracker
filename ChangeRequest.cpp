@@ -248,15 +248,18 @@ Date ChangeRequest::getDateFirstReported() const {
     - Returns: bool (out): True if the record is written successfully, false otherwise.
 */
 bool ChangeRequest::writeRecord(fstream &dbFile) const {
-    dbFile << changeID << " "
-           << requesterName << " "
-           << description << " "
-           << status << " "
-           << priority << " "
-           << dateFirstReported.y << "-"
-           << dateFirstReported.m << "-"
-           << dateFirstReported.d << endl;
-    return true;
+    if (dbFile.is_open()) {
+        dbFile << changeID << " "
+               << requesterName << " "
+               << description << " "
+               << status << " "
+               << priority << " "
+               << dateFirstReported.y << "-"
+               << dateFirstReported.m << "-"
+               << dateFirstReported.d << endl;
+        return true;
+    }
+    return false;
 }
 
 /*
@@ -311,7 +314,7 @@ void ChangeRequest::readFromBuffer(const char* buffer) {
 bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
     // Ensure the file is opened correctly
     DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("testDB.txt");
+    DatabaseRecord::openFile("database.dat");
 
     fstream &dbFile = DatabaseRecord::getFile();
     DatabaseRecord::seekToBeginning();
@@ -348,7 +351,7 @@ bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
     // Rewrite the file with the updated contents
     if (recordFound) {
         dbFile.close();
-        dbFile.open("testDB.txt", ios::out | ios::trunc);
+        dbFile.open("database.dat", ios::out | ios::trunc);
         for (const auto& l : lines) {
             dbFile << l << endl;
         }
@@ -372,7 +375,7 @@ bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
 bool ChangeRequest::updDescription(const char* id, const char* newDescription) {
     // Ensure the file is opened correctly
     DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("testDB.txt");
+    DatabaseRecord::openFile("database.dat");
 
     fstream &dbFile = DatabaseRecord::getFile();
     DatabaseRecord::seekToBeginning();
@@ -409,7 +412,7 @@ bool ChangeRequest::updDescription(const char* id, const char* newDescription) {
     // Rewrite the file with the updated contents
     if (recordFound) {
         dbFile.close();
-        dbFile.open("testDB.txt", ios::out | ios::trunc);
+        dbFile.open("database.dat", ios::out | ios::trunc);
         for (const auto& l : lines) {
             dbFile << l << endl;
         }

@@ -180,15 +180,14 @@ bool DatabaseRecord::deleteRecord(const char* id) {
     tempFile.close();
     dbFile.close();
     if (found) {
-        remove("Database.txt");
-        rename("temp.txt", "Database.txt");
-        openFile("Database.txt");
+        remove("database.dat");
+        rename("temp.txt", "database.dat");
+        openFile("database.dat");
     }
     return found;
 }
 
-bool DatabaseRecord::backupDatabase(const std::string& outputFile){
-    
+bool DatabaseRecord::backupDatabase(const std::string& outputFile) {
     // Open the destination file for writing
     std::ofstream dest(outputFile, std::ios::binary);
     if (!dest.is_open()) {
@@ -211,7 +210,6 @@ bool DatabaseRecord::backupDatabase(const std::string& outputFile){
     dest.close();
 
     return true;
-
 }
 
 //-------------------------------------
@@ -252,4 +250,3 @@ int truncateFile(const char* path, off_t length) {
     }
     return result;
 }
-

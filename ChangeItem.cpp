@@ -292,9 +292,21 @@ int ChangeItem::getRecordSize() const {
         - const char* buffer (in): The buffer to read the record from.
 */
 void ChangeItem::readFromBuffer(const char* buffer) {
-    // Extracting status from a fixed position
-    strncpy(this->status, buffer + 80, StatusStringLength);
-    this->status[StatusStringLength] = '\0'; // Null-terminate the status
+    // Extract fields from the buffer, ensure they are null-terminated
+    strncpy(this->changeID, buffer, sizeof(this->changeID) - 1);
+    this->changeID[sizeof(this->changeID) - 1] = '\0';
+    strncpy(this->productName, buffer + sizeof(this->changeID), sizeof(this->productName) - 1);
+    this->productName[sizeof(this->productName) - 1] = '\0';
+    strncpy(this->changeDescription, buffer + sizeof(this->changeID) + sizeof(this->productName), sizeof(this->changeDescription) - 1);
+    this->changeDescription[sizeof(this->changeDescription) - 1] = '\0';
+    strncpy(this->status, buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription), StatusStringLength);
+    this->status[StatusStringLength] = '\0';
+    this->priority = *reinterpret_cast<const int*>(buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription) + sizeof(this->status));
+    strncpy(this->releaseID.id, buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription) + sizeof(this->status) + sizeof(this->priority), sizeof(this->releaseID.id) - 1);
+    this->releaseID.id[sizeof(this->releaseID.id) - 1] = '\0';
+    this->dateFirstReported.y = *reinterpret_cast<const int*>(buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription) + sizeof(this->status) + sizeof(this->priority) + sizeof(this->releaseID.id));
+    this->dateFirstReported.m = *reinterpret_cast<const int*>(buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription) + sizeof(this->status) + sizeof(this->priority) + sizeof(this->releaseID.id) + sizeof(this->dateFirstReported.y));
+    this->dateFirstReported.d = *reinterpret_cast<const int*>(buffer + sizeof(this->changeID) + sizeof(this->productName) + sizeof(this->changeDescription) + sizeof(this->status) + sizeof(this->priority) + sizeof(this->releaseID.id) + sizeof(this->dateFirstReported.y) + sizeof(this->dateFirstReported.m));
 }
 
 //-------------------------------------
@@ -310,7 +322,7 @@ void ChangeItem::readFromBuffer(const char* buffer) {
 */
 bool ChangeItem::updStatus(const char* id, const char* newStatus) {
     // Open the database file
-    ifstream dbFileIn("testDB.txt");
+    ifstream dbFileIn("database.dat");
     if (!dbFileIn) {
         cerr << "Error opening database file for reading." << endl;
         return false;
@@ -337,7 +349,7 @@ bool ChangeItem::updStatus(const char* id, const char* newStatus) {
 
     // Write back to the file if the record was found and updated
     if (recordFound) {
-        ofstream dbFileOut("testDB.txt", ios::out | ios::trunc);
+        ofstream dbFileOut("database.dat", ios::out | ios::trunc);
         if (!dbFileOut) {
             cerr << "Error opening database file for writing." << endl;
             return false;
