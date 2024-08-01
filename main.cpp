@@ -64,7 +64,7 @@ int main()
     {
         exit = MainMenu();
     } while (exit == false);
-    CloseDatabase();
+    closeDatabase();
     return 0;
 }
 

@@ -25,10 +25,6 @@
 void StopAccepting();
 void StartAccepting();
 
-// Database file management
-void OpenDatabase(const char* filename);
-void CloseDatabase();
-
 // User management
 bool Init_User(const char* name, const char* phone, const char* email);
 void UpdateUserName(const char* oldName, const char* newName);
