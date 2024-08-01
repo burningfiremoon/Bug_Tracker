@@ -2,6 +2,8 @@
 #include "ui.h"
 #include <iostream>
 #include <string>
+#include <limits>
+
 using namespace std;
 
 // Main menu for the application
@@ -9,38 +11,38 @@ int MainMenu() {
     int input;
     bool exit = false;
 
+    while (!exit) {
+        cout << "=== Main Menu ===" << endl;
+        cout << "1) Create Customer Request" << endl;
+        cout << "2) Modify Request" << endl;
+        cout << "3) Print Reports and Inquiries" << endl;
+        cout << "4) Backup Data" << endl;
+        cout << "0) Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> input;
 
-    cout << "=== Main Menu ===" << endl;
-    cout << "1) Create Customer Request" << endl;
-    cout << "2) Modify Request" << endl;
-    cout << "3) Print Reports and Inquiries" << endl;
-    cout << "4) Backup Data" << endl;
-    cout << "0) Exit" << endl;
-    cout << "Enter your choice: ";
-    cin >> input;
-
-    switch (input) {
-        case 1:
-            CreateCustomerRequest();
-            break;
-        case 2:
-            ModifyRequest();
-            break;
-        case 3:
-            PrintReportsAndInquiries();
-            break;
-        case 4:
-            BackupData();
-            break;
-        case 0:
-            exit = true;
-            break;
-        default:
-            cout << "Invalid option. Please try again." << endl;
+        switch (input) {
+            case 1:
+                CreateCustomerRequest();
+                break;
+            case 2:
+                ModifyRequest();
+                break;
+            case 3:
+                PrintReportsAndInquiries();
+                break;
+            case 4:
+                BackupData();
+                break;
+            case 0:
+                exit = true;
+                break;
+            default:
+                cout << "Invalid option. Please try again." << endl;
+        }
     }
-    
 
-    return exit;
+    return input;
 }
 
 // Function to handle the creation of customer requests
@@ -103,10 +105,20 @@ void CreateCustomerRequest() {
                     string strDate;
                     cout << "Enter Product Release Date (YYYY-MM-DD): ";
                     cin >> strDate;
-                    date.y = stoi(strDate.substr(0, 4));
-                    date.m = stoi(strDate.substr(5, 2));
-                    date.d = stoi(strDate.substr(8, 2));
-                    Init_ProductRelease(Product, date);
+
+                    try {
+                        if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
+                            date.y = stoi(strDate.substr(0, 4));
+                            date.m = stoi(strDate.substr(5, 2));
+                            date.d = stoi(strDate.substr(8, 2));
+                            Init_ProductRelease(Product, date);
+                        } else {
+                            throw std::invalid_argument("Invalid date format");
+                        }
+                    } catch (const std::invalid_argument& e) {
+                        cerr << "Invalid date format: " << e.what() << endl;
+                        return;
+                    }
                 }
                 cout << "Enter Change Description (max 30 characters): ";
                 cin >> ChangeDescription;
@@ -151,10 +163,19 @@ void CreateCustomerRequest() {
                     string strDate;
                     cout << "Enter Product Release Date (YYYY-MM-DD): ";
                     cin >> strDate;
-                    date.y = stoi(strDate.substr(0, 4));
-                    date.m = stoi(strDate.substr(5, 2));
-                    date.d = stoi(strDate.substr(8, 2));
-                    Init_ProductRelease(Product, date);
+                    try {
+                        if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
+                            date.y = stoi(strDate.substr(0, 4));
+                            date.m = stoi(strDate.substr(5, 2));
+                            date.d = stoi(strDate.substr(8, 2));
+                            Init_ProductRelease(Product, date);
+                        } else {
+                            throw std::invalid_argument("Invalid date format");
+                        }
+                    } catch (const std::invalid_argument& e) {
+                        cerr << "Invalid date format: " << e.what() << endl;
+                        return;
+                    }
                 }
                 cout << "Enter Change Description (max 30 characters): ";
                 cin >> ChangeDescription;
@@ -220,10 +241,19 @@ void ModifyRequest() {
                 ViewChangeItem(changeID);
                 cout << "Enter new release date (YYYY-MM-DD): ";
                 cin >> strDate;
-                date.y = stoi(strDate.substr(0, 4));
-                date.m = stoi(strDate.substr(5, 2));
-                date.d = stoi(strDate.substr(8, 2));
-                UpdateChangeItemReleaseDate(changeID, date);
+                try {
+                    if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
+                        date.y = stoi(strDate.substr(0, 4));
+                        date.m = stoi(strDate.substr(5, 2));
+                        date.d = stoi(strDate.substr(8, 2));
+                        UpdateChangeItemReleaseDate(changeID, date);
+                    } else {
+                        throw std::invalid_argument("Invalid date format");
+                    }
+                } catch (const std::invalid_argument& e) {
+                    cerr << "Invalid date format: " << e.what() << endl;
+                    return;
+                }
                 cout << "To repeat the process, enter '1' or go back to main menu, enter '0': ";
                 cin >> decision;
             } while (decision);
@@ -301,10 +331,19 @@ void ModifyRequest() {
             cin >> Name;
             cout << "Enter Release Date (YYYY-MM-DD): ";
             cin >> strDate;
-            date.y = stoi(strDate.substr(0, 4));
-            date.m = stoi(strDate.substr(5, 2));
-            date.d = stoi(strDate.substr(8, 2));
-            Init_ProductRelease(Name, date);
+            try {
+                if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
+                    date.y = stoi(strDate.substr(0, 4));
+                    date.m = stoi(strDate.substr(5, 2));
+                    date.d = stoi(strDate.substr(8, 2));
+                    Init_ProductRelease(Name, date);
+                } else {
+                    throw std::invalid_argument("Invalid date format");
+                }
+            } catch (const std::invalid_argument& e) {
+                cerr << "Invalid date format: " << e.what() << endl;
+                return;
+            }
             break;
         }
         case 0:
@@ -342,14 +381,23 @@ void PrintReportsAndInquiries() {
             cin >> dateStart;
             cout << "Enter End Date (YYYY-MM-DD): ";
             cin >> dateEnd;
-            start.y = stoi(dateStart.substr(0, 4));
-            start.m = stoi(dateStart.substr(5, 2));
-            start.d = stoi(dateStart.substr(8, 2));
-            end.y = stoi(dateEnd.substr(0, 4));
-            end.m = stoi(dateEnd.substr(5, 2));
-            end.d = stoi(dateEnd.substr(8, 2));
-
-            PrintOpenBugs(Product, start, end);
+            try {
+                if (dateStart.length() == 10 && dateStart[4] == '-' && dateStart[7] == '-' &&
+                    dateEnd.length() == 10 && dateEnd[4] == '-' && dateEnd[7] == '-') {
+                    start.y = stoi(dateStart.substr(0, 4));
+                    start.m = stoi(dateStart.substr(5, 2));
+                    start.d = stoi(dateStart.substr(8, 2));
+                    end.y = stoi(dateEnd.substr(0, 4));
+                    end.m = stoi(dateEnd.substr(5, 2));
+                    end.d = stoi(dateEnd.substr(8, 2));
+                    PrintOpenBugs(Product, start, end);
+                } else {
+                    throw std::invalid_argument("Invalid date format");
+                }
+            } catch (const std::invalid_argument& e) {
+                cerr << "Invalid date format: " << e.what() << endl;
+                return;
+            }
             break;
         }
         case 2: {
@@ -382,13 +430,56 @@ void PrintReportsAndInquiries() {
 
 // Function to handle data backup
 void BackupData() {
-    string fileName;
+    int input;
+    cout << "=== Backup Data ===" << endl;
+    cout << "1) Backup Entire Database" << endl;
+    cout << "2) Backup Specific Data Sets" << endl;
+    cout << "0) Return to Main Menu" << endl;
+    cout << "Enter your choice: ";
+    cin >> input;
 
+    switch (input) {
+        case 1:
+            BackUpDatabase("BackupDatabase.dat");
+            break;
+        case 2: {
+            int decision;
+            cout << "Which data set would you like to back up?" << endl;
+            cout << "1) Change Requests" << endl;
+            cout << "2) Users" << endl;
+            cout << "3) Change Items" << endl;
+            cout << "4) Product Releases" << endl;
+            cout << "5) Products" << endl;
+            cout << "0) Return" << endl;
+            cout << "Enter your choice: ";
+            cin >> decision;
 
-    cout << "What's the file name you wish to back up the database to (.txt file)?: ";
-    cin >> fileName;
-    
-    cout << "Backing up Database..." << endl;
-    BackUpDatabase(fileName);
-
+            switch (decision) {
+                case 1:
+                    BackUpDatabase("BackupChangeRequests.dat");
+                    break;
+                case 2:
+                    BackUpDatabase("BackupUsers.dat");
+                    break;
+                case 3:
+                    BackUpDatabase("BackupChangeItems.dat");
+                    break;
+                case 4:
+                    BackUpDatabase("BackupProductReleases.dat");
+                    break;
+                case 5:
+                    BackUpDatabase("BackupProducts.dat");
+                    break;
+                case 0:
+                    return;
+                default:
+                    cout << "Invalid option. Please try again." << endl;
+            }
+            break;
+        }
+        case 0:
+            return;
+        default:
+            cout << "Invalid option. Please try again." << endl;
+    }
 }
