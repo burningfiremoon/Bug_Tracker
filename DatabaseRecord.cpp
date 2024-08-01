@@ -187,6 +187,33 @@ bool DatabaseRecord::deleteRecord(const char* id) {
     return found;
 }
 
+bool DatabaseRecord::backupDatabase(const std::string& outputFile){
+    
+    // Open the destination file for writing
+    std::ofstream dest(outputFile, std::ios::binary);
+    if (!dest.is_open()) {
+        std::cerr << "Error: Could not open destination file." << std::endl;
+        return false;
+    }
+
+    std::streampos srcPos = dbFile.tellg();
+
+    dbFile.seekg(0, std::ios::beg);
+
+    // Copy contents from source to destination
+    dest << dbFile.rdbuf();
+
+    // Restore the original position in the source file stream
+    dbFile.clear(); // Clear any eof or fail flags
+    dbFile.seekg(srcPos);
+
+    // Close output file stream
+    dest.close();
+
+    return true;
+
+}
+
 //-------------------------------------
 // Function Implementations
 //-------------------------------------
@@ -225,3 +252,4 @@ int truncateFile(const char* path, off_t length) {
     }
     return result;
 }
+

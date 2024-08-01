@@ -358,38 +358,9 @@ void PrintOpenBugs(const char* Product, Date start, Date end) {
     dbFile.close();
 }
 
-// Backup Operations
-bool BackUpChangeRequest() {
-    cout << "Backing up Change Requests..." << endl;
-    return true;
-}
+// Backup Operation
+bool BackUpDatabase(const std::string& outputFile) {
 
-bool BackUpUsers() {
-    cout << "Backing up Users..." << endl;
-    return true;
-}
-
-bool BackUpChangeItems() {
-    cout << "Backing up Change Items..." << endl;
-    return true;
-}
-
-bool BackUpProductReleases() {
-    cout << "Backing up Product Releases..." << endl;
-    return true;
-}
-
-bool BackUpProducts() {
-    cout << "Backing up Products..." << endl;
-    return true;
-}
-
-bool BackUpEntireDatabase() {
-    cout << "Backing up Entire Database..." << endl;
-    BackUpChangeRequest();
-    BackUpUsers();
-    BackUpChangeItems();
-    BackUpProductReleases();
-    BackUpProducts();
+    DatabaseRecord::backupDatabase(outputFile);
     return true;
 }

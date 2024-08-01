@@ -171,6 +171,12 @@ public:
     */
     static void seekToBeginning();
 
+    /*
+        static bool backupDatabase(std::fstream& src, const std::string& outputFile)
+        - Purpose: Seek to the beginning of the database file.
+    */
+    static bool backupDatabase(const std::string& outputFile);
+
 protected:
     //-------------------------------------
     // Member Variables
@@ -205,5 +211,6 @@ void closeDatabase();
     - Returns: int (out): 0 on success, -1 on failure.
 */
 int truncateFile(const char* path, off_t length);
+
 
 #endif // DATABASE_RECORD_H

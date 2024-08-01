@@ -382,56 +382,13 @@ void PrintReportsAndInquiries() {
 
 // Function to handle data backup
 void BackupData() {
-    int input;
-    cout << "=== Backup Data ===" << endl;
-    cout << "1) Backup Entire Database" << endl;
-    cout << "2) Backup Specific Data Sets" << endl;
-    cout << "0) Return to Main Menu" << endl;
-    cout << "Enter your choice: ";
-    cin >> input;
+    string fileName;
 
-    switch (input) {
-        case 1:
-            BackUpEntireDatabase();
-            break;
-        case 2: {
-            int decision;
-            cout << "Which data set would you like to back up?" << endl;
-            cout << "1) Change Requests" << endl;
-            cout << "2) Users" << endl;
-            cout << "3) Change Items" << endl;
-            cout << "4) Product Releases" << endl;
-            cout << "5) Products" << endl;
-            cout << "0) Return" << endl;
-            cout << "Enter your choice: ";
-            cin >> decision;
 
-            switch (decision) {
-                case 1:
-                    BackUpChangeRequest();
-                    break;
-                case 2:
-                    BackUpUsers();
-                    break;
-                case 3:
-                    BackUpChangeItems();
-                    break;
-                case 4:
-                    BackUpProductReleases();
-                    break;
-                case 5:
-                    BackUpProducts();
-                    break;
-                case 0:
-                    return;
-                default:
-                    cout << "Invalid option. Please try again." << endl;
-            }
-            break;
-        }
-        case 0:
-            return;
-        default:
-            cout << "Invalid option. Please try again." << endl;
-    }
+    cout << "What's the file name you wish to back up the database to (.txt file)?: ";
+    cin >> fileName;
+    
+    cout << "Backing up Database..." << endl;
+    BackUpDatabase(fileName);
+
 }

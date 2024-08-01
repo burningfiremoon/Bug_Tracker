@@ -60,12 +60,7 @@ bool CheckProductReleaseExists(const char* Product);
 bool CheckProductExists(const char* Product);
 void PrintOpenBugs(const char* Product, Date start, Date end);
 
-// Backup operations
-bool BackUpChangeRequest();
-bool BackUpUsers();
-bool BackUpChangeItems();
-bool BackUpProductReleases();
-bool BackUpProducts();
-bool BackUpEntireDatabase();
+// Backup operation
+bool BackUpDatabase(const std::string& outputFile);
 
 #endif // CONTROL_H
