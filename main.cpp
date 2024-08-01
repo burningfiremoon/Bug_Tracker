@@ -62,7 +62,7 @@ int main()
     bool exit;
     do
     {
-        exit = TextUI();
+        exit = MainMenu();
     } while (exit == false);
     CloseDatabase();
     return 0;

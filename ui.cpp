@@ -9,38 +9,38 @@ int MainMenu() {
     int input;
     bool exit = false;
 
-    while (!exit) {
-        cout << "=== Main Menu ===" << endl;
-        cout << "1) Create Customer Request" << endl;
-        cout << "2) Modify Request" << endl;
-        cout << "3) Print Reports and Inquiries" << endl;
-        cout << "4) Backup Data" << endl;
-        cout << "0) Exit" << endl;
-        cout << "Enter your choice: ";
-        cin >> input;
 
-        switch (input) {
-            case 1:
-                CreateCustomerRequest();
-                break;
-            case 2:
-                ModifyRequest();
-                break;
-            case 3:
-                PrintReportsAndInquiries();
-                break;
-            case 4:
-                BackupData();
-                break;
-            case 0:
-                exit = true;
-                break;
-            default:
-                cout << "Invalid option. Please try again." << endl;
-        }
+    cout << "=== Main Menu ===" << endl;
+    cout << "1) Create Customer Request" << endl;
+    cout << "2) Modify Request" << endl;
+    cout << "3) Print Reports and Inquiries" << endl;
+    cout << "4) Backup Data" << endl;
+    cout << "0) Exit" << endl;
+    cout << "Enter your choice: ";
+    cin >> input;
+
+    switch (input) {
+        case 1:
+            CreateCustomerRequest();
+            break;
+        case 2:
+            ModifyRequest();
+            break;
+        case 3:
+            PrintReportsAndInquiries();
+            break;
+        case 4:
+            BackupData();
+            break;
+        case 0:
+            exit = true;
+            break;
+        default:
+            cout << "Invalid option. Please try again." << endl;
     }
+    
 
-    return input;
+    return exit;
 }
 
 // Function to handle the creation of customer requests
