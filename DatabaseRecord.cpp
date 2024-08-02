@@ -180,9 +180,9 @@ bool DatabaseRecord::deleteRecord(const char* id) {
     tempFile.close();
     dbFile.close();
     if (found) {
-        remove("database.dat");
-        rename("temp.txt", "database.dat");
-        openFile("database.dat");
+        remove("database.txt");
+        rename("temp.txt", "database.txt");
+        openFile("database.txt");
     }
     return found;
 }

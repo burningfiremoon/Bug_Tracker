@@ -34,15 +34,18 @@
 
     -In terms of how comments for functions should be listed [in the header files], adhere to the following:
 
-        i)all function prototypes must be proceeded by a horizontal line ( ----- )
-        ii)All comments related to a function prototype must be placed after the function signature and before any other statement
-        iii)all function parameters must be listed on separate lines [must include its type and direction (either in or out) [In meaning what gets inputted and out means what gets outputted and/or sent out to other functions, etc]; Also, all function parameters must have their name listed
+        i) all function prototypes must be proceeded by a horizontal line ( ----- )
+        ii) All comments related to a function prototype must be placed after the function signature and before any other statement
+        iii) all function parameters must be listed on separate lines [must include its type and direction (either in or out) [In meaning what gets inputted and out means what gets outputted and/or sent out to other functions, etc]; Also, all function parameters must have their name listed
 
     -All function signatures must also include the following:
         i) what the function does [as in, what it can do for programmers that call it]
         ii) any possible exceptions
 */
 
+//-------------------------------------
+// List of #includes
+//-------------------------------------
 #include "DatabaseRecord.h"
 #include "ChangeItem.h"
 #include "ChangeRequest.h"
@@ -56,14 +59,23 @@
 
 using namespace std;
 
-int main()
-{
-    openDatabase("Database.dat");
+//-------------------------------------
+// Main Function
+//-------------------------------------
+/*
+    main()
+    - Purpose: Entry point of the program. It opens the database file, presents the main menu to the user, 
+      and closes the database file upon exit.
+    - Parameters: None
+    - Returns: int (out): Return code indicating success or failure.
+    - Exceptions: None
+*/
+int main() {
+    openDatabase("database.txt"); // Open the database file as "database.txt"
     bool exit;
-    do
-    {
+    do {
         exit = MainMenu();
-    } while (exit == false);
+    } while (!exit);
     closeDatabase();
     return 0;
 }

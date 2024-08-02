@@ -322,7 +322,7 @@ void ChangeItem::readFromBuffer(const char* buffer) {
 */
 bool ChangeItem::updStatus(const char* id, const char* newStatus) {
     // Open the database file
-    ifstream dbFileIn("database.dat");
+    ifstream dbFileIn("database.txt");
     if (!dbFileIn) {
         cerr << "Error opening database file for reading." << endl;
         return false;
@@ -349,7 +349,7 @@ bool ChangeItem::updStatus(const char* id, const char* newStatus) {
 
     // Write back to the file if the record was found and updated
     if (recordFound) {
-        ofstream dbFileOut("database.dat", ios::out | ios::trunc);
+        ofstream dbFileOut("database.txt", ios::out | ios::trunc);
         if (!dbFileOut) {
             cerr << "Error opening database file for writing." << endl;
             return false;

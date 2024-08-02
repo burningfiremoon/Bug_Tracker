@@ -31,8 +31,7 @@ bool Init_User(const char* name, const char* phone, const char* email) {
     newUser.setPhone(phone);
     newUser.setEmail(email);
 
-    // Use "database.dat" instead of "testDB.txt"
-    fstream dbFile("database.dat", ios::out | ios::app);
+    fstream dbFile("database.txt", ios::out | ios::app);
     if (!dbFile) {
         cerr << "Error opening database file for writing." << endl;
         return false;
@@ -48,8 +47,7 @@ bool Init_User(const char* name, const char* phone, const char* email) {
 }
 
 void UpdateUserName(const char* oldName, const char* newName) {
-    // Use "database.dat" instead of "testDB.txt"
-    fstream dbFile("database.dat", ios::in | ios::out);
+    fstream dbFile("database.txt", ios::in | ios::out);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -69,8 +67,7 @@ void UpdateUserName(const char* oldName, const char* newName) {
 }
 
 void UpdateUserEmail(const char* name, const char* newEmail) {
-    // Use "database.dat" instead of "testDB.txt"
-    fstream dbFile("database.dat", ios::in | ios::out);
+    fstream dbFile("database.txt", ios::in | ios::out);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -90,8 +87,7 @@ void UpdateUserEmail(const char* name, const char* newEmail) {
 }
 
 void UpdateUserPhoneNumber(const char* name, const char* newPhoneNumber) {
-    // Use "database.dat" instead of "testDB.txt"
-    fstream dbFile("database.dat", ios::in | ios::out);
+    fstream dbFile("database.txt", ios::in | ios::out);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -111,8 +107,7 @@ void UpdateUserPhoneNumber(const char* name, const char* newPhoneNumber) {
 }
 
 bool CheckUserExists(const char* name) {
-    // Use "database.dat" instead of "testDB.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return false;
@@ -131,8 +126,7 @@ bool CheckUserExists(const char* name) {
 
 void PrintUserInfo(const char* Name) {
     if (CheckUserExists(Name)) {
-        // Use "database.dat" instead of "testDB.txt"
-        fstream dbFile("database.dat", ios::in);
+        fstream dbFile("database.txt", ios::in);
         if (!dbFile) {
             cerr << "Error opening database file." << endl;
             return;
@@ -161,8 +155,7 @@ int Init_ChangeItem(const char* product, const char* changeDescription) {
     newItem.setProductName(product);
     newItem.setChangeDescription(changeDescription);
 
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::out | ios::app);
+    fstream dbFile("database.txt", ios::out | ios::app);
     if (!dbFile) {
         cerr << "Error opening database file for writing." << endl;
         return -1;
@@ -178,13 +171,11 @@ int Init_ChangeItem(const char* product, const char* changeDescription) {
 }
 
 void UpdateChangeItemStatus(const char* changeID, const char* status) {
-    // Assume ChangeItem::updStatus is adjusted to work with database.dat
     ChangeItem::updStatus(changeID, status);
 }
 
 bool CheckChangeItemExists(const char* changeID) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return false;
@@ -202,8 +193,7 @@ bool CheckChangeItemExists(const char* changeID) {
 }
 
 void ViewChangeItem(int changeID) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -220,8 +210,7 @@ void ViewChangeItem(int changeID) {
 }
 
 void UpdateChangeItemReleaseDate(int changeID, Date date) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in | ios::out);
+    fstream dbFile("database.txt", ios::in | ios::out);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -241,8 +230,7 @@ void UpdateChangeItemReleaseDate(int changeID, Date date) {
 }
 
 void UpdateChangeItemDescription(int changeID, const char* description) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in | ios::out);
+    fstream dbFile("database.txt", ios::in | ios::out);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -269,8 +257,7 @@ bool Init_ChangeRequest(const char* Name, const char* Product, const char* Versi
     newRequest.setPriority(Priority);
     newRequest.setDateFirstReported({2024, 7, 30}); // Example date
 
-    // Use "database.dat" instead of "ChangeRequests.txt"
-    fstream dbFile("database.dat", ios::out | ios::app);
+    fstream dbFile("database.txt", ios::out | ios::app);
     if (!dbFile) {
         cerr << "Error opening database file for writing." << endl;
         return false;
@@ -286,8 +273,7 @@ bool Init_ChangeRequest(const char* Name, const char* Product, const char* Versi
 }
 
 void ShowChangeItems(const char* Product) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;
@@ -314,8 +300,7 @@ bool Init_ProductRelease(const char* Product, Date date) {
 
     ProductRelease newRelease(Product, releaseID, date);
 
-    // Use "database.dat" instead of "ProductReleases.txt"
-    fstream dbFile("database.dat", ios::out | ios::app);
+    fstream dbFile("database.txt", ios::out | ios::app);
     if (!dbFile) {
         cerr << "Error opening database file for writing." << endl;
         return false;
@@ -331,8 +316,7 @@ bool Init_ProductRelease(const char* Product, Date date) {
 }
 
 bool CheckProductReleaseExists(const char* Product) {
-    // Use "database.dat" instead of "ProductReleases.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return false;
@@ -355,8 +339,7 @@ bool CheckProductExists(const char* Product) {
 }
 
 void PrintOpenBugs(const char* Product, Date start, Date end) {
-    // Use "database.dat" instead of "ChangeItems.txt"
-    fstream dbFile("database.dat", ios::in);
+    fstream dbFile("database.txt", ios::in);
     if (!dbFile) {
         cerr << "Error opening database file." << endl;
         return;

@@ -314,7 +314,7 @@ void ChangeRequest::readFromBuffer(const char* buffer) {
 bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
     // Ensure the file is opened correctly
     DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("database.dat");
+    DatabaseRecord::openFile("database.txt");
 
     fstream &dbFile = DatabaseRecord::getFile();
     DatabaseRecord::seekToBeginning();
@@ -351,7 +351,7 @@ bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
     // Rewrite the file with the updated contents
     if (recordFound) {
         dbFile.close();
-        dbFile.open("database.dat", ios::out | ios::trunc);
+        dbFile.open("database.txt", ios::out | ios::trunc);
         for (const auto& l : lines) {
             dbFile << l << endl;
         }
@@ -375,7 +375,7 @@ bool ChangeRequest::updStatus(const char* id, const char* newStatus) {
 bool ChangeRequest::updDescription(const char* id, const char* newDescription) {
     // Ensure the file is opened correctly
     DatabaseRecord::closeFile();
-    DatabaseRecord::openFile("database.dat");
+    DatabaseRecord::openFile("database.txt");
 
     fstream &dbFile = DatabaseRecord::getFile();
     DatabaseRecord::seekToBeginning();
@@ -412,7 +412,7 @@ bool ChangeRequest::updDescription(const char* id, const char* newDescription) {
     // Rewrite the file with the updated contents
     if (recordFound) {
         dbFile.close();
-        dbFile.open("database.dat", ios::out | ios::trunc);
+        dbFile.open("database.txt", ios::out | ios::trunc);
         for (const auto& l : lines) {
             dbFile << l << endl;
         }

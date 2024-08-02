@@ -58,129 +58,72 @@ void CreateCustomerRequest() {
     switch (input) {
         case 1: {
             char Name[31];
-            char PhoneNumber[18];
+            char PhoneNumber[12];
             char Email[25];
-            char Product[11];
-            char Version[9];
+            char Product[31];
+            char ReleaseID[9];
             char Description[31];
-            int decision;
             int Priority;
+            char confirmation;
 
             // Collect customer information
-            cout << "Enter Customer Name (max 30 characters): ";
-            cin >> Name;
-            cout << "Enter Phone Number (max 17 characters): ";
-            cin >> PhoneNumber;
-            cout << "Enter Email (max 24 characters): ";
-            cin >> Email;
+            cout << "Enter the Customer Name (Length: 30 characters max): ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.getline(Name, 31);
+            cout << "Enter the Phone Number (Length: 11 digits max): ";
+            cin.getline(PhoneNumber, 12);
+            cout << "Enter Email address: ";
+            cin.getline(Email, 25);
 
-            if (!Init_User(Name, PhoneNumber, Email)) {
-                cout << "Error creating user. Please try again." << endl;
+            cout << "Are you sure you want to add " << Name << " as a customer (Y/N)? ";
+            cin >> confirmation;
+            if (tolower(confirmation) == 'y') {
+                if (!Init_User(Name, PhoneNumber, Email)) {
+                    cout << "Error creating user. Please try again." << endl;
+                    return;
+                }
+                cout << "The Customer, " << Name << ", has been added." << endl;
+            } else {
+                cout << "Customer addition canceled." << endl;
                 return;
             }
 
-            cout << "Enter Product Name (max 10 characters): ";
-            cin >> Product;
-            cout << "Enter Version (max 8 characters): ";
-            cin >> Version;
-            cout << "Enter Description (max 30 characters): ";
-            cin >> Description;
-            cout << "Enter Priority (1-5): ";
+            cout << "Enter the name of the product: ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.getline(Product, 31);
+            cout << "Enter the Release ID (Length: 8 characters max): ";
+            cin.getline(ReleaseID, 9);
+            cout << "Enter the Description of the Bug (Length: 30 characters max): ";
+            cin.getline(Description, 31);
+            cout << "Enter the Priority (Ranging: 1-5): ";
             cin >> Priority;
 
-            Init_ChangeRequest(Name, Product, Version, Description, Priority);
-            ShowChangeItems(Product);
-
-            cout << "Is there a matching change item for the change request? (1 for Yes, 0 for No): ";
-            cin >> decision;
-            if (decision == 1) {
-                int changeID;
-                cout << "Enter Change ID: ";
-                cin >> changeID;
-                connectChangeRequest(Name, changeID);
-            } else {
-                char ChangeDescription[31];
-                if (!CheckProductReleaseExists(Product)) {
-                    Date date;
-                    string strDate;
-                    cout << "Enter Product Release Date (YYYY-MM-DD): ";
-                    cin >> strDate;
-
-                    try {
-                        if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
-                            date.y = stoi(strDate.substr(0, 4));
-                            date.m = stoi(strDate.substr(5, 2));
-                            date.d = stoi(strDate.substr(8, 2));
-                            Init_ProductRelease(Product, date);
-                        } else {
-                            throw std::invalid_argument("Invalid date format");
-                        }
-                    } catch (const std::invalid_argument& e) {
-                        cerr << "Invalid date format: " << e.what() << endl;
-                        return;
-                    }
+            cout << "Do you confirm the Release ID, Description, and Priority (Y/N)? ";
+            cin >> confirmation;
+            if (tolower(confirmation) == 'y') {
+                int changeID = Init_ChangeRequest(Name, Product, ReleaseID, Description, Priority);
+                if (changeID != -1) {
+                    cout << "Change request has been successfully created." << endl;
+                    cout << "The Change ID is " << changeID << " for " << Name << "." << endl;
+                } else {
+                    cout << "Error creating change request. Please try again." << endl;
                 }
-                cout << "Enter Change Description (max 30 characters): ";
-                cin >> ChangeDescription;
-                connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
+            } else {
+                cout << "Change request creation canceled." << endl;
             }
             break;
         }
         case 2: {
-            char Product[11];
-            char Version[9];
-            char Description[31];
-            int Priority;
-            int decision;
             char Name[31];
-
-            cout << "Enter User Name (max 30 characters): ";
-            cin >> Name;
-
-            cout << "Enter Product Name (max 10 characters): ";
-            cin >> Product;
-            cout << "Enter Version (max 8 characters): ";
-            cin >> Version;
-            cout << "Enter Description (max 30 characters): ";
-            cin >> Description;
-            cout << "Enter Priority (1-5): ";
-            cin >> Priority;
-
-            Init_ChangeRequest(Name, Product, Version, Description, Priority);
-            ShowChangeItems(Product);
-
-            cout << "Is there a matching change item for the change request? (1 for Yes, 0 for No): ";
-            cin >> decision;
-            if (decision == 1) {
-                int changeID;
-                cout << "Enter Change ID: ";
-                cin >> changeID;
-                connectChangeRequest(Name, changeID);
-            } else {
-                char ChangeDescription[31];
-                if (!CheckProductReleaseExists(Product)) {
-                    Date date;
-                    string strDate;
-                    cout << "Enter Product Release Date (YYYY-MM-DD): ";
-                    cin >> strDate;
-                    try {
-                        if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
-                            date.y = stoi(strDate.substr(0, 4));
-                            date.m = stoi(strDate.substr(5, 2));
-                            date.d = stoi(strDate.substr(8, 2));
-                            Init_ProductRelease(Product, date);
-                        } else {
-                            throw std::invalid_argument("Invalid date format");
-                        }
-                    } catch (const std::invalid_argument& e) {
-                        cerr << "Invalid date format: " << e.what() << endl;
-                        return;
-                    }
-                }
-                cout << "Enter Change Description (max 30 characters): ";
-                cin >> ChangeDescription;
-                connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
+            cout << "Enter the Customer Name (Length: 30 characters max): ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.getline(Name, 31);
+            if (!CheckUserExists(Name)) {
+                cout << "Customer not found." << endl;
+                return;
             }
+            // Additional logic for existing customers can be added here if needed
+            cout << "Existing customer found." << endl;
             break;
         }
         case 0:
@@ -440,7 +383,7 @@ void BackupData() {
 
     switch (input) {
         case 1:
-            BackUpDatabase("BackupDatabase.dat");
+            BackUpDatabase("BackupDatabase.txt");
             break;
         case 2: {
             int decision;
@@ -456,19 +399,19 @@ void BackupData() {
 
             switch (decision) {
                 case 1:
-                    BackUpDatabase("BackupChangeRequests.dat");
+                    BackUpDatabase("BackupChangeRequests.txt");
                     break;
                 case 2:
-                    BackUpDatabase("BackupUsers.dat");
+                    BackUpDatabase("BackupUsers.txt");
                     break;
                 case 3:
-                    BackUpDatabase("BackupChangeItems.dat");
+                    BackUpDatabase("BackupChangeItems.txt");
                     break;
                 case 4:
-                    BackUpDatabase("BackupProductReleases.dat");
+                    BackUpDatabase("BackupProductReleases.txt");
                     break;
                 case 5:
-                    BackUpDatabase("BackupProducts.dat");
+                    BackUpDatabase("BackupProducts.txt");
                     break;
                 case 0:
                     return;
