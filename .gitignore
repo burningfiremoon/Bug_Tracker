@@ -3,3 +3,15 @@ temp.txt
 test.exe
 testDB.txt
 testDBCI.exe
+ChangeItem.o
+ChangeRequest.o
+control.o
+database.txt
+DatabaseRecord.o
+main.o
+my_program
+print.o
+ProductRelease.o
+tempdbsave.txt
+ui.o
+User.o
