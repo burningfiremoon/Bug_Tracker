@@ -53,6 +53,7 @@ void UpdateUserName(const char* oldName, const char* newName) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(oldName);
+    dbFileTemp.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
     while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), oldName) == 0) {
             user.setRequesterName(newName);
@@ -68,6 +69,8 @@ void UpdateUserEmail(const char* name, const char* newEmail) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
+    dbFileTemp.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
+
     while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
             user.setEmail(newEmail);
@@ -84,6 +87,7 @@ void UpdateUserPhoneNumber(const char* name, const char* newPhoneNumber) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
+    dbFileTemp.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
     while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
             user.setPhone(newPhoneNumber);
@@ -100,6 +104,7 @@ bool CheckUserExists(const char* name) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
+    dbFileTemp.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
     
     while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
@@ -116,6 +121,7 @@ void PrintUserInfo(const char* Name) {
         fstream& dbFileTemp = DatabaseRecord::getFile();
 
         User user(Name);
+        dbFileTemp.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
         while (user.readRecord(dbFileTemp)) {
             if (strcmp(user.getRequesterName(), Name) == 0) {
                 cout << user << endl;

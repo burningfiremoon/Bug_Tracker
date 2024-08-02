@@ -42,7 +42,7 @@ int MainMenu() {
         }
     }
 
-    return input;
+    return exit;
 }
 
 // Function to handle the creation of customer requests

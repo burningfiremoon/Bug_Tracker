@@ -62,9 +62,11 @@ bool User::writeRecord(fstream &dbFile) const {
         std::cerr << "Database file is not open for writing." << std::endl;
         return false;
     }
+    dbFile.seekp((long)dbFile.tellg(), ios::beg);
     dbFile.write(requesterName, sizeof(requesterName));
     dbFile.write(phone, sizeof(phone));
     dbFile.write(email, sizeof(email));
+    dbFile.put('\n');
     dbFile.flush();
     return true;
 }
@@ -75,28 +77,21 @@ bool User::readRecord(fstream &dbFile) {
         return false;
     }
 
-    std::cout << "Attempting to read record..." << std::endl;
     dbFile.clear(); // Clear any potential error flags
-    dbFile.seekg(0, ios::beg); // Ensure we start reading from the beginning of the file
 
     char tempRequesterName[31] = {0};
     char tempPhone[12] = {0};
     char tempEmail[25] = {0};
+    string temp;
 
     if (dbFile.read(tempRequesterName, sizeof(tempRequesterName))) {
         dbFile.read(tempPhone, sizeof(tempPhone));
         dbFile.read(tempEmail, sizeof(tempEmail));
+        getline(dbFile, temp);
 
         setRequesterName(tempRequesterName);
         setPhone(tempPhone);
         setEmail(tempEmail);
-
-        // Debugging output to verify the read data
-        std::cout << "Read User Record:" << std::endl;
-        std::cout << "Name: " << tempRequesterName << std::endl;
-        std::cout << "Phone: " << tempPhone << std::endl;
-        std::cout << "Email: " << tempEmail << std::endl;
-
         return true;
     } else {
         std::cerr << "Failed to read record. Current file position: " << dbFile.tellg() << std::endl;
