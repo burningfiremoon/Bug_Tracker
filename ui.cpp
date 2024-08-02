@@ -272,6 +272,11 @@ void ModifyRequest() {
             char Name[31];
             cout << "Enter Customer Name (max 30 characters): ";
             cin >> Name;
+            
+            if (!CheckUserExists(Name)) {
+                cout << "User doesn't exist"<< endl;
+                return;
+            }
 
             int decision;
             cout << "1) Update Name" << endl;
@@ -417,56 +422,5 @@ void PrintReportsAndInquiries() {
 
 // Function to handle data backup
 void BackupData() {
-    int input;
-    cout << "=== Backup Data ===" << endl;
-    cout << "1) Backup Entire Database" << endl;
-    cout << "2) Backup Specific Data Sets" << endl;
-    cout << "0) Return to Main Menu" << endl;
-    cout << "Enter your choice: ";
-    cin >> input;
-
-    switch (input) {
-        case 1:
-            BackUpDatabase("BackupDatabase.txt");
-            break;
-        case 2: {
-            int decision;
-            cout << "Which data set would you like to back up?" << endl;
-            cout << "1) Change Requests" << endl;
-            cout << "2) Users" << endl;
-            cout << "3) Change Items" << endl;
-            cout << "4) Product Releases" << endl;
-            cout << "5) Products" << endl;
-            cout << "0) Return" << endl;
-            cout << "Enter your choice: ";
-            cin >> decision;
-
-            switch (decision) {
-                case 1:
-                    BackUpDatabase("BackupChangeRequests.txt");
-                    break;
-                case 2:
-                    BackUpDatabase("BackupUsers.txt");
-                    break;
-                case 3:
-                    BackUpDatabase("BackupChangeItems.txt");
-                    break;
-                case 4:
-                    BackUpDatabase("BackupProductReleases.txt");
-                    break;
-                case 5:
-                    BackUpDatabase("BackupProducts.txt");
-                    break;
-                case 0:
-                    return;
-                default:
-                    cout << "Invalid option. Please try again." << endl;
-            }
-            break;
-        }
-        case 0:
-            return;
-        default:
-            cout << "Invalid option. Please try again." << endl;
-    }
+    BackUpDatabase("BackupDatabase.txt");
 }

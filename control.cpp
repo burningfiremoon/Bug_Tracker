@@ -49,6 +49,7 @@ bool Init_User(const char* name, const char* phone, const char* email) {
 }
 
 void UpdateUserName(const char* oldName, const char* newName) {
+
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(oldName);
@@ -99,6 +100,7 @@ bool CheckUserExists(const char* name) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
+    
     while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
             

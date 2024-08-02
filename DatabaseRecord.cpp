@@ -189,7 +189,7 @@ bool DatabaseRecord::deleteRecord(const char* id) {
 
 bool DatabaseRecord::backupDatabase(const std::string& outputFile) {
     // Open the destination file for writing
-    std::ofstream dest(outputFile, std::ios::binary);
+    std::ofstream dest(outputFile, std::ios::binary | std::ios::app);
     if (!dest.is_open()) {
         std::cerr << "Error: Could not open destination file." << std::endl;
         return false;
