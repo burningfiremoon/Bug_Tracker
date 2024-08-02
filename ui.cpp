@@ -60,21 +60,20 @@ void CreateCustomerRequest() {
             char Name[31];
             char PhoneNumber[12];
             char Email[25];
-            char Product[31];
+            char confirmation;
+            char Product[11];
             char ReleaseID[9];
             char Description[31];
             int Priority;
-            char confirmation;
 
             // Collect customer information
-            cout << "Enter the Customer Name (Length: 30 characters max): ";
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Enter the Customer Name (Length: 30 characters max): ";
             cin.getline(Name, 31);
             cout << "Enter the Phone Number (Length: 11 digits max): ";
             cin.getline(PhoneNumber, 12);
             cout << "Enter Email address: ";
             cin.getline(Email, 25);
-
             cout << "Are you sure you want to add " << Name << " as a customer (Y/N)? ";
             cin >> confirmation;
             if (tolower(confirmation) == 'y') {
@@ -88,6 +87,7 @@ void CreateCustomerRequest() {
                 return;
             }
 
+            // Collect change request information
             cout << "Enter the name of the product: ";
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cin.getline(Product, 31);
@@ -101,8 +101,8 @@ void CreateCustomerRequest() {
             cout << "Do you confirm the Release ID, Description, and Priority (Y/N)? ";
             cin >> confirmation;
             if (tolower(confirmation) == 'y') {
-                int changeID = Init_ChangeRequest(Name, Product, ReleaseID, Description, Priority);
-                if (changeID != -1) {
+                int changeID = 0; // Initialize changeID to store the output
+                if (Init_ChangeRequest(Name, Product, ReleaseID, Description, Priority, changeID)) {
                     cout << "Change request has been successfully created." << endl;
                     cout << "The Change ID is " << changeID << " for " << Name << "." << endl;
                 } else {
@@ -114,16 +114,60 @@ void CreateCustomerRequest() {
             break;
         }
         case 2: {
+            char Product[11];
+            char Version[9];
+            char Description[31];
+            int Priority;
+            int decision;
             char Name[31];
-            cout << "Enter the Customer Name (Length: 30 characters max): ";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.getline(Name, 31);
-            if (!CheckUserExists(Name)) {
-                cout << "Customer not found." << endl;
-                return;
+
+            cout << "Enter User Name (max 30 characters): ";
+            cin >> Name;
+
+            cout << "Enter Product Name (max 10 characters): ";
+            cin >> Product;
+            cout << "Enter Version (max 8 characters): ";
+            cin >> Version;
+            cout << "Enter Description (max 30 characters): ";
+            cin >> Description;
+            cout << "Enter Priority (1-5): ";
+            cin >> Priority;
+
+            Init_ChangeRequest(Name, Product, Version, Description, Priority, decision);
+            ShowChangeItems(Product);
+
+            cout << "Is there a matching change item for the change request? (1 for Yes, 0 for No): ";
+            cin >> decision;
+            if (decision == 1) {
+                int changeID;
+                cout << "Enter Change ID: ";
+                cin >> changeID;
+                connectChangeRequest(Name, changeID);
+            } else {
+                char ChangeDescription[31];
+                if (!CheckProductReleaseExists(Product)) {
+                    Date date;
+                    string strDate;
+                    cout << "Enter Product Release Date (YYYY-MM-DD): ";
+                    cin >> strDate;
+                    try {
+                        if (strDate.length() == 10 && strDate[4] == '-' && strDate[7] == '-') {
+                            date.y = stoi(strDate.substr(0, 4));
+                            date.m = stoi(strDate.substr(5, 2));
+                            date.d = stoi(strDate.substr(8, 2));
+                            Init_ProductRelease(Product, date);
+                        } else {
+                            throw std::invalid_argument("Invalid date format");
+                        }
+                    } catch (const std::invalid_argument& e) {
+                        cerr << "Invalid date format: " << e.what() << endl;
+                        return;
+                    }
+                }
+                cout << "Enter Change Description (max 30 characters): ";
+                cin >> ChangeDescription;
+                connectChangeRequest(Name, Init_ChangeItem(Product, ChangeDescription));
             }
-            // Additional logic for existing customers can be added here if needed
-            cout << "Existing customer found." << endl;
             break;
         }
         case 0:

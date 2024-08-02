@@ -9,8 +9,15 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <ctime>
 
 using namespace std;
+
+// Function to generate a unique Change ID
+int generateUniqueChangeID() {
+    srand(static_cast<unsigned int>(time(nullptr)));
+    return rand() % 1000000; // Generates a random number between 0 and 999999
+}
 
 // Function to print a change item
 void PrintChangeItem(const ChangeItem& item) {
@@ -250,12 +257,18 @@ void UpdateChangeItemDescription(int changeID, const char* description) {
 }
 
 // Change Request Management
-bool Init_ChangeRequest(const char* Name, const char* Product, const char* Version, const char* Description, int Priority) {
+bool Init_ChangeRequest(const char* Name, const char* Product, const char* Version, const char* Description, int Priority, int& changeID) {
+    changeID = generateUniqueChangeID(); // Generate a unique Change ID
     ChangeRequest newRequest(Name);
     newRequest.setRequesterName(Name);
     newRequest.setDescription(Description);
     newRequest.setPriority(Priority);
     newRequest.setDateFirstReported({2024, 7, 30}); // Example date
+
+    // Convert changeID to string and set it
+    char changeIDStr[7];
+    snprintf(changeIDStr, sizeof(changeIDStr), "%06d", changeID);
+    newRequest.setChangeID(changeIDStr);
 
     fstream dbFile("database.txt", ios::out | ios::app);
     if (!dbFile) {

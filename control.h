@@ -41,10 +41,10 @@ bool CheckChangeItemExists(const char* changeID);
 void ViewChangeItem(int changeID);
 void UpdateChangeItemReleaseDate(int changeID, Date date);
 void UpdateChangeItemDescription(int changeID, const char* description);
-void PrintChangeItem(int changeID);
+void PrintChangeItem(const ChangeItem& item);
 
 // Change Request management
-bool Init_ChangeRequest(const char* Name, const char* Product, const char* Version, const char* Description, int Priority);
+bool Init_ChangeRequest(const char* Name, const char* Product, const char* Version, const char* Description, int Priority, int& changeID);
 void ShowChangeItems(const char* Product);
 void connectChangeRequest(const char* Name, int changeID);
 
@@ -58,5 +58,8 @@ void PrintOpenBugs(const char* Product, Date start, Date end);
 
 // Backup operation
 bool BackUpDatabase(const std::string& outputFile);
+
+// Utility functions
+int generateUniqueChangeID(); // Function to generate a unique Change ID
 
 #endif // CONTROL_H
