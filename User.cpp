@@ -69,6 +69,27 @@ bool User::writeRecord(fstream &dbFile) const {
     return true;
 }
 
+bool User::findUser(fstream &dbFile, const char* Name){
+    dbFile.clear();
+    dbFile.seekg(0,ios::beg);
+
+    char tempRequesterName[31] = {0};
+    char tempPhone[12] = {0};
+    char tempEmail[25] = {0};
+
+    string user;
+    while(getline(dbFile, user)){
+        const char * _user = user.c_str();
+        if (strcmp(Name, _user)== 0){
+            setRequesterName(tempRequesterName);
+            setPhone(tempPhone);
+            setEmail(tempEmail);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool User::readRecord(fstream &dbFile) {
     if (!dbFile.is_open()) {
         std::cerr << "Database file is not open for reading." << std::endl;

@@ -27,6 +27,8 @@ public:
 
     bool writeRecord(fstream &dbFile) const override;
     bool readRecord(fstream &dbFile) override;
+    bool findUser(fstream &dbFile, const char* Name);
+
     int getRecordSize() const override;
     void readFromBuffer(const char* buffer) override;
 
