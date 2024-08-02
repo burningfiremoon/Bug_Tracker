@@ -53,6 +53,7 @@ void UpdateUserName(const char* oldName, const char* newName) {
     fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(oldName);
+    
     while (user.findUser(dbFileTemp, oldName)) {
         if (strcmp(user.getRequesterName(), oldName) == 0) {
             user.setRequesterName(newName);

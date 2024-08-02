@@ -277,7 +277,8 @@ void ModifyRequest() {
                 cout << "User doesn't exist"<< endl;
                 return;
             }
-
+            cout << endl;
+            
             int decision;
             cout << "1) Update Name" << endl;
             cout << "2) Update Email" << endl;

@@ -78,9 +78,13 @@ bool User::findUser(fstream &dbFile, const char* Name){
     char tempEmail[25] = {0};
 
     string user;
+    string userName;
     while(getline(dbFile, user)){
-        const char * _user = user.c_str();
+        cout << "Checking" << endl;
+        char * _user;
+        user.copy(_user, 30, 0);
         if (strcmp(Name, _user)== 0){
+            cout << "Hello" << endl;
             setRequesterName(tempRequesterName);
             setPhone(tempPhone);
             setEmail(tempEmail);
