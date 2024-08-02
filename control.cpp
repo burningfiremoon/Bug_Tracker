@@ -38,115 +38,89 @@ bool Init_User(const char* name, const char* phone, const char* email) {
     newUser.setPhone(phone);
     newUser.setEmail(email);
 
-    fstream dbFile("database.txt", ios::out | ios::app);
-    if (!dbFile) {
-        cerr << "Error opening database file for writing." << endl;
+    fstream& dbFileTemp = DatabaseRecord::getFile();
+
+    if (!newUser.writeRecord(dbFileTemp)) {
+        cerr << "Error writing user record to database." << endl;
         return false;
     }
 
-    if (!newUser.writeRecord(dbFile)) {
-        cerr << "Error writing user record to database." << endl;
-        dbFile.close();
-        return false;
-    }
-    dbFile.close();
     return true;
 }
 
 void UpdateUserName(const char* oldName, const char* newName) {
-    fstream dbFile("database.txt", ios::in | ios::out);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(oldName);
-    while (user.readRecord(dbFile)) {
+    while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), oldName) == 0) {
             user.setRequesterName(newName);
-            dbFile.seekp((long)dbFile.tellg() - user.getRecordSize(), ios::beg);
-            user.writeRecord(dbFile);
+            dbFileTemp.seekp((long)dbFileTemp.tellg() - user.getRecordSize(), ios::beg);
+            user.writeRecord(dbFileTemp);
             cout << "User name updated successfully." << endl;
             break;
         }
     }
-    dbFile.close();
 }
 
 void UpdateUserEmail(const char* name, const char* newEmail) {
-    fstream dbFile("database.txt", ios::in | ios::out);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
-    while (user.readRecord(dbFile)) {
+    while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
             user.setEmail(newEmail);
-            dbFile.seekp((long)dbFile.tellg() - user.getRecordSize(), ios::beg);
-            user.writeRecord(dbFile);
+            dbFileTemp.seekp((long)dbFileTemp.tellg() - user.getRecordSize(), ios::beg);
+            user.writeRecord(dbFileTemp);
             cout << "User email updated successfully." << endl;
             break;
         }
     }
-    dbFile.close();
+    
 }
 
 void UpdateUserPhoneNumber(const char* name, const char* newPhoneNumber) {
-    fstream dbFile("database.txt", ios::in | ios::out);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
-    while (user.readRecord(dbFile)) {
+    while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
             user.setPhone(newPhoneNumber);
-            dbFile.seekp((long)dbFile.tellg() - user.getRecordSize(), ios::beg);
-            user.writeRecord(dbFile);
+            dbFileTemp.seekp((long)dbFileTemp.tellg() - user.getRecordSize(), ios::beg);
+            user.writeRecord(dbFileTemp);
             cout << "User phone number updated successfully." << endl;
             break;
         }
     }
-    dbFile.close();
+    
 }
 
 bool CheckUserExists(const char* name) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return false;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     User user(name);
-    while (user.readRecord(dbFile)) {
+    while (user.readRecord(dbFileTemp)) {
         if (strcmp(user.getRequesterName(), name) == 0) {
-            dbFile.close();
+            
             return true;
         }
     }
-    dbFile.close();
+    
     return false;
 }
 
 void PrintUserInfo(const char* Name) {
     if (CheckUserExists(Name)) {
-        fstream dbFile("database.txt", ios::in);
-        if (!dbFile) {
-            cerr << "Error opening database file." << endl;
-            return;
-        }
+        fstream& dbFileTemp = DatabaseRecord::getFile();
 
         User user(Name);
-        while (user.readRecord(dbFile)) {
+        while (user.readRecord(dbFileTemp)) {
             if (strcmp(user.getRequesterName(), Name) == 0) {
                 cout << user << endl;
                 break;
             }
         }
-        dbFile.close();
+        
     } else {
         cout << "User not found." << endl;
     }
@@ -162,18 +136,14 @@ int Init_ChangeItem(const char* product, const char* changeDescription) {
     newItem.setProductName(product);
     newItem.setChangeDescription(changeDescription);
 
-    fstream dbFile("database.txt", ios::out | ios::app);
-    if (!dbFile) {
-        cerr << "Error opening database file for writing." << endl;
-        return -1;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
-    if (!newItem.writeRecord(dbFile)) {
+    if (!newItem.writeRecord(dbFileTemp)) {
         cerr << "Error writing change item to database." << endl;
-        dbFile.close();
+        
         return -1;
     }
-    dbFile.close();
+    
     return newItem.getID(); // Return generated ID
 }
 
@@ -182,78 +152,61 @@ void UpdateChangeItemStatus(const char* changeID, const char* status) {
 }
 
 bool CheckChangeItemExists(const char* changeID) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return false;
-    }
-
+    fstream& dbFileTemp = DatabaseRecord::getFile();
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         if (strcmp(item.getChangeID(), changeID) == 0) {
-            dbFile.close();
+            
             return true;
         }
     }
-    dbFile.close();
+    
     return false;
 }
 
 void ViewChangeItem(int changeID) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         if (item.getID() == changeID) {
             PrintChangeItem(item);
             break;
         }
     }
-    dbFile.close();
+    
 }
 
 void UpdateChangeItemReleaseDate(int changeID, Date date) {
-    fstream dbFile("database.txt", ios::in | ios::out);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         if (item.getID() == changeID) {
             item.setDateFirstReported(date);
-            dbFile.seekp((long)dbFile.tellg() - item.getRecordSize(), ios::beg);
-            item.writeRecord(dbFile);
+            dbFileTemp.seekp((long)dbFileTemp.tellg() - item.getRecordSize(), ios::beg);
+            item.writeRecord(dbFileTemp);
             cout << "Change item release date updated successfully." << endl;
             break;
         }
     }
-    dbFile.close();
+    
 }
 
 void UpdateChangeItemDescription(int changeID, const char* description) {
-    fstream dbFile("database.txt", ios::in | ios::out);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         if (item.getID() == changeID) {
             item.setChangeDescription(description);
-            dbFile.seekp((long)dbFile.tellg() - item.getRecordSize(), ios::beg);
-            item.writeRecord(dbFile);
+            dbFileTemp.seekp((long)dbFileTemp.tellg() - item.getRecordSize(), ios::beg);
+            item.writeRecord(dbFileTemp);
             cout << "Change item description updated successfully." << endl;
             break;
         }
     }
-    dbFile.close();
+    
 }
 
 // Change Request Management
@@ -270,35 +223,27 @@ bool Init_ChangeRequest(const char* Name, const char* Product, const char* Versi
     snprintf(changeIDStr, sizeof(changeIDStr), "%06d", changeID);
     newRequest.setChangeID(changeIDStr);
 
-    fstream dbFile("database.txt", ios::out | ios::app);
-    if (!dbFile) {
-        cerr << "Error opening database file for writing." << endl;
-        return false;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
-    if (!newRequest.writeRecord(dbFile)) {
+    if (!newRequest.writeRecord(dbFileTemp)) {
         cerr << "Error writing change request to database." << endl;
-        dbFile.close();
+        
         return false;
     }
-    dbFile.close();
+    
     return true;
 }
 
 void ShowChangeItems(const char* Product) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         if (strcmp(item.getProductName(), Product) == 0) {
             PrintChangeItem(item);
         }
     }
-    dbFile.close();
+    
 }
 
 void connectChangeRequest(const char* Name, int changeID) {
@@ -313,36 +258,28 @@ bool Init_ProductRelease(const char* Product, Date date) {
 
     ProductRelease newRelease(Product, releaseID, date);
 
-    fstream dbFile("database.txt", ios::out | ios::app);
-    if (!dbFile) {
-        cerr << "Error opening database file for writing." << endl;
-        return false;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
-    if (!newRelease.writeRecord(dbFile)) {
+    if (!newRelease.writeRecord(dbFileTemp)) {
         cerr << "Error writing product release to database." << endl;
-        dbFile.close();
+        
         return false;
     }
-    dbFile.close();
+    
     return true;
 }
 
 bool CheckProductReleaseExists(const char* Product) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return false;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ProductRelease release;
-    while (release.readRecord(dbFile)) {
+    while (release.readRecord(dbFileTemp)) {
         if (strcmp(release.getProductName(), Product) == 0) {
-            dbFile.close();
+            
             return true;
         }
     }
-    dbFile.close();
+    
     return false;
 }
 
@@ -352,14 +289,10 @@ bool CheckProductExists(const char* Product) {
 }
 
 void PrintOpenBugs(const char* Product, Date start, Date end) {
-    fstream dbFile("database.txt", ios::in);
-    if (!dbFile) {
-        cerr << "Error opening database file." << endl;
-        return;
-    }
+    fstream& dbFileTemp = DatabaseRecord::getFile();
 
     ChangeItem item;
-    while (item.readRecord(dbFile)) {
+    while (item.readRecord(dbFileTemp)) {
         Date date = item.getDateFirstReported();
         if (strcmp(item.getProductName(), Product) == 0 &&
             date.y >= start.y && date.y <= end.y &&
@@ -369,7 +302,7 @@ void PrintOpenBugs(const char* Product, Date start, Date end) {
             PrintChangeItem(item);
         }
     }
-    dbFile.close();
+    
 }
 
 // Backup Operation
