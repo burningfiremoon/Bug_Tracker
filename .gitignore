@@ -15,3 +15,5 @@ ProductRelease.o
 tempdbsave.txt
 ui.o
 User.o
+my_program.exe
+BackupDatabase.txt

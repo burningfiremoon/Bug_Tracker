@@ -58,10 +58,29 @@ const char* User::getEmail() const {
 
 // File Operations
 bool User::writeRecord(fstream &dbFile) const {
-    if (!dbFile.is_open()) {
-        std::cerr << "Database file is not open for writing." << std::endl;
-        return false;
+    // Get current position of file pointer
+    streampos currentPos = dbFile.tellg();
+
+    // look for new line character to determine start of a line
+    while (currentPos > 0) {
+        dbFile.seekg(currentPos);
+        currentPos -= 1;
+        char ch;
+        dbFile.get(ch);
+
+        if (ch == '\n'){
+            dbFile.seekg(currentPos+1);
+            break;
+        }
+        dbFile.clear();
+        dbFile.seekg(currentPos);
     }
+
+    if (currentPos == 0){
+        dbFile.seekg(0, ios::beg);
+    }
+
+
     dbFile.seekp((long)dbFile.tellg(), ios::beg);
     dbFile.write(requesterName, sizeof(requesterName));
     dbFile.write(phone, sizeof(phone));
