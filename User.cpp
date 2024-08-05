@@ -87,6 +87,8 @@ bool User::writeRecord(fstream &dbFile) const {
     dbFile.write(email, sizeof(email));
     dbFile.put('\n');
     dbFile.flush();
+    // Reseting pointer back to start because errors go brrr
+    dbFile.seekg(0, ios::beg);
     return true;
 }
 
