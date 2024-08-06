@@ -100,9 +100,9 @@ bool User::readRecord(fstream &dbFile) {
 
     dbFile.clear(); // Clear any potential error flags
 
-    char tempRequesterName[31] = {0};
-    char tempPhone[12] = {0};
-    char tempEmail[25] = {0};
+    char tempRequesterName[31];
+    char tempPhone[12];
+    char tempEmail[25];
     string temp;
 
     if (dbFile.read(tempRequesterName, sizeof(tempRequesterName))) {
